@@ -1,15 +1,17 @@
 package com.SimLab.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Course {
     @Id
     @GeneratedValue (strategy = GenerationType.AUTO)
+    @Column(name = "Id")
     private int courseId;
 
+    @Column(name = "name")
     private String courseName;
+    @Column(name = "description")
+    private String courseDesc;
+
 }
