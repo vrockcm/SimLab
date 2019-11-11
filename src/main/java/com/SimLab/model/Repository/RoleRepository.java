@@ -1,5 +1,6 @@
-package com.SimLab.model;
+package com.SimLab.model.Repository;
 
+import com.SimLab.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -2,7 +2,7 @@ package com.SimLab.service;
 
 
 import com.SimLab.model.Role;
-import com.SimLab.model.RoleRepository;
+import com.SimLab.model.Repository.RoleRepository;
 import com.SimLab.model.User;
 import com.SimLab.model.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

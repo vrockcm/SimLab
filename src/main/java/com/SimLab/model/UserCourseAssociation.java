@@ -2,7 +2,7 @@ package com.SimLab.model;
 
 import javax.persistence.*;
 
-@Entity
+@Entity @IdClass(UserCourseKey.class)
 public class UserCourseAssociation {
     @Id
     @Column(name = "UserId")
