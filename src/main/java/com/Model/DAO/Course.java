@@ -1,4 +1,4 @@
-package com.DAO;
+package com.Model.DAO;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
