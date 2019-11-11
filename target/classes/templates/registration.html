@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Registration Page</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"></head>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/registration.css}"/>
+<body>
+<div class="container-fluid">
+    <img th:src="@{/images/SimLab.png}" alt="logo" class="img-fluid" id="logo">
+    <div class="row align-items-center h-100">
+        <div class="col-md-4 col-sm-11 mx-auto">
+            <h1 class="form-signin-heading">Sign Up</h1>
+            <form th:object="${user}" th:action="@{/registration}" method="POST" class="form-signin">
+                <label for="FirstName">First Name</label>
+                <input type="text" id="FirstName" name="name" class="form-control" /> <br/>
+                <label for="LastName">Last Name</label>
+                <input type="text" id="LastName" name="lastName" class="form-control" /> <br />
+                 <label for="Email">Email</label>
+                <input type="text" id="email" name="email" class="form-control" /> <br/>
+                <label for="Password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" /> <br />
+                <button class='Login_button one' name="Submit" value="Login" type="Submit" >
+                    <div class='insider'></div>
+                    Sign Up
+                </button>
+                <span style="text-align:center;" th:utext="${successMessage}"></span>
+            </form>
+            <center>
+            <p>
+                Already have an account? <a th:href="@{/login}">Log In</a></p>
+            </center>
+        </div>
+    </div>
+</div>
+</body>
+</html>
