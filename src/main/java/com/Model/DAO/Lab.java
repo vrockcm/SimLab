@@ -1,15 +1,16 @@
 package com.Model.DAO;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Lab {
     @Id
     @GeneratedValue (strategy = GenerationType.AUTO)
+    @Column(name = "Id")
     private int labId;
 
+    @Column(name = "name")
     private String labName;
+    @Column(name = "description")
+    private String labDesc;
 }
