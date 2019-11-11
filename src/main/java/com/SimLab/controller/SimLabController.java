@@ -1,7 +1,10 @@
 package com.SimLab.controller;
 
+import com.SimLab.model.Repository.UserCourseAssociationRepository;
 import com.SimLab.model.User;
+import com.SimLab.model.UserCourseAssociation;
 import com.SimLab.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -11,10 +14,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Controller
 public class SimLabController {
+
+    @Autowired
+    private UserCourseAssociationRepository userCourseAssociationRepository;
 
     @Autowired
     private UserService userService;
@@ -70,6 +78,13 @@ public class SimLabController {
     @GetMapping("/access-denied")
     public String accessDenied() {
         return "/error/access-denied";
+    }
+
+    @ResponseBody
+    @GetMapping("/loadCourses")
+    public List<String> loadCourse(@RequestParam String userEmail ){
+        List<String> userCourses = userCourseAssociationRepository.loadUserCourses(userEmail);
+        return userCourses;
     }
 
 

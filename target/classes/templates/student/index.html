@@ -52,7 +52,7 @@
 				<div class="labs">
 					<h3 class="AddLabs">Labs</h3>
 				</div>
-				<span class="Username" style="text-align:center;" th:utext="${Name}"></span>
+				<span class="Username" style="text-align:center;" th:utext="${Email}" id="userEmail"></span>
 				<form class="search form-inline md-form form-sm mt-0">
 		          <i class="fas fa-search active" aria-hidden="true"></i>
 		          <input style="color: white;" class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search" aria-label="Search">
@@ -72,25 +72,25 @@
 		<nav id="ml-menu" class="menu">
 			<button class="action action--close" aria-label="Close Menu"><span class="icon icon--cross"></span></button>
 			<div class="menu__wrap">
-				<ul data-menu="main" class="menu__level" tabindex="-1" role="menu">
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>
+				<ul data-menu="main" class="menu__level" tabindex="-1" role="menu" id = menuTable>
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>-->
+<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>-->
 				</ul>
 				<!-- <!-- Submenu 1
 				<ul data-menu="submenu-1" id="submenu-1" class="menu__level" tabindex="-1" role="menu" aria-label="Vegetables">

@@ -389,6 +389,9 @@
 
 $(document).ready(function() {
 
+    //This gets the email from the front end and passes calls the loadCourses function with this email.
+    loadCourses(document.getElementsByClassName('Username')[0].innerHTML);
+
 	function toggle() {
     	$('.add-lab-form').fadeToggle( "slow", "linear" );
 		$('.tabs-visb').toggle('slow');
@@ -536,4 +539,33 @@ if (interaction.pointerIsDown && !interaction.interacting() && event.currentTarg
 }
 });
 
-//Henry Writes Here
+//userid is the current id of the user logged in.
+function loadCourses(userEmail){
+    $.ajax({
+        url : '/loadCourses',
+        type : 'GET',
+        data : {
+            'userEmail' : userEmail
+        },
+        dataType:'json',
+        success : function(data) {
+            for (var x = 0; x<data.length; x++){
+                var ul = document.getElementById("menuTable")
+                var listNode = document.createElement('li');
+                listNode.setAttribute("class", "menu__item");
+                listNode.setAttribute("role", "menuitem");
+                var hyperLinkNode = document.createElement('a');
+                hyperLinkNode.setAttribute("class", "menu__link");
+                hyperLinkNode.setAttribute("aria-owns", "submenu-1");
+                hyperLinkNode.setAttribute('href','#');
+                hyperLinkNode.innerHTML = data[x];
+                listNode.appendChild(hyperLinkNode);
+                ul.appendChild(listNode);
+            }
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
