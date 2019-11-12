@@ -11,6 +11,6 @@ import java.util.List;
 
 @Repository
 public interface UserCourseAssociationRepository extends CrudRepository <UserCourseAssociation, Long> {
-    @Query("SELECT x.Name FROM Course x WHERE x.UserId = :userId")
-    public List<Course> loadUserCourseNames(@Param("UserId") int userId);
+    @Query("SELECT y FROM UserCourseAssociation  x, Course y WHERE x.userId = :userId AND x.courseId = y.id")
+    public List<Course> loadUserCourses(@Param("userId") int userId);
 }

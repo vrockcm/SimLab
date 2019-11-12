@@ -391,17 +391,57 @@ $(document).ready(function() {
 
     //This gets the email from the front end and passes calls the loadCourses function with this email.
     loadCourses();
+    initialize();
 
-	function toggle() {
-    	$('.add-lab-form').fadeToggle( "slow", "linear" );
-		$('.tabs-visb').toggle('slow');
+	function toggleL() {
+	    if($(".add-lab-form").is(":visible")){
+	        $('.add-lab-form').fadeOut( "fast" , function() {
+                $(".tabs-visb").fadeIn( "fast");
+            });
+	    }
+	    else{
+            if($(".add-course-form").is(":visible")){
+                $(".add-course-form").fadeOut( "fast", function() {
+                    $('.add-lab-form').fadeIn( "fast" );
+                });
+                $(".tabs-visb").fadeOut("fast");
+            }else{
+                $(".tabs-visb").fadeOut("fast", function() {
+                       $('.add-lab-form').fadeIn( "fast" );
+                });
+            }
+	    }
 	}
+
+	function toggleC() {
+    	    if($(".add-course-form").is(":visible")){
+    	        $('.add-course-form').fadeOut( "fast" , function() {
+                    $(".tabs-visb").fadeIn( "fast");
+                });
+    	    }
+    	    else{
+    	        if($(".add-lab-form").is(":visible")){
+    	            $(".add-lab-form").fadeOut( "fast", function() {
+                        $('.add-course-form').fadeIn( "fast" );
+                    });
+                    $(".tabs-visb").fadeOut("fast");
+    	        }else{
+    	            $(".tabs-visb").fadeOut("fast", function() {
+                           $('.add-course-form').fadeIn( "fast" );
+                    });
+    	        }
+    	    }
+    	}
 
 	$(function () {
 		$(".add-lab-form").hide();
+		$(".add-course-form").hide();
 		$('.addl_btn').click(function(){
-				toggle();
-		  });
+			toggleL();
+		});
+		$('.addc_btn').click(function(){
+        	toggleC();
+        });
 	});
 
 	$('.add-lab-form').on('submit', function(e) {
@@ -456,23 +496,14 @@ function loadCourses(){
     $.ajax({
         url : '/loadCourses',
         type : 'GET',
+        async: false,
         data : {
-            'userEmail' : email
+            'userid' : userid
         },
         dataType:'json',
         success : function(data) {
             for (var x = 0; x<data.length; x++){
-                var ul = document.getElementById("menuTable")
-                var listNode = document.createElement('li');
-                listNode.setAttribute("class", "menu__item");
-                listNode.setAttribute("role", "menuitem");
-                var hyperLinkNode = document.createElement('a');
-                hyperLinkNode.setAttribute("class", "menu__link");
-                hyperLinkNode.setAttribute("aria-owns", "submenu-1");
-                hyperLinkNode.setAttribute('href','#');
-                hyperLinkNode.innerHTML = data[x];
-                listNode.appendChild(hyperLinkNode);
-                ul.appendChild(listNode);
+               $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">'+ data[x] + '</a></li>');
             }
         },
         error : function(request,error)
@@ -480,4 +511,83 @@ function loadCourses(){
             alert("Request: "+JSON.stringify(request));
         }
     });
+}
+
+
+function loadLabs(){
+//    $.ajax({
+//        url : '/loadCourses',
+//        type : 'GET',
+//        async: false,
+//        data : {
+//            'courseName' : courseName
+//        },
+//        dataType:'json',
+//        success : function(data) {
+//            for (var x = 0; x<data.length; x++){
+//               $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">'+ data[x] + '</a></li>');
+//            }
+//        },
+//        error : function(request,error)
+//        {
+//            alert("Request: "+JSON.stringify(request));
+//        }
+//    });
+}
+
+function initialize() {
+		var menuEl = document.getElementById('ml-menu'),
+			mlmenu = new MLMenu(menuEl, {
+				// breadcrumbsCtrl : true, // show breadcrumbs
+				// initialBreadcrumb : 'all', // initial breadcrumb text
+				breadcrumbsCtrl : false,
+				backCtrl : false, // show back button
+				// itemsDelayInterval : 60, // delay between each menu item sliding animation
+				onItemClick: loadLabs() // callback: item that doesn´t have a submenu gets clicked - onItemClick([event], [inner HTML of the clicked item])
+			});
+
+		// mobile menu toggle
+		var openMenuCtrl = document.querySelector('.action--open'),
+			closeMenuCtrl = document.querySelector('.action--close');
+
+		openMenuCtrl.addEventListener('click', openMenu);
+		closeMenuCtrl.addEventListener('click', closeMenu);
+
+		function openMenu() {
+			classie.add(menuEl, 'menu--open');
+			closeMenuCtrl.focus();
+		}
+
+		function closeMenu() {
+			classie.remove(menuEl, 'menu--open');
+			openMenuCtrl.focus();
+		}
+
+		// simulate grid content loading
+		var gridWrapper1 = document.querySelector('#saved');
+		var gridWrapper2 = document.querySelector('#published');
+
+		function loadDummyData(ev, itemName) {
+			ev.preventDefault();
+			closeMenu();
+			gridWrapper1.innerHTML = '';
+			gridWrapper2.innerHTML = '';
+			classie.add(gridWrapper1, 'content--loading');
+			classie.add(gridWrapper2, 'content--loading');
+			setTimeout(function() {
+				classie.remove(gridWrapper1, 'content--loading');
+				var content = '<ul class="products">';
+
+				var i = 0;
+				for(i = 0;i<5;i++){
+					content+= dummyData[itemName];
+
+				}
+				content+="</ul>"
+				gridWrapper1.innerHTML = content;
+				classie.remove(gridWrapper2, 'content--loading');
+				gridWrapper2.innerHTML = content;
+			}, 700);
+
+		}
 }

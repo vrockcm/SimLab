@@ -11,7 +11,6 @@ public class UserCourseAssociation {
     @Id
     @Column(name = "CourseId")
     private int courseId;
-
-
+    
 
 }

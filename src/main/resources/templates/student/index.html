@@ -80,59 +80,8 @@
 	<script type="text/javascript" th:inline="javascript" >
     	/*<![CDATA[*/
 			var email = [[${Email}]];
+			var userid = [[${UserId}]];
 		/*]]>*/
-	</script>
-	<script>
-	(function() {
-		var menuEl = document.getElementById('ml-menu'),
-			mlmenu = new MLMenu(menuEl, {
-				// breadcrumbsCtrl : true, // show breadcrumbs
-				// initialBreadcrumb : 'all', // initial breadcrumb text
-				breadcrumbsCtrl : false,
-				backCtrl : false, // show back button
-				// itemsDelayInterval : 60, // delay between each menu item sliding animation
-				onItemClick: loadDummyData // callback: item that doesn´t have a submenu gets clicked - onItemClick([event], [inner HTML of the clicked item])
-			});
-
-		// mobile menu toggle
-		var openMenuCtrl = document.querySelector('.action--open'),
-			closeMenuCtrl = document.querySelector('.action--close');
-
-		openMenuCtrl.addEventListener('click', openMenu);
-		closeMenuCtrl.addEventListener('click', closeMenu);
-
-		function openMenu() {
-			classie.add(menuEl, 'menu--open');
-			closeMenuCtrl.focus();
-		}
-
-		function closeMenu() {
-			classie.remove(menuEl, 'menu--open');
-			openMenuCtrl.focus();
-		}
-
-		// simulate grid content loading
-		var gridWrapper1 = document.querySelector('.content');
-
-		function loadDummyData(ev, itemName) {
-			ev.preventDefault();
-
-			closeMenu();
-			gridWrapper1.innerHTML = '';
-			classie.add(gridWrapper1, 'content--loading');
-			setTimeout(function() {
-				classie.remove(gridWrapper1, 'content--loading');
-				var content = '<ul class="products">';
-				var i = 0;
-				for(i = 0;i<5;i++){
-					content+= dummyData["student-"+itemName];
-				}
-				content+="</ul>"
-				gridWrapper1.innerHTML = content;
-			}, 700);
-
-		}
-	})();
 	</script>
 </body>
 
