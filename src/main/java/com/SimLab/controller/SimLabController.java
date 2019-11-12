@@ -1,6 +1,10 @@
 package com.SimLab.controller;
 
 import com.SimLab.model.dao.Course;
+import com.SimLab.model.dao.CourseLabAssociation;
+import com.SimLab.model.dao.Lab;
+import com.SimLab.model.dao.Repository.CourseLabAssociationRepository;
+import com.SimLab.model.dao.Repository.CourseRepository;
 import com.SimLab.model.dao.Repository.UserCourseAssociationRepository;
 import com.SimLab.model.dao.User;
 import com.SimLab.service.UserService;
@@ -19,6 +23,12 @@ import java.util.List;
 
 @Controller
 public class SimLabController {
+
+    @Autowired
+    private CourseLabAssociationRepository courseLabAssociationRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
 
     @Autowired
     private UserCourseAssociationRepository userCourseAssociationRepository;
@@ -128,6 +138,18 @@ public class SimLabController {
             userCoursesName.add(userCourses.get(x).getCourseName());
         }
         return userCoursesName;
+    }
+
+    @ResponseBody
+    @GetMapping("/loadLabs")
+    public List<Lab> loadLabs(@RequestParam String courseName){
+        int courseId = courseRepository.getCourseId(courseName);
+        List<Lab> associatedLabs = courseLabAssociationRepository.loadAssociatedLabs(courseId);
+        System.out.println(associatedLabs);
+
+
+
+        return associatedLabs;
     }
 
 

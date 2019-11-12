@@ -514,25 +514,42 @@ function loadCourses(){
 }
 
 
-function loadLabs(){
-//    $.ajax({
-//        url : '/loadCourses',
-//        type : 'GET',
-//        async: false,
-//        data : {
-//            'courseName' : courseName
-//        },
-//        dataType:'json',
-//        success : function(data) {
-//            for (var x = 0; x<data.length; x++){
-//               $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">'+ data[x] + '</a></li>');
-//            }
-//        },
-//        error : function(request,error)
-//        {
-//            alert("Request: "+JSON.stringify(request));
-//        }
-//    });
+function loadLabs(ev,itemName){
+    $.ajax({
+        url : '/loadLabs',
+        type : 'GET',
+        async: false,
+        data : {
+            'courseName' : itemName
+        },
+        dataType:'json',
+        success : function(data) {
+                ev.preventDefault();
+                closeMenu();
+                gridWrapper1.innerHTML = '';
+                gridWrapper2.innerHTML = '';
+                classie.add(gridWrapper1, 'content--loading');
+                classie.add(gridWrapper2, 'content--loading');
+                setTimeout(function() {
+                    classie.remove(gridWrapper1, 'content--loading');
+                    var content = '<ul class="products">';
+
+                    var i = 0;
+                    for(i = 0;i<data.length;i++){
+//                          Not working area I think.
+//                        content+= dummyData["cardbody1"] +HEADER + dummyData["cardbody2"] + DESC + dummyData["cardbody3"];
+                    }
+                    content+="</ul>"
+                    gridWrapper1.innerHTML = content;
+                    classie.remove(gridWrapper2, 'content--loading');
+                    gridWrapper2.innerHTML = content;
+                }, 700);
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
 }
 
 function initialize() {
@@ -567,27 +584,27 @@ function initialize() {
 		var gridWrapper1 = document.querySelector('#saved');
 		var gridWrapper2 = document.querySelector('#published');
 
-		function loadDummyData(ev, itemName) {
-			ev.preventDefault();
-			closeMenu();
-			gridWrapper1.innerHTML = '';
-			gridWrapper2.innerHTML = '';
-			classie.add(gridWrapper1, 'content--loading');
-			classie.add(gridWrapper2, 'content--loading');
-			setTimeout(function() {
-				classie.remove(gridWrapper1, 'content--loading');
-				var content = '<ul class="products">';
-
-				var i = 0;
-				for(i = 0;i<5;i++){
-					content+= dummyData[itemName];
-
-				}
-				content+="</ul>"
-				gridWrapper1.innerHTML = content;
-				classie.remove(gridWrapper2, 'content--loading');
-				gridWrapper2.innerHTML = content;
-			}, 700);
-
-		}
+//		function loadDummyData(ev, itemName) {
+//			ev.preventDefault();
+//			closeMenu();
+//			gridWrapper1.innerHTML = '';
+//			gridWrapper2.innerHTML = '';
+//			classie.add(gridWrapper1, 'content--loading');
+//			classie.add(gridWrapper2, 'content--loading');
+//			setTimeout(function() {
+//				classie.remove(gridWrapper1, 'content--loading');
+//				var content = '<ul class="products">';
+//
+//				var i = 0;
+//				for(i = 0;i<5;i++){
+//					content+= dummyData[itemName];
+//
+//				}
+//				content+="</ul>"
+//				gridWrapper1.innerHTML = content;
+//				classie.remove(gridWrapper2, 'content--loading');
+//				gridWrapper2.innerHTML = content;
+//			}, 700);
+//
+//		}
 }
