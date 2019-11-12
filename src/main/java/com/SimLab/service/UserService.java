@@ -1,10 +1,10 @@
 package com.SimLab.service;
 
 
-import com.SimLab.model.Role;
-import com.SimLab.model.Repository.RoleRepository;
-import com.SimLab.model.User;
-import com.SimLab.model.UserRepository;
+import com.SimLab.model.dao.Role;
+import com.SimLab.model.dao.Repository.RoleRepository;
+import com.SimLab.model.dao.User;
+import com.SimLab.model.dao.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

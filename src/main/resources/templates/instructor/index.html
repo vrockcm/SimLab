@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8" />
@@ -27,13 +28,11 @@
 
 
 	<link rel="shortcut icon" href="favicon.ico">
-	<!-- food icons -->
-	<link rel="stylesheet" type="text/css" href="css/organicfoodicons.css" />
 	<!-- demo styles -->
-	<link rel="stylesheet" type="text/css" href="css/demo.css" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/demo.css}"/>
 	<!-- menu styles -->
-	<link rel="stylesheet" type="text/css" href="css/component.css" />
-	<script src="js/modernizr-custom.js"></script>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/component.css}"/>
+	<script th:src="@{/js/modernizr-custom.js}"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
@@ -44,7 +43,7 @@
 		<!-- Blueprint header -->
 		<header class="bp-header cf">
 			<div class="dummy-logo">
-				<img src="img/SimLab.png" alt="logo" class="logo img-fluid">
+				<img th:src="@{/images/SimLab.png}" alt="logo" class="logo img-fluid">
 				<div class="courses">
 					<h3 class="AddCourses">Courses</h3>
 					<i class="addc_btn fas fa-plus-circle fa-lg"></i>
@@ -55,44 +54,19 @@
 					<h3 class="AddLabs">Labs</h3>
 					<button class="addl_btn btn btn-primary sm-btn-circle"><i class="fas fa-plus"></i></button>
 				</div>
+				<span class="Username" style="text-align:center;" th:utext="${Name}"></span>
 				<form class="search form-inline md-form form-sm mt-0">
 		          <i class="fas fa-search active" aria-hidden="true"></i>
 		          <input style="color: white;" class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search" aria-label="Search">
 		        </form>
 		        <button class="settings btn btn-primary btn-circle"><i class="fas fa-cog"></i></button>
-				<!-- <span class="bp-header__present">Blueprint <span class="bp-tooltip bp-icon bp-icon--about" data-content="The Blueprints are a collection of basic and minimal website concepts, components, plugins and layouts with minimal style for easy adaption and usage, or simply for inspiration."></span></span>
-				<h1 class="bp-header__title">Multi-Level Menu</h1>
-				<nav class="bp-nav">
-					<a class="bp-nav__item bp-icon bp-icon--prev" href="http://tympanus.net/Blueprints/PageStackNavigation/" data-info="previous Blueprint"><span>Previous Blueprint</span></a>
-					<!--a class="bp-nav__item bp-icon bp-icon--next" href="" data-info="next Blueprint"><span>Next Blueprint</span></a
-					<a class="bp-nav__item bp-icon bp-icon--drop" href="http://tympanus.net/codrops/?p=25521" data-info="back to the Codrops article"><span>back to the Codrops article</span></a>
-					<a class="bp-nav__item bp-icon bp-icon--archive" href="http://tympanus.net/codrops/category/blueprints/" data-info="Blueprints archive"><span>Go to the archive</span></a>
-				</nav> -->
 			</div>
 		</header>
 		<button class="action action--open" aria-label="Open Menu"><span class="icon icon--menu"></span></button>
-		<nav id="ml-menu" class="menu-prof">
+		<nav id="ml-menu" class="menu">
 			<button class="action action--close" aria-label="Close Menu"><span class="icon icon--cross"></span></button>
 			<div class="menu__wrap">
-				<ul data-menu="main" class="menu__level" tabindex="-1" role="menu">
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>
+				<ul data-menu="main" class="menu__level" tabindex="-1" role="menu" id = menuTable>
 				</ul>
 			</div>
 		</nav>
@@ -169,9 +143,14 @@
 		</div>
 	</div>
 	<!-- /view -->
-	<script src="js/classie.js"></script>
-	<script src="js/dummydata.js"></script>
-	<script src="js/main.js"></script>
+	<script th:src="@{/js/classie.js}"></script>
+	<script th:src="@{/js/dummydata.js}"></script>
+	<script th:src="@{/js/main.js}"></script>
+	<script type="text/javascript" th:inline="javascript" >
+    	/*<![CDATA[*/
+			var email = [[${Email}]];
+		/*]]>*/
+	</script>
 	<script>
 	(function() {
 		var menuEl = document.getElementById('ml-menu'),

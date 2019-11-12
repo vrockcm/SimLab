@@ -28,7 +28,7 @@
 
 
 	<link rel="shortcut icon" href="favicon.ico">
-	<!-- food icons -->
+	<!-- demo styles -->
 	<link rel="stylesheet" type="text/css" th:href="@{/css/demo.css}"/>
 	<!-- menu styles -->
 	<link rel="stylesheet" type="text/css" th:href="@{/css/component.css}"/>
@@ -52,20 +52,12 @@
 				<div class="labs">
 					<h3 class="AddLabs">Labs</h3>
 				</div>
-				<span class="Username" style="text-align:center;" th:utext="${Email}" id="userEmail"></span>
+				<span class="Username" style="text-align:center;" th:utext="${Name}"></span>
 				<form class="search form-inline md-form form-sm mt-0">
 		          <i class="fas fa-search active" aria-hidden="true"></i>
 		          <input style="color: white;" class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search" aria-label="Search">
 		        </form>
 		        <button class="settings btn btn-primary btn-circle"><i class="fas fa-cog"></i></button>
-				<!-- <span class="bp-header__present">Blueprint <span class="bp-tooltip bp-icon bp-icon--about" data-content="The Blueprints are a collection of basic and minimal website concepts, components, plugins and layouts with minimal style for easy adaption and usage, or simply for inspiration."></span></span>
-				<h1 class="bp-header__title">Multi-Level Menu</h1>
-				<nav class="bp-nav">
-					<a class="bp-nav__item bp-icon bp-icon--prev" href="http://tympanus.net/Blueprints/PageStackNavigation/" data-info="previous Blueprint"><span>Previous Blueprint</span></a>
-					<!--a class="bp-nav__item bp-icon bp-icon--next" href="" data-info="next Blueprint"><span>Next Blueprint</span></a
-					<a class="bp-nav__item bp-icon bp-icon--drop" href="http://tympanus.net/codrops/?p=25521" data-info="back to the Codrops article"><span>back to the Codrops article</span></a>
-					<a class="bp-nav__item bp-icon bp-icon--archive" href="http://tympanus.net/codrops/category/blueprints/" data-info="Blueprints archive"><span>Go to the archive</span></a>
-				</nav> -->
 			</div>
 		</header>
 		<button class="action action--open" aria-label="Open Menu"><span class="icon icon--menu"></span></button>
@@ -73,42 +65,7 @@
 			<button class="action action--close" aria-label="Close Menu"><span class="icon icon--cross"></span></button>
 			<div class="menu__wrap">
 				<ul data-menu="main" class="menu__level" tabindex="-1" role="menu" id = menuTable>
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE131</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE141</a></li>-->
-<!--					<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">CHE151</a></li>-->
 				</ul>
-				<!-- <!-- Submenu 1
-				<ul data-menu="submenu-1" id="submenu-1" class="menu__level" tabindex="-1" role="menu" aria-label="Vegetables">
-					<li class="menu__item" role="menuitem"><a class="menu__link" href="#">Stalk Vegetables</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link" href="#">Roots &amp; Seeds</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link" href="#">Cabbages</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link" href="#">Salad Greens</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link" href="#">Mushrooms</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link" data-submenu="submenu-1-1" aria-owns="submenu-1-1" href="#">Sale %</a></li>
-				</ul>
-				<!-- Submenu 1-1
-				<ul data-menu="submenu-1-1" id="submenu-1-1" class="menu__level" tabindex="-1" role="menu" aria-label="Sale %">
-					<li class="menu__item" role="menuitem"><a class="menu__link" href="#">Fair Trade Roots</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link" href="#">Dried Veggies</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link" href="#">Our Brand</a></li>
-					<li class="menu__item" role="menuitem"><a class="menu__link" href="#">Homemade</a></li>
-				</ul> -->
-
 			</div>
 		</nav>
 		<div class="content">
@@ -120,6 +77,11 @@
 
 	<script th:src="@{/js/dummydata.js}"></script>
 	<script th:src="@{/js/main.js}"></script>
+	<script type="text/javascript" th:inline="javascript" >
+    	/*<![CDATA[*/
+			var email = [[${Email}]];
+		/*]]>*/
+	</script>
 	<script>
 	(function() {
 		var menuEl = document.getElementById('ml-menu'),
