@@ -8,7 +8,6 @@ public class Course {
     @GeneratedValue (strategy = GenerationType.AUTO)
     @Column(name = "Id")
     private int courseId;
-
     @Column(name = "name")
     private String courseName;
     @Column(name = "description")
