@@ -38,24 +38,7 @@
 
 .menu {
 	position: fixed;
-	left: 0;
-	width: 300px;
-	height: calc(100vh - 80px);
-	background: #1c1d22;
-}
-
-.menu-prof {
-	position: fixed;
 	top: 160px;
-	left: 0;
-	width: 300px;
-	height: calc(100vh - 80px);
-	background: #1c1d22;
-}
-
-.work-menu{
-	position: fixed;
-	top: 80px;
 	left: 0;
 	width: 300px;
 	height: calc(100vh - 80px);
@@ -357,6 +340,11 @@
 	.action--close {
 		display: block;
 	}
+
+	.menu__wrap {
+    	top: 3.5em;
+    }
+
 	.menu {
 		z-index: 1000;
 		top: 0;

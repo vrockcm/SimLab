@@ -1,10 +1,8 @@
 package com.SimLab.controller;
 
-import com.SimLab.model.Repository.UserCourseAssociationRepository;
-import com.SimLab.model.User;
-import com.SimLab.model.UserCourseAssociation;
+import com.SimLab.model.dao.Repository.UserCourseAssociationRepository;
+import com.SimLab.model.dao.User;
 import com.SimLab.service.UserService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -72,6 +69,17 @@ public class SimLabController {
         modelAndView.addObject("Email", user.getEmail());
         modelAndView.addObject("Name", user.getName());
         modelAndView.setViewName("/student/index");
+        return modelAndView;
+    }
+
+    @RequestMapping(value="/instructor/index", method = RequestMethod.GET)
+    public ModelAndView instructorHome(){
+        ModelAndView modelAndView = new ModelAndView();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        modelAndView.addObject("Email", user.getEmail());
+        modelAndView.addObject("Name", user.getName());
+        modelAndView.setViewName("/instructor/index");
         return modelAndView;
     }
 
