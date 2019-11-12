@@ -498,7 +498,7 @@ function loadCourses(){
         type : 'GET',
         async: false,
         data : {
-            'userEmail' : email
+            'userid' : userid
         },
         dataType:'json',
         success : function(data) {
@@ -513,6 +513,28 @@ function loadCourses(){
     });
 }
 
+
+function loadLabs(){
+//    $.ajax({
+//        url : '/loadCourses',
+//        type : 'GET',
+//        async: false,
+//        data : {
+//            'courseName' : courseName
+//        },
+//        dataType:'json',
+//        success : function(data) {
+//            for (var x = 0; x<data.length; x++){
+//               $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">'+ data[x] + '</a></li>');
+//            }
+//        },
+//        error : function(request,error)
+//        {
+//            alert("Request: "+JSON.stringify(request));
+//        }
+//    });
+}
+
 function initialize() {
 		var menuEl = document.getElementById('ml-menu'),
 			mlmenu = new MLMenu(menuEl, {
@@ -521,7 +543,7 @@ function initialize() {
 				breadcrumbsCtrl : false,
 				backCtrl : false, // show back button
 				// itemsDelayInterval : 60, // delay between each menu item sliding animation
-				onItemClick: loadDummyData // callback: item that doesn´t have a submenu gets clicked - onItemClick([event], [inner HTML of the clicked item])
+				onItemClick: loadLabs() // callback: item that doesn´t have a submenu gets clicked - onItemClick([event], [inner HTML of the clicked item])
 			});
 
 		// mobile menu toggle

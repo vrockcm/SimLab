@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -82,6 +83,7 @@ public class SimLabController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         modelAndView.addObject("Email", user.getEmail());
+        modelAndView.addObject("UserId", user.getId());
         modelAndView.addObject("Name", user.getName());
         modelAndView.setViewName("/instructor/index");
         return modelAndView;
@@ -112,17 +114,6 @@ public class SimLabController {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
     @GetMapping("/access-denied")
     public String accessDenied() {
         return "/error/access-denied";
@@ -130,9 +121,13 @@ public class SimLabController {
 
     @ResponseBody
     @GetMapping("/loadCourses")
-    public List<String> loadCourse(@RequestParam String userEmail ){
-        List<String> userCourses = userCourseAssociationRepository.loadUserCourses(userEmail);
-        return userCourses;
+    public List<String> loadCourse(@RequestParam String userid ){
+        List<Course> userCourses = userCourseAssociationRepository.loadUserCourses(Integer.parseInt(userid));
+        List<String> userCoursesName = new ArrayList<String>();
+        for (int x = 0; x< userCourses.size(); x++){
+            userCoursesName.add(userCourses.get(x).getCourseName());
+        }
+        return userCoursesName;
     }
 
 
