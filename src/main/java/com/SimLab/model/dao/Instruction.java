@@ -9,20 +9,20 @@ public class Instruction {
     @Column(name = "Id")
     private int labId;
 
-    @Column(name = "name")
+    @Column(name = "Name")
     private String name;
-    @Column(name = "description")
+    @Column(name = "Description")
     private String labDesc;
-    @Column(name = "material1Id")
+    @Column(name = "Material1Id")
     private int material1Id;
-    @Column(name = "material2Id")
+    @Column(name = "Material2Id")
     private int material2Id;
-    @Column(name = "material3Id")
+    @Column(name = "Material3Id")
     private int material3Id;
-    @Column(name = "parameter1")
+    @Column(name = "Parameter1")
     private String parameter1;
-    @Column(name = "parameter2")
+    @Column(name = "Parameter2")
     private String parameter2;
-    @Column(name = "parameter3")
+    @Column(name = "Parameter3")
     private String parameter3;
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -23,7 +24,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException {
-        String targetUrl = determineTargetUrl(authentication);
+        MysqlxDatatypes.Scalar.String targetUrl = determineTargetUrl(authentication);
 
         if (response.isCommitted()) {
             System.out.println("Can't redirect");
@@ -37,7 +38,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
      * This method extracts the roles of currently logged-in user and returns
      * appropriate URL according to his/her role.
      */
-    protected String determineTargetUrl(Authentication authentication) {
+    protected MysqlxDatatypes.Scalar.String determineTargetUrl(Authentication authentication) {
         String url = "";
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();

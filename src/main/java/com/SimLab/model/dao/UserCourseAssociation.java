@@ -12,12 +12,6 @@ public class UserCourseAssociation {
     @Column(name = "CourseId")
     private int courseId;
 
-    @Id
-    @Column(name = "UserEmail")
-    private String userEmail;
 
-    @Id
-    @Column(name = "CourseName")
-    private String courseName;
 
 }
