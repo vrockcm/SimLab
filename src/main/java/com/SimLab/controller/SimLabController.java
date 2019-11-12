@@ -1,5 +1,6 @@
 package com.SimLab.controller;
 
+import com.SimLab.model.dao.Course;
 import com.SimLab.model.dao.Repository.UserCourseAssociationRepository;
 import com.SimLab.model.dao.User;
 import com.SimLab.service.UserService;
@@ -61,16 +62,19 @@ public class SimLabController {
         return modelAndView;
     }
 
+
     @RequestMapping(value="/student/index", method = RequestMethod.GET)
     public ModelAndView studentHome(){
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
+        modelAndView.addObject("Course", new Course());
         modelAndView.addObject("Email", user.getEmail());
         modelAndView.addObject("Name", user.getName());
         modelAndView.setViewName("/student/index");
         return modelAndView;
     }
+
 
     @RequestMapping(value="/instructor/index", method = RequestMethod.GET)
     public ModelAndView instructorHome(){
@@ -82,6 +86,42 @@ public class SimLabController {
         modelAndView.setViewName("/instructor/index");
         return modelAndView;
     }
+
+
+
+    @RequestMapping(value = "/MakeCourse", method = RequestMethod.POST)
+    public ModelAndView createNewCourse(@Valid User user, BindingResult bindingResult) {
+        ModelAndView modelAndView = new ModelAndView();
+        User userExists = userService.findUserByEmail(user.getEmail());
+        if (userExists != null) {
+            bindingResult
+                    .rejectValue("email", "error.user",
+                            "There is already a user registered with the email provided");
+        }
+        if (bindingResult.hasErrors()) {
+            modelAndView.setViewName("registration");
+        } else {
+            userService.saveUser(user);
+            modelAndView.addObject("successMessage", "User has been registered successfully");
+            modelAndView.addObject("user", new User());
+            modelAndView.setViewName("registration");
+
+        }
+        return modelAndView;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @GetMapping("/access-denied")
     public String accessDenied() {
