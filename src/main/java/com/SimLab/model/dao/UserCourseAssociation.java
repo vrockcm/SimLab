@@ -2,9 +2,7 @@ package com.SimLab.model.dao;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "userCourseAssociation")
-@IdClass(UserCourseKey.class)
+@Entity @IdClass(UserCourseKey.class)
 public class UserCourseAssociation {
     @Id
     @Column(name = "UserId")
@@ -13,6 +11,4 @@ public class UserCourseAssociation {
     @Id
     @Column(name = "CourseId")
     private int courseId;
-
-
 }
