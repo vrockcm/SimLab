@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository("courseRepositry")
+@Repository()
 public interface CourseRepository extends CrudRepository <Course, Long> {
-    @Query(value = "SELECT u FROM Course u WHERE u.gameId = :gameId")
-    public List<Course> getCourse(@Param("CourseId") int courseId);
+    @Query(value = "SELECT u FROM Course u WHERE u.courseId = :courseId")
+    public List<Course> getCourse(@Param("courseId") int courseId);
 }

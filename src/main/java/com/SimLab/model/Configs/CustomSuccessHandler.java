@@ -24,7 +24,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException {
-        MysqlxDatatypes.Scalar.String targetUrl = determineTargetUrl(authentication);
+        String targetUrl = determineTargetUrl(authentication);
 
         if (response.isCommitted()) {
             System.out.println("Can't redirect");
@@ -38,7 +38,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
      * This method extracts the roles of currently logged-in user and returns
      * appropriate URL according to his/her role.
      */
-    protected MysqlxDatatypes.Scalar.String determineTargetUrl(Authentication authentication) {
+    protected String determineTargetUrl(Authentication authentication) {
         String url = "";
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();

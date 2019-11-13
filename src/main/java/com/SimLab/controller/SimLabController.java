@@ -73,6 +73,10 @@ public class SimLabController {
         modelAndView.addObject("Email", user.getEmail());
         modelAndView.addObject("Name", user.getName());
         modelAndView.setViewName("/student/index");
+        List<User> instructors = userService.findAllInstructors();
+        for(User u: instructors){
+            System.out.println(u.getName());
+        }
         return modelAndView;
     }
 
