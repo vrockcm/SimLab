@@ -1,13 +1,8 @@
 package com.SimLab.controller;
 
 
-import com.SimLab.model.dao.Course;
-import com.SimLab.model.dao.CourseLabAssociation;
-import com.SimLab.model.dao.Lab;
-import com.SimLab.model.dao.Repository.CourseLabAssociationRepository;
-import com.SimLab.model.dao.Repository.CourseRepository;
-import com.SimLab.model.dao.Repository.UserCourseAssociationRepository;
-import com.SimLab.model.dao.User;
+import com.SimLab.model.dao.*;
+import com.SimLab.model.dao.Repository.*;
 import com.SimLab.service.UserService;
 import com.google.gson.Gson;
 import org.springframework.security.core.Authentication;
@@ -20,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -37,6 +33,20 @@ public class SimLabController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private LabRepository labRepository;
+    @Autowired
+    private MaterialRepository materialRepository;
+    @Autowired
+    private InstructionRepository instructionRepository;
+
+    @Autowired
+    private LabMaterialAssociationRepository labMaterialAssociationRepository;
+
+    @Autowired
+    private LabInstructionAssociationRepository labInstructionAssociationRepository;
+
 
 
     @RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
@@ -110,6 +120,22 @@ public class SimLabController {
             if(user.getId() != instructorsObjects.get(i).getId())
                 instructors.add(instructorsObjects.get(i).getName()+" "+instructorsObjects.get(i).getLastName());
         }
+
+//        //Test lab creation
+//        String labName = "Distillation";
+//        String labDesc = "Distill my dick";
+//        List<String> materialNames = Arrays.asList(new String[]{"h2o"});
+//        List<String> instructionNames = Arrays.asList(new String[]{"swirl","mix","measure"});
+//        List<String> instMat1Names = Arrays.asList(new String[]{"h2o", "h2o","h2o"});
+//        List<String> instMat2Names = Arrays.asList(new String[]{"", "h2o", ""});
+//        List<String> instMat3Names = Arrays.asList(new String[]{"", "", ""});
+//        List<String> instParam1Names = Arrays.asList(new String[]{"30", "20", "10"});
+//        List<String> instParam2Names = Arrays.asList(new String[]{"20", "", "5"});
+//        List<String> instParam3Names = Arrays.asList(new String[]{"10", "", ""});
+
+        createNewLab("1", labName, labDesc, materialNames, instructionNames, instMat1Names,
+                instMat2Names, instMat3Names, instParam1Names, instParam2Names, instParam3Names);
+
         modelAndView.addObject("students", students);
         modelAndView.addObject("instructors", instructors);
         modelAndView.setViewName("/instructor/index");
@@ -159,5 +185,76 @@ public class SimLabController {
         return json;
     }
 
+    @RequestMapping(value = "/MakeLab", method = RequestMethod.POST)
+    public ModelAndView createNewLab(@RequestParam String courseId,
+                                        @RequestParam String labName,
+                                        @RequestParam String labDescription,
+                                        @RequestParam List<String> materialNames,
+                                        @RequestParam List<String> instructionNames,
+                                        @RequestParam List<String> instMat1Names,
+                                        @RequestParam List<String> instMat2Names,
+                                        @RequestParam List<String> instMat3Names,
+                                        @RequestParam List<String> instParam1Names,
+                                        @RequestParam List<String> instParam2Names,
+                                        @RequestParam List<String> instParam3Names) {
 
+        ModelAndView modelAndView = new ModelAndView();
+        Lab lab = new Lab();
+        lab.setLabName(labName);
+        lab.setLabDesc(labDescription);
+        labRepository.save(lab);
+        addMaterialsToLab(lab, materialNames);
+        addInstructionsToLab(lab, instructionNames, instMat1Names, instMat2Names, instMat3Names,
+                instParam1Names, instParam2Names, instParam3Names);
+        CourseLabAssociation courseLab = new CourseLabAssociation();
+        courseLab.setCourseId(Integer.parseInt(courseId));
+        courseLab.setLabId(lab.getLabId());
+        courseLabAssociationRepository.save(courseLab);
+        modelAndView.setViewName("/instructor/index");
+        return modelAndView;
+    }
+
+    private void addMaterialsToLab(Lab lab, List<String> materials){
+        for(String mat: materials){
+            List<Integer> id = materialRepository.findIdByName(mat);
+            LabMaterialAssociation labMat = new LabMaterialAssociation();
+            labMat.setLabId(lab.getLabId());
+            labMat.setMaterialId(id.get(0));
+            labMaterialAssociationRepository.save(labMat);
+        }
+    }
+
+    private void addInstructionsToLab(Lab lab, List<String> instNames, List<String> instMat1Names,
+                                      List<String> instMat2Names, List<String> instMat3Names,
+                                      List<String> instParam1Names, List<String> instParam2Names, List<String> instParam3Names){
+            for(int i=0; i<instNames.size();i++){
+                Instruction inst = new Instruction();
+                inst.setName(instNames.get(i));         //name of instruction
+                // set all materials as null first then check if there is a material by that name exists and if does then set to matX
+                inst.setMaterial1Id(null);
+                inst.setMaterial2Id(null);
+                inst.setMaterial3Id(null);
+                String matName = instMat1Names.get(i);
+                if(!matName.equals("")) inst.setMaterial1Id(materialRepository.findIdByName(instMat1Names.get(i)).get(0));
+                matName = instMat2Names.get(i);
+                if(!matName.equals("")) inst.setMaterial2Id(materialRepository.findIdByName(instMat2Names.get(i)).get(0));
+                matName = instMat3Names.get(i);
+                if(!matName.equals("")) inst.setMaterial3Id(materialRepository.findIdByName(instMat3Names.get(i)).get(0));
+                //set all parameters to null then check if a param was specified
+                inst.setParameter1(null);
+                inst.setParameter2(null);
+                inst.setParameter3(null);
+                String param = instParam1Names.get(i);
+                if(!param.equals("")) inst.setParameter1(param);
+                param = instParam2Names.get(i);
+                if(!param.equals("")) inst.setParameter2(param);
+                param = instParam3Names.get(i);
+                if(!param.equals("")) inst.setParameter3(param);
+                instructionRepository.save(inst);
+                LabInstructionAssociation labInst = new LabInstructionAssociation();
+                labInst.setLabId(lab.getLabId());
+                labInst.setInstructionId(inst.getInstId());
+                labInstructionAssociationRepository.save(labInst);
+            }
+    }
 }
