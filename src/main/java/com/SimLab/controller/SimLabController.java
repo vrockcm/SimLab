@@ -80,8 +80,8 @@ public class SimLabController {
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        modelAndView.addObject("Course", new Course());
         modelAndView.addObject("Email", user.getEmail());
+        modelAndView.addObject("UserId", user.getId());
         modelAndView.addObject("Name", user.getName());
         modelAndView.setViewName("/student/index");
         return modelAndView;
