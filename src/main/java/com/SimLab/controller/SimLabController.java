@@ -1,9 +1,14 @@
 package com.SimLab.controller;
 
 import com.SimLab.model.dao.Course;
+import com.SimLab.model.dao.CourseLabAssociation;
+import com.SimLab.model.dao.Lab;
+import com.SimLab.model.dao.Repository.CourseLabAssociationRepository;
+import com.SimLab.model.dao.Repository.CourseRepository;
 import com.SimLab.model.dao.Repository.UserCourseAssociationRepository;
 import com.SimLab.model.dao.User;
 import com.SimLab.service.UserService;
+import com.google.gson.Gson;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -19,6 +24,12 @@ import java.util.List;
 
 @Controller
 public class SimLabController {
+
+    @Autowired
+    private CourseLabAssociationRepository courseLabAssociationRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
 
     @Autowired
     private UserCourseAssociationRepository userCourseAssociationRepository;
@@ -132,6 +143,15 @@ public class SimLabController {
             userCoursesName.add(userCourses.get(x).getCourseName());
         }
         return userCoursesName;
+    }
+
+    @ResponseBody
+    @GetMapping("/loadLabs")
+    public String loadLabs(@RequestParam String courseName){
+        int courseId = courseRepository.getCourseId(courseName);
+        List<Lab> associatedLabs = courseLabAssociationRepository.loadAssociatedLabs(courseId);
+        String json = new Gson().toJson(associatedLabs);
+        return json;
     }
 
 
