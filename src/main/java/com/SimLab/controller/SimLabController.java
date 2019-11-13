@@ -1,12 +1,13 @@
 package com.SimLab.controller;
 
+
 import com.SimLab.model.dao.Course;
 import com.SimLab.model.dao.CourseLabAssociation;
 import com.SimLab.model.dao.Lab;
 import com.SimLab.model.dao.Repository.CourseLabAssociationRepository;
 import com.SimLab.model.dao.Repository.CourseRepository;
+import com.SimLab.model.dao.Repository.UserCourseAssociationRepository;
 import com.SimLab.model.dao.User;
-import com.SimLab.service.CourseService;
 import com.SimLab.service.UserService;
 import com.google.gson.Gson;
 import org.springframework.security.core.Authentication;
@@ -32,10 +33,11 @@ public class SimLabController {
     private CourseRepository courseRepository;
 
     @Autowired
-    private UserService userService;
+    private UserCourseAssociationRepository userCourseAssociationRepository;
 
     @Autowired
-    private CourseService courseService;
+    private UserService userService;
+
 
     @RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
     public ModelAndView login(){
@@ -96,35 +98,37 @@ public class SimLabController {
         modelAndView.addObject("Email", user.getEmail());
         modelAndView.addObject("UserId", user.getId());
         modelAndView.addObject("Name", user.getName());
-        modelAndView.setViewName("/instructor/index");
-        List<User> instructors = userService.findAllStudents();
-        System.out.println("Hql test: ");
-        for(User u: instructors){
-            System.out.println("Email: " + u.getEmail());
+
+        List<User> studentsObjects = userService.findAllStudents();
+        List<String> students = new ArrayList<>();
+        for(int i=0;i<studentsObjects.size();i++){
+            students.add(studentsObjects.get(i).getName()+" "+studentsObjects.get(i).getLastName());
         }
+        List<User> instructorsObjects = userService.findAllInstructors();
+        List<String> instructors = new ArrayList<>();
+        for(int i=0;i<instructorsObjects.size();i++){
+            if(user.getId() != instructorsObjects.get(i).getId())
+                instructors.add(instructorsObjects.get(i).getName()+" "+instructorsObjects.get(i).getLastName());
+        }
+        modelAndView.addObject("students", students);
+        modelAndView.addObject("instructors", instructors);
+        modelAndView.setViewName("/instructor/index");
         return modelAndView;
     }
 
 
 
     @RequestMapping(value = "/MakeCourse", method = RequestMethod.POST)
-    public ModelAndView createNewCourse(@Valid User user, BindingResult bindingResult) {
+    public ModelAndView createNewCourse(@RequestParam String courseName,
+                                        @RequestParam String courseDesc,
+                                        @RequestParam List<String> checkedStudents,
+                                        @RequestParam List<String> checkedInstructors) {
         ModelAndView modelAndView = new ModelAndView();
-        User userExists = userService.findUserByEmail(user.getEmail());
-        if (userExists != null) {
-            bindingResult
-                    .rejectValue("email", "error.user",
-                            "There is already a user registered with the email provided");
-        }
-        if (bindingResult.hasErrors()) {
-            modelAndView.setViewName("registration");
-        } else {
-            userService.saveUser(user);
-            modelAndView.addObject("successMessage", "User has been registered successfully");
-            modelAndView.addObject("user", new User());
-            modelAndView.setViewName("registration");
-
-        }
+        Course course = new Course();
+        course.setCourseName(courseName);
+        course.setCourseDesc(courseDesc);
+        courseRepository.save(course);
+        modelAndView.setViewName("/instructor/index");
         return modelAndView;
     }
 
@@ -138,7 +142,7 @@ public class SimLabController {
     @ResponseBody
     @GetMapping("/loadCourses")
     public List<String> loadCourse(@RequestParam String userid ){
-        List<Course> userCourses = courseRepository.loadUserCourses(Integer.parseInt(userid));
+        List<Course> userCourses = userCourseAssociationRepository.loadUserCourses(Integer.parseInt(userid));
         List<String> userCoursesName = new ArrayList<String>();
         for (int x = 0; x< userCourses.size(); x++){
             userCoursesName.add(userCourses.get(x).getCourseName());

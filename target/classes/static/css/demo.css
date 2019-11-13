@@ -297,8 +297,10 @@ a:hover {
 }
 
 .product {
+    width: 100%;
 	display: inline-block;
 	margin: 10px;
+	width: 100%;
     max-width: 380px;
 	border-radius: 5px;
 }
