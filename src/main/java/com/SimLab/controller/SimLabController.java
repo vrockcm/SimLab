@@ -146,9 +146,6 @@ public class SimLabController {
         int courseId = courseRepository.getCourseId(courseName);
         List<Lab> associatedLabs = courseLabAssociationRepository.loadAssociatedLabs(courseId);
         System.out.println(associatedLabs);
-
-
-
         return associatedLabs;
     }
 

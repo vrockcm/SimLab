@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface CourseRepository extends CrudRepository <Course, Long> {
-    @Query("SELECT x.courseName FROM Course x WHERE x.courseName = :courseName")
+    @Query("SELECT x.courseId FROM Course x WHERE x.courseName = :courseName")
     public int getCourseId(@Param("courseName") String courseName);
 }

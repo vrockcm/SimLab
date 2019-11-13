@@ -153,53 +153,10 @@
 						<label for="exampleFormControlTextarea1">Select Students</label>
 						<div class="Select">
 							<ul class="list-group list-group-flush">
-								<li class="list-group-item">
-									<!-- Default checked -->
+								<li class="list-group-item" th:each="student : ${students}">
 									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" id="check1" checked>
-										<label class="custom-control-label" for="check1">Check me</label>
-									</div>
-								</li>
-								<li class="list-group-item">
-									<!-- Default checked -->
-									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" id="check2">
-										<label class="custom-control-label" for="check2">Check me</label>
-									</div>
-								</li>
-								<li class="list-group-item">
-									<!-- Default checked -->
-									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" id="check3" checked>
-										<label class="custom-control-label" for="check3">Check me</label>
-									</div>
-								</li>
-								<li class="list-group-item">
-									<!-- Default checked -->
-									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" id="check4" checked>
-										<label class="custom-control-label" for="check4">Check me</label>
-									</div>
-								</li>
-								<li class="list-group-item">
-									<!-- Default checked -->
-									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" id="check5">
-										<label class="custom-control-label" for="check5">Check me</label>
-									</div>
-								</li>
-								<li class="list-group-item">
-									<!-- Default checked -->
-									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" id="check6">
-										<label class="custom-control-label" for="check5">Check me</label>
-									</div>
-								</li>
-								<li class="list-group-item">
-									<!-- Default checked -->
-									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" id="check7">
-										<label class="custom-control-label" for="check5">Check me</label>
+										<input type="checkbox" class="custom-control-input" name="checkedStudents" th:value="${student}">
+										<label class="custom-control-label" th:text="${student}"></label>
 									</div>
 								</li>
 							</ul>
@@ -209,11 +166,10 @@
 						<label for="exampleFormControlTextarea1">Select Instructors</label>
 						<div class="Select">
 							<ul class="list-group list-group-flush">
-								<li class="list-group-item">
-									<!-- Default checked -->
+								<li class="list-group-item" th:each="instructor : ${instructors}">
 									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" id="check8" checked>
-										<label class="custom-control-label" for="check8">Check me</label>
+										<input type="checkbox" class="custom-control-input" name="checkedInstructors" th:value="${instructor}">
+										<label class="custom-control-label" th:text="${instructor}"></label>
 									</div>
 								</li>
 							</ul>
