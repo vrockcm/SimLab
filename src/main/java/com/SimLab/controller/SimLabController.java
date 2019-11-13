@@ -1,9 +1,14 @@
 package com.SimLab.controller;
 
 import com.SimLab.model.dao.Course;
-import com.SimLab.model.dao.Repository.UserCourseAssociationRepository;
+import com.SimLab.model.dao.CourseLabAssociation;
+import com.SimLab.model.dao.Lab;
+import com.SimLab.model.dao.Repository.CourseLabAssociationRepository;
+import com.SimLab.model.dao.Repository.CourseRepository;
 import com.SimLab.model.dao.User;
+import com.SimLab.service.CourseService;
 import com.SimLab.service.UserService;
+import com.google.gson.Gson;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -13,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,10 +26,16 @@ import java.util.List;
 public class SimLabController {
 
     @Autowired
-    private UserCourseAssociationRepository userCourseAssociationRepository;
+    private CourseLabAssociationRepository courseLabAssociationRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CourseService courseService;
 
     @RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
     public ModelAndView login(){
@@ -68,8 +80,8 @@ public class SimLabController {
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        modelAndView.addObject("Course", new Course());
         modelAndView.addObject("Email", user.getEmail());
+        modelAndView.addObject("UserId", user.getId());
         modelAndView.addObject("Name", user.getName());
         modelAndView.setViewName("/student/index");
         return modelAndView;
@@ -82,8 +94,14 @@ public class SimLabController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
         modelAndView.addObject("Email", user.getEmail());
+        modelAndView.addObject("UserId", user.getId());
         modelAndView.addObject("Name", user.getName());
         modelAndView.setViewName("/instructor/index");
+        List<User> instructors = userService.findAllStudents();
+        System.out.println("Hql test: ");
+        for(User u: instructors){
+            System.out.println("Email: " + u.getEmail());
+        }
         return modelAndView;
     }
 
@@ -112,17 +130,6 @@ public class SimLabController {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
     @GetMapping("/access-denied")
     public String accessDenied() {
         return "/error/access-denied";
@@ -130,9 +137,22 @@ public class SimLabController {
 
     @ResponseBody
     @GetMapping("/loadCourses")
-    public List<String> loadCourse(@RequestParam String userEmail ){
-        List<String> userCourses = userCourseAssociationRepository.loadUserCourses(userEmail);
-        return userCourses;
+    public List<String> loadCourse(@RequestParam String userid ){
+        List<Course> userCourses = courseRepository.loadUserCourses(Integer.parseInt(userid));
+        List<String> userCoursesName = new ArrayList<String>();
+        for (int x = 0; x< userCourses.size(); x++){
+            userCoursesName.add(userCourses.get(x).getCourseName());
+        }
+        return userCoursesName;
+    }
+
+    @ResponseBody
+    @GetMapping("/loadLabs")
+    public String loadLabs(@RequestParam String courseName){
+        int courseId = courseRepository.getCourseId(courseName);
+        List<Lab> associatedLabs = courseLabAssociationRepository.loadAssociatedLabs(courseId);
+        String json = new Gson().toJson(associatedLabs);
+        return json;
     }
 
 
