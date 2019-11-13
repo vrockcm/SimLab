@@ -9,15 +9,15 @@ public class Material {
     @Column(name = "Id")
     private int materialId;
 
-    @Column(name = "name")
+    @Column(name = "Name")
     private String matetrialName;
-    @Column(name = "description")
+    @Column(name = "Description")
     private String materialDesc;
-    @Column(name = "attribute1")
+    @Column(name = "Attribute1")
     private String attribute1;
-    @Column(name = "attribute2")
+    @Column(name = "Attribute2")
     private String attribute2;
-    @Column(name = "attribute3")
+    @Column(name = "Attribute3")
     private String attribute3;
 
 }

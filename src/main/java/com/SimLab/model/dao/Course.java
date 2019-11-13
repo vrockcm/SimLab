@@ -1,6 +1,7 @@
 package com.SimLab.model.dao;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class Course {
@@ -30,11 +31,11 @@ public class Course {
 
     @Id
     @GeneratedValue (strategy = GenerationType.AUTO)
-    @Column(name = "Id")
+    @Column(name = "course_id")
     private int courseId;
+
     @Column(name = "name")
     private String courseName;
-    @Column(name = "description")
+    @Column(name = "Description")
     private String courseDesc;
-
 }

@@ -5,8 +5,8 @@ import com.SimLab.model.dao.CourseLabAssociation;
 import com.SimLab.model.dao.Lab;
 import com.SimLab.model.dao.Repository.CourseLabAssociationRepository;
 import com.SimLab.model.dao.Repository.CourseRepository;
-import com.SimLab.model.dao.Repository.UserCourseAssociationRepository;
 import com.SimLab.model.dao.User;
+import com.SimLab.service.CourseService;
 import com.SimLab.service.UserService;
 import com.google.gson.Gson;
 import org.springframework.security.core.Authentication;
@@ -32,10 +32,10 @@ public class SimLabController {
     private CourseRepository courseRepository;
 
     @Autowired
-    private UserCourseAssociationRepository userCourseAssociationRepository;
+    private UserService userService;
 
     @Autowired
-    private UserService userService;
+    private CourseService courseService;
 
     @RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
     public ModelAndView login(){
@@ -97,6 +97,11 @@ public class SimLabController {
         modelAndView.addObject("UserId", user.getId());
         modelAndView.addObject("Name", user.getName());
         modelAndView.setViewName("/instructor/index");
+        List<User> instructors = userService.findAllStudents();
+        System.out.println("Hql test: ");
+        for(User u: instructors){
+            System.out.println("Email: " + u.getEmail());
+        }
         return modelAndView;
     }
 
@@ -133,7 +138,7 @@ public class SimLabController {
     @ResponseBody
     @GetMapping("/loadCourses")
     public List<String> loadCourse(@RequestParam String userid ){
-        List<Course> userCourses = userCourseAssociationRepository.loadUserCourses(Integer.parseInt(userid));
+        List<Course> userCourses = courseRepository.loadUserCourses(Integer.parseInt(userid));
         List<String> userCoursesName = new ArrayList<String>();
         for (int x = 0; x< userCourses.size(); x++){
             userCoursesName.add(userCourses.get(x).getCourseName());
