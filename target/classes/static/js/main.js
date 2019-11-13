@@ -555,7 +555,6 @@ function initialize() {
                 },
                 dataType:'json',
                 success : function(data) {
-                        console.log(data);
                         ev.preventDefault();
                         closeMenu();
                         gridWrapper1.innerHTML = '';
