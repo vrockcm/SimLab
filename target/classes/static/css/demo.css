@@ -297,6 +297,7 @@ a:hover {
 }
 
 .product {
+    width: 100%;
 	display: inline-block;
 	margin: 10px;
     max-width: 380px;

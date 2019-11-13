@@ -143,11 +143,11 @@
 				<form class="add-course-form" th:action="@{/MakeCourse}" method="POST">
 					<div class="form-group">
 						<label for="exampleFormControlInput1">Course Name</label>
-						<input type="text" class="form-control" id="CourseName" placeholder="Eg: CHE131">
+						<input type="text" class="form-control" name="courseName" id="CourseName" placeholder="Eg: CHE131">
 					</div>
 					<div class="form-group">
 						<label for="exampleFormControlTextarea1">Course Description</label>
-						<textarea class="form-control" id="CourseDesc" rows="3"></textarea>
+						<textarea class="form-control" id="CourseDesc" rows="3" name="courseDesc"></textarea>
 					</div>
 					<div class="form-group">
 						<label for="exampleFormControlTextarea1">Select Students</label>
