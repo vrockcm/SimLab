@@ -10,7 +10,7 @@ public class Material {
     private int materialId;
 
     @Column(name = "Name")
-    private String matetrialName;
+    private String materialName;
     @Column(name = "Description")
     private String materialDesc;
     @Column(name = "Attribute1")
