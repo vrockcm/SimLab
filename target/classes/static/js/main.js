@@ -513,45 +513,6 @@ function loadCourses(){
     });
 }
 
-
-function loadLabs(ev,itemName){
-    $.ajax({
-        url : '/loadLabs',
-        type : 'GET',
-        async: false,
-        data : {
-            'courseName' : itemName
-        },
-        dataType:'json',
-        success : function(data) {
-                ev.preventDefault();
-                closeMenu();
-                gridWrapper1.innerHTML = '';
-                gridWrapper2.innerHTML = '';
-                classie.add(gridWrapper1, 'content--loading');
-                classie.add(gridWrapper2, 'content--loading');
-                setTimeout(function() {
-                    classie.remove(gridWrapper1, 'content--loading');
-                    var content = '<ul class="products">';
-
-                    var i = 0;
-                    for(i = 0;i<data.length;i++){
-//                          Not working area I think.
-//                        content+= dummyData["cardbody1"] +HEADER + dummyData["cardbody2"] + DESC + dummyData["cardbody3"];
-                    }
-                    content+="</ul>"
-                    gridWrapper1.innerHTML = content;
-                    classie.remove(gridWrapper2, 'content--loading');
-                    gridWrapper2.innerHTML = content;
-                }, 700);
-        },
-        error : function(request,error)
-        {
-            alert("Request: "+JSON.stringify(request));
-        }
-    });
-}
-
 function initialize() {
 		var menuEl = document.getElementById('ml-menu'),
 			mlmenu = new MLMenu(menuEl, {
@@ -560,7 +521,7 @@ function initialize() {
 				breadcrumbsCtrl : false,
 				backCtrl : false, // show back button
 				// itemsDelayInterval : 60, // delay between each menu item sliding animation
-				onItemClick: loadLabs() // callback: item that doesn´t have a submenu gets clicked - onItemClick([event], [inner HTML of the clicked item])
+				onItemClick: loadLabs // callback: item that doesn´t have a submenu gets clicked - onItemClick([event], [inner HTML of the clicked item])
 			});
 
 		// mobile menu toggle
@@ -584,6 +545,44 @@ function initialize() {
 		var gridWrapper1 = document.querySelector('#saved');
 		var gridWrapper2 = document.querySelector('#published');
 
+        function loadLabs(ev,itemName){
+            $.ajax({
+                url : '/loadLabs',
+                type : 'GET',
+                async: false,
+                data : {
+                    'courseName' : itemName
+                },
+                dataType:'json',
+                success : function(data) {
+                        ev.preventDefault();
+                        closeMenu();
+                        gridWrapper1.innerHTML = '';
+                        gridWrapper2.innerHTML = '';
+                        classie.add(gridWrapper1, 'content--loading');
+                        classie.add(gridWrapper2, 'content--loading');
+                        setTimeout(function() {
+                            alert(JSON.stringify(data[0]));
+                            classie.remove(gridWrapper1, 'content--loading');
+                            var content = '<ul class="products">';
+
+                            var i = 0;
+                            for(i = 0;i<data.length;i++){
+                               var lab = data[i];
+                               content+= dummyData["cardbody1"]+lab.labName + dummyData["cardbody2"] + lab.labDesc + dummyData["cardbody3"];
+                            }
+                            content+="</ul>"
+                            gridWrapper1.innerHTML = content;
+                            classie.remove(gridWrapper2, 'content--loading');
+                            gridWrapper2.innerHTML = content;
+                        }, 700);
+                },
+                error : function(request,error)
+                {
+                    alert("Request: "+JSON.stringify(request));
+                }
+            });
+        }
 //		function loadDummyData(ev, itemName) {
 //			ev.preventDefault();
 //			closeMenu();
