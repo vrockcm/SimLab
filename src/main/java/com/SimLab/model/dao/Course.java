@@ -38,5 +38,4 @@ public class Course {
     private String courseName;
     @Column(name = "Description")
     private String courseDesc;
-
 }

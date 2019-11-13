@@ -12,7 +12,11 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email);
 
-    @Query(value = "select u from User u join u.roles r where r.role=:role")
+//    @Query(value = "select u from User u inner join u.roles r where r.role=:role")
+    @Query(value = "SELECT user.user_id, user.active, user.email, user.last_name, user.first_name, user.password " +
+            "FROM user INNER JOIN user_role INNER JOIN role WHERE user.user_id=user_role.user_id AND user_role.role_id = role.role_id " +
+            "AND role.role = :role", nativeQuery=true)
     List<User> findAllUsingRole(@Param("role") String userRole);
+
 
 }

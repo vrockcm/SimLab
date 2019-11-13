@@ -35,7 +35,8 @@ public class UserService {
     }
 
 
-    public List<User> findAllInstructors(){ return userRepository.findAllUsingRole("STUDENT");}
+    public List<User> findAllInstructors(){ return userRepository.findAllUsingRole("INSTRUCTOR");}
+    public List<User> findAllStudents(){ return userRepository.findAllUsingRole("STUDENT");}
 
     public void saveUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
