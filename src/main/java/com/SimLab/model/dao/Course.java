@@ -3,6 +3,7 @@ package com.SimLab.model.dao;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @Entity
@@ -10,11 +11,11 @@ import javax.persistence.*;
 public class Course {
     @Id
     @GeneratedValue (strategy = GenerationType.AUTO)
-    @Column(name = "Id")
+    @Column(name = "course_id")
     private int courseId;
+
     @Column(name = "name")
     private String courseName;
-    @Column(name = "description")
+    @Column(name = "Description")
     private String courseDesc;
-
 }

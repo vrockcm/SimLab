@@ -8,8 +8,8 @@ public class Lab {
     @GeneratedValue (strategy = GenerationType.AUTO)
     @Column(name = "Id")
     private int labId;
-    @Column(name = "name")
+    @Column(name = "Name")
     private String labName;
-    @Column(name = "description")
+    @Column(name = "Description")
     private String labDesc;
 }
