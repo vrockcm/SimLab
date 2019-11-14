@@ -110,17 +110,8 @@ public class SimLabController {
         modelAndView.addObject("Name", user.getName());
 
         List<User> studentsObjects = userService.findAllStudents();
-        List<String> students = new ArrayList<>();
-        for(int i=0;i<studentsObjects.size();i++){
-            students.add(studentsObjects.get(i).getName()+" "+studentsObjects.get(i).getLastName());
-        }
         List<User> instructorsObjects = userService.findAllInstructors();
-        List<String> instructors = new ArrayList<>();
-        for(int i=0;i<instructorsObjects.size();i++){
-            if(user.getId() != instructorsObjects.get(i).getId())
-                instructors.add(instructorsObjects.get(i).getName()+" "+instructorsObjects.get(i).getLastName());
-        }
-
+        instructorsObjects.remove(user);
         modelAndView.addObject("students", studentsObjects);
         modelAndView.addObject("instructors", instructorsObjects);
         modelAndView.setViewName("/instructor/index");

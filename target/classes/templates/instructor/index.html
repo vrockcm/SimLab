@@ -24,9 +24,7 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 	<!-- MDB core JavaScript -->
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.10/js/mdb.min.js"></script>
-
-
-
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
 	<link rel="shortcut icon" href="favicon.ico">
 	<!-- demo styles -->
 	<link rel="stylesheet" type="text/css" th:href="@{/css/demo.css}"/>
@@ -34,7 +32,7 @@
 	<link rel="stylesheet" type="text/css" th:href="@{/css/component.css}"/>
 	<script th:src="@{/js/modernizr-custom.js}"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+	<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 </head>
 
 <body>
@@ -96,61 +94,64 @@
 			<div class="form-wrap">
 				<form class="add-lab-form" th:action="@{/MakeLab}" method="POST">
 				  <div class="form-group">
-					<label for="exampleFormControlInput1">Lab Name</label>
-					<input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Acid-Base Lab">
+					<label for="LabName">Lab Name</label>
+					<input type="text" class="form-control" name="labName" id="LabName" placeholder="Acid-Base Lab">
 				  </div>
 				   <div class="form-group">
-					<label for="exampleFormControlTextarea1">Lab Description</label>
-					<textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+					<label for="LabDesc">Lab Description</label>
+					<textarea class="form-control" id="LabDesc" name="labDescription" rows="3"></textarea>
 				  </div>
 				  <div class="form-group">
 					<label for="Equipment">Select Equipment</label> </br>
-					<select class="selectpicker" data-live-search="true"multiple title="Choose Equipment">
-					  <optgroup label="Picnic">
-						<option>Mustard</option>
-						<option>Ketchup</option>
-						<option>Relish</option>
+					<select class="selectpicker" id="Equipment" data-live-search="true"multiple title="Choose Equipment">
+					  <optgroup label="Glassware">
+						<option value="Beaker" name="materialNames">Beaker</option>
+						<option value="Flask" name="materialNames">Flask</option>
 					  </optgroup>
-					  <optgroup label="Camping">
-						<option>Tent</option>
-						<option>Flashlight</option>
-						<option>Toilet Paper</option>
-					  </optgroup>
+					  <optgroup label="Solutions">
+						<option value="HCl" name="materialNames">HCl</option>
+						<option value="NaCl" name="materialNames">NaCl</option>
+						<option value="Na2CO3" name="materialNames">Na2CO3</option>
+						</optgroup>
+						<optgroup label="Tools">
+							<option value="Scale" name="materialNames">Scale</option>
+						</optgroup>
 					</select>
 				  </div>
 
 				  <div class="form-group">
-					<label style="margin-top: 10px;" for="exampleFormControlTextarea1">Add Steps</label>
+					<label style="margin-top: 10px;">Add Steps</label>
 					<div class="dropdown">
 					  <button style="float: right;" class="btn-sm btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Select Steps
 					  </button>
 					  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-						<button class="dropdown-item" type="button">Swirl</button>
-						<button class="dropdown-item" type="button">Measure</button>
-						<button class="dropdown-item" type="button">Move into workspace</button>
-						<button class="dropdown-item" type="button">Titrate</button>
-						<button class="dropdown-item" type="button">Heat</button>
-						<button class="dropdown-item" type="button">Cool</button>
-						<button class="dropdown-item" type="button">Calculate</button>
-						<button class="dropdown-item" type="button">Mix</button>
+						<button class="dropdown-item" value="swirl" type="button">Swirl</button>
+						<button class="dropdown-item" value="Measure" type="button">Measure</button>
+						<button class="dropdown-item" value="Move" type="button">Move into workspace</button>
+						<button class="dropdown-item" value="Titrate" type="button">Titrate</button>
+						<button class="dropdown-item" value="Heat" type="button">Heat</button>
+						<button class="dropdown-item" value="Cool" type="button">Cool</button>
+						<button class="dropdown-item" value="Calculate" type="button">Calculate</button>
+						<button class="dropdown-item" value="Mix" type="button">Mix</button>
 					  </div>
 					</div>
-					<textarea readonly class="form-control" id="Steps" rows="7"></textarea>
+					<div class="instruction_cards" id="cardigans">
+					</div>
 				  </div>
 				  <button type="submit" class="btn btn-primary">Submit</button>
 				</form>
 				<form class="add-course-form" th:action="@{/MakeCourse}" method="POST">
 					<div class="form-group">
-						<label for="exampleFormControlInput1">Course Name</label>
+						<label for="CourseName">Course Name</label>
 						<input type="text" class="form-control" name="courseName" id="CourseName" placeholder="Eg: CHE131">
 					</div>
 					<div class="form-group">
-						<label for="exampleFormControlTextarea1">Course Description</label>
+						<label for="CourseDesc">Course Description</label>
 						<textarea class="form-control" id="CourseDesc" rows="3" name="courseDesc"></textarea>
 					</div>
 					<div class="form-group">
-						<label for="exampleFormControlTextarea1">Select Students</label>
+						<label>Select Students</label>
 						<div class="Select">
 							<ul class="list-group list-group-flush">
 								<li class="list-group-item" th:each="student : ${students}">
@@ -163,7 +164,7 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="exampleFormControlTextarea1">Select Instructors</label>
+						<label>Select Instructors</label>
 						<div class="Select">
 							<ul class="list-group list-group-flush">
 								<li class="list-group-item" th:each="instructor : ${instructors}">
