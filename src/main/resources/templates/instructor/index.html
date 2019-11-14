@@ -153,10 +153,10 @@
 						<label for="exampleFormControlTextarea1">Select Students</label>
 						<div class="Select">
 							<ul class="list-group list-group-flush">
-								<li class="list-group-item" th:each="student,iter : ${students}">
+								<li class="list-group-item" th:each="student : ${students}">
 									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" th:id="${iter.index}" name="checkedStudents" th:value="${student}">
-										<label class="custom-control-label" th:for="${iter.index}" th:text="${student}"></label>
+										<input type="checkbox" class="custom-control-input" th:id="${student.id}" name="checkedStudents" th:value="${student.id}">
+										<label class="custom-control-label" th:for="${student.id}" th:text="${student.name + ' '+ student.lastName}"></label>
 									</div>
 								</li>
 							</ul>
@@ -168,8 +168,8 @@
 							<ul class="list-group list-group-flush">
 								<li class="list-group-item" th:each="instructor : ${instructors}">
 									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" name="checkedInstructors" th:value="${instructor}">
-										<label class="custom-control-label" th:text="${instructor}"></label>
+										<input type="checkbox" class="custom-control-input" th:id="${instructor.id}" name="checkedInstructors" th:value="${instructor.id}">
+										<label class="custom-control-label" th:for="${instructor.id}" th:text="${instructor.name + ' '+ instructor.lastName}"></label>
 									</div>
 								</li>
 							</ul>

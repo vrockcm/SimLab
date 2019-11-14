@@ -120,24 +120,8 @@ public class SimLabController {
             if(user.getId() != instructorsObjects.get(i).getId())
                 instructors.add(instructorsObjects.get(i).getName()+" "+instructorsObjects.get(i).getLastName());
         }
-
-//        //Test lab creation
-//        String labName = "Distillation";
-//        String labDesc = "Distill my dick";
-//        List<String> materialNames = Arrays.asList(new String[]{"h2o"});
-//        List<String> instructionNames = Arrays.asList(new String[]{"swirl","mix","measure"});
-//        List<String> instMat1Names = Arrays.asList(new String[]{"h2o", "h2o","h2o"});
-//        List<String> instMat2Names = Arrays.asList(new String[]{"", "h2o", ""});
-//        List<String> instMat3Names = Arrays.asList(new String[]{"", "", ""});
-//        List<String> instParam1Names = Arrays.asList(new String[]{"30", "20", "10"});
-//        List<String> instParam2Names = Arrays.asList(new String[]{"20", "", "5"});
-//        List<String> instParam3Names = Arrays.asList(new String[]{"10", "", ""});
-
-        createNewLab("1", labName, labDesc, materialNames, instructionNames, instMat1Names,
-                instMat2Names, instMat3Names, instParam1Names, instParam2Names, instParam3Names);
-
-        modelAndView.addObject("students", students);
-        modelAndView.addObject("instructors", instructors);
+        modelAndView.addObject("students", studentsObjects);
+        modelAndView.addObject("instructors", instructorsObjects);
         modelAndView.setViewName("/instructor/index");
         return modelAndView;
     }
@@ -147,8 +131,8 @@ public class SimLabController {
     @RequestMapping(value = "/MakeCourse", method = RequestMethod.POST)
     public ModelAndView createNewCourse(@RequestParam String courseName,
                                         @RequestParam String courseDesc,
-                                        @RequestParam List<String> checkedStudents,
-                                        @RequestParam List<String> checkedInstructors) {
+                                        @RequestParam(required = false) List<Integer> checkedStudents,
+                                        @RequestParam(required = false) List<Integer> checkedInstructors) {
         ModelAndView modelAndView = new ModelAndView();
         Course course = new Course();
         course.setCourseName(courseName);
