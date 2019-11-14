@@ -121,17 +121,17 @@ public class SimLabController {
                 instructors.add(instructorsObjects.get(i).getName()+" "+instructorsObjects.get(i).getLastName());
         }
 
-//        //Test lab creation
-//        String labName = "Distillation";
-//        String labDesc = "Distill my dick";
-//        List<String> materialNames = Arrays.asList(new String[]{"h2o"});
-//        List<String> instructionNames = Arrays.asList(new String[]{"swirl","mix","measure"});
-//        List<String> instMat1Names = Arrays.asList(new String[]{"h2o", "h2o","h2o"});
-//        List<String> instMat2Names = Arrays.asList(new String[]{"", "h2o", ""});
-//        List<String> instMat3Names = Arrays.asList(new String[]{"", "", ""});
-//        List<String> instParam1Names = Arrays.asList(new String[]{"30", "20", "10"});
-//        List<String> instParam2Names = Arrays.asList(new String[]{"20", "", "5"});
-//        List<String> instParam3Names = Arrays.asList(new String[]{"10", "", ""});
+        //Test lab creation
+        String labName = "Distillation";
+        String labDesc = "Distill my dick";
+        List<String> materialNames = Arrays.asList(new String[]{"h2o"});
+        List<String> instructionNames = Arrays.asList(new String[]{"swirl","mix","measure"});
+        List<String> instMat1Names = Arrays.asList(new String[]{"h2o", "h2o","h2o"});
+        List<String> instMat2Names = Arrays.asList(new String[]{"", "h2o", ""});
+        List<String> instMat3Names = Arrays.asList(new String[]{"", "", ""});
+        List<String> instParam1Names = Arrays.asList(new String[]{"30", "20", "10"});
+        List<String> instParam2Names = Arrays.asList(new String[]{"20", "", "5"});
+        List<String> instParam3Names = Arrays.asList(new String[]{"10", "", ""});
 
         createNewLab("1", labName, labDesc, materialNames, instructionNames, instMat1Names,
                 instMat2Names, instMat3Names, instParam1Names, instParam2Names, instParam3Names);
@@ -154,6 +154,7 @@ public class SimLabController {
         course.setCourseName(courseName);
         course.setCourseDesc(courseDesc);
         courseRepository.save(course);
+
         modelAndView.setViewName("/instructor/index");
         return modelAndView;
     }
