@@ -388,10 +388,32 @@
 
 
 $(document).ready(function() {
-
+    var el = document.getElementById('cardigans');
+    var sortable = Sortable.create(el, {
+         animation: 150,
+         ghostClass: "ghost"
+    });
     //This gets the email from the front end and passes calls the loadCourses function with this email.
     loadCourses();
     initialize();
+
+    $(".dropdown-item").on('click', function(event){
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        cardMaker(this.value);
+    })
+
+    $(".instruction_cards").mousewheel(function(event, delta) {
+               this.scrollLeft -= (delta * 50);
+               this.scrollRight -= (delta * 50);
+               this.style.transition = '1s';
+               event.preventDefault();
+    });
+
+    function cardMaker(cardHeader) {
+        $('.instruction_cards').append('<div class="card instruction"><div class="card-body"><h4 class="card-title"><a>'+cardHeader+'</a></h4></div></div>');
+    }
+
 
 	function toggleL() {
 	    if($(".add-lab-form").is(":visible")){
@@ -488,94 +510,20 @@ $(document).ready(function() {
 						e.preventDefault();
 				});
 		});
-});
-
-
-//userid is the current id of the user logged in.
-function loadCourses(){
-    $.ajax({
-        url : '/loadCourses',
-        type : 'GET',
-        async: false,
-        data : {
-            'userid' : userid
-        },
-        dataType:'json',
-        success : function(data) {
-            for (var x = 0; x<data.length; x++){
-               $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">'+ data[x] + '</a></li>');
-            }
-        },
-        error : function(request,error)
-        {
-            alert("Request: "+JSON.stringify(request));
-        }
-    });
-}
-
-function initialize() {
-		var menuEl = document.getElementById('ml-menu'),
-			mlmenu = new MLMenu(menuEl, {
-				// breadcrumbsCtrl : true, // show breadcrumbs
-				// initialBreadcrumb : 'all', // initial breadcrumb text
-				breadcrumbsCtrl : false,
-				backCtrl : false, // show back button
-				// itemsDelayInterval : 60, // delay between each menu item sliding animation
-				onItemClick: loadLabs // callback: item that doesn´t have a submenu gets clicked - onItemClick([event], [inner HTML of the clicked item])
-			});
-
-		// mobile menu toggle
-		var openMenuCtrl = document.querySelector('.action--open'),
-			closeMenuCtrl = document.querySelector('.action--close');
-
-		openMenuCtrl.addEventListener('click', openMenu);
-		closeMenuCtrl.addEventListener('click', closeMenu);
-
-		function openMenu() {
-			classie.add(menuEl, 'menu--open');
-			closeMenuCtrl.focus();
-		}
-
-		function closeMenu() {
-			classie.remove(menuEl, 'menu--open');
-			openMenuCtrl.focus();
-		}
-
-		// simulate grid content loading
-		var gridWrapper1 = document.querySelector('#saved');
-		var gridWrapper2 = document.querySelector('#published');
-
-        function loadLabs(ev,itemName){
+		//userid is the current id of the user logged in.
+        function loadCourses(){
             $.ajax({
-                url : '/loadLabs',
+                url : '/loadCourses',
                 type : 'GET',
                 async: false,
                 data : {
-                    'courseName' : itemName
+                    'userid' : userid
                 },
                 dataType:'json',
                 success : function(data) {
-                        ev.preventDefault();
-                        closeMenu();
-                        gridWrapper1.innerHTML = '';
-                        gridWrapper2.innerHTML = '';
-                        classie.add(gridWrapper1, 'content--loading');
-                        classie.add(gridWrapper2, 'content--loading');
-                        setTimeout(function() {
-                            alert(JSON.stringify(data[0]));
-                            classie.remove(gridWrapper1, 'content--loading');
-                            var content = '<ul class="products">';
-
-                            var i = 0;
-                            for(i = 0;i<data.length;i++){
-                               var lab = data[i];
-                               content+= dummyData["cardbody1"]+lab.labName + dummyData["cardbody2"] + lab.labDesc + dummyData["cardbody3"];
-                            }
-                            content+="</ul>"
-                            gridWrapper1.innerHTML = content;
-                            classie.remove(gridWrapper2, 'content--loading');
-                            gridWrapper2.innerHTML = content;
-                        }, 700);
+                    for (var x = 0; x<data.length; x++){
+                       $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">'+ data[x] + '</a></li>');
+                    }
                 },
                 error : function(request,error)
                 {
@@ -583,27 +531,108 @@ function initialize() {
                 }
             });
         }
-//		function loadDummyData(ev, itemName) {
-//			ev.preventDefault();
-//			closeMenu();
-//			gridWrapper1.innerHTML = '';
-//			gridWrapper2.innerHTML = '';
-//			classie.add(gridWrapper1, 'content--loading');
-//			classie.add(gridWrapper2, 'content--loading');
-//			setTimeout(function() {
-//				classie.remove(gridWrapper1, 'content--loading');
-//				var content = '<ul class="products">';
-//
-//				var i = 0;
-//				for(i = 0;i<5;i++){
-//					content+= dummyData[itemName];
-//
-//				}
-//				content+="</ul>"
-//				gridWrapper1.innerHTML = content;
-//				classie.remove(gridWrapper2, 'content--loading');
-//				gridWrapper2.innerHTML = content;
-//			}, 700);
-//
-//		}
-}
+
+        function initialize() {
+        		var menuEl = document.getElementById('ml-menu'),
+        			mlmenu = new MLMenu(menuEl, {
+        				// breadcrumbsCtrl : true, // show breadcrumbs
+        				// initialBreadcrumb : 'all', // initial breadcrumb text
+        				breadcrumbsCtrl : false,
+        				backCtrl : false, // show back button
+        				// itemsDelayInterval : 60, // delay between each menu item sliding animation
+        				onItemClick: loadLabs // callback: item that doesn´t have a submenu gets clicked - onItemClick([event], [inner HTML of the clicked item])
+        			});
+
+        		// mobile menu toggle
+        		var openMenuCtrl = document.querySelector('.action--open'),
+        			closeMenuCtrl = document.querySelector('.action--close');
+
+        		openMenuCtrl.addEventListener('click', openMenu);
+        		closeMenuCtrl.addEventListener('click', closeMenu);
+
+        		function openMenu() {
+        			classie.add(menuEl, 'menu--open');
+        			closeMenuCtrl.focus();
+        		}
+
+        		function closeMenu() {
+        			classie.remove(menuEl, 'menu--open');
+        			openMenuCtrl.focus();
+        		}
+
+        		// simulate grid content loading
+        		var gridWrapper1 = document.querySelector('#saved');
+        		var gridWrapper2 = document.querySelector('#published');
+
+                function loadLabs(ev,itemName){
+                    if($(".add-course-form").is(":visible")){
+                        toggleC();
+                    }
+                    else if($(".add-lab-form").is(":visible")){
+                        toggleL();
+                    }
+
+                    $.ajax({
+                        url : '/loadLabs',
+                        type : 'GET',
+                        async: false,
+                        data : {
+                            'courseName' : itemName
+                        },
+                        dataType:'json',
+                        success : function(data) {
+                                ev.preventDefault();
+                                closeMenu();
+                                gridWrapper1.innerHTML = '';
+                                gridWrapper2.innerHTML = '';
+                                classie.add(gridWrapper1, 'content--loading');
+                                classie.add(gridWrapper2, 'content--loading');
+                                setTimeout(function() {
+                                    alert(JSON.stringify(data[0]));
+                                    classie.remove(gridWrapper1, 'content--loading');
+                                    var content = '<ul class="products">';
+
+                                    var i = 0;
+                                    for(i = 0;i<data.length;i++){
+                                       var lab = data[i];
+                                       content+= dummyData["cardbody1"]+lab.labName + dummyData["cardbody2"] + lab.labDesc + dummyData["cardbody3"];
+                                    }
+                                    content+="</ul>"
+                                    gridWrapper1.innerHTML = content;
+                                    classie.remove(gridWrapper2, 'content--loading');
+                                    gridWrapper2.innerHTML = content;
+                                }, 700);
+                        },
+                        error : function(request,error)
+                        {
+                            alert("Request: "+JSON.stringify(request));
+                        }
+                    });
+                }
+        //		function loadDummyData(ev, itemName) {
+        //			ev.preventDefault();
+        //			closeMenu();
+        //			gridWrapper1.innerHTML = '';
+        //			gridWrapper2.innerHTML = '';
+        //			classie.add(gridWrapper1, 'content--loading');
+        //			classie.add(gridWrapper2, 'content--loading');
+        //			setTimeout(function() {
+        //				classie.remove(gridWrapper1, 'content--loading');
+        //				var content = '<ul class="products">';
+        //
+        //				var i = 0;
+        //				for(i = 0;i<5;i++){
+        //					content+= dummyData[itemName];
+        //
+        //				}
+        //				content+="</ul>"
+        //				gridWrapper1.innerHTML = content;
+        //				classie.remove(gridWrapper2, 'content--loading');
+        //				gridWrapper2.innerHTML = content;
+        //			}, 700);
+        //
+        //		}
+        }
+});
+
+

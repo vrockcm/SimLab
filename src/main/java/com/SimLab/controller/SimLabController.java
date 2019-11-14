@@ -111,7 +111,7 @@ public class SimLabController {
 
         List<User> studentsObjects = userService.findAllStudents();
         List<User> instructorsObjects = userService.findAllInstructors();
-
+        instructorsObjects.remove(user);
         modelAndView.addObject("students", studentsObjects);
         modelAndView.addObject("instructors", instructorsObjects);
         modelAndView.setViewName("/instructor/index");
