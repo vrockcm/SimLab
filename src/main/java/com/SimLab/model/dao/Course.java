@@ -14,7 +14,7 @@ public class Course {
     @Column(name = "course_id")
     private int courseId;
 
-    @Column(name = "name")
+    @Column(name = "name",unique = true)
     private String courseName;
     @Column(name = "Description")
     private String courseDesc;

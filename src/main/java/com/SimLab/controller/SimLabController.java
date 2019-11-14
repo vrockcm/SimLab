@@ -120,6 +120,7 @@ public class SimLabController {
             if(user.getId() != instructorsObjects.get(i).getId())
                 instructors.add(instructorsObjects.get(i).getName()+" "+instructorsObjects.get(i).getLastName());
         }
+
         modelAndView.addObject("students", studentsObjects);
         modelAndView.addObject("instructors", instructorsObjects);
         modelAndView.setViewName("/instructor/index");
@@ -129,7 +130,7 @@ public class SimLabController {
 
 
     @RequestMapping(value = "/MakeCourse", method = RequestMethod.POST)
-    public ModelAndView createNewCourse(@RequestParam String courseName,
+    public String createNewCourse(@RequestParam String courseName,
                                         @RequestParam String courseDesc,
                                         @RequestParam(required = false) List<Integer> checkedStudents,
                                         @RequestParam(required = false) List<Integer> checkedInstructors,
@@ -139,8 +140,29 @@ public class SimLabController {
         course.setCourseName(courseName);
         course.setCourseDesc(courseDesc);
         courseRepository.save(course);
-        modelAndView.setViewName("/instructor/index");
-        return modelAndView;
+        List<UserCourseAssociation> userCourseAsses = new ArrayList<UserCourseAssociation>();
+        UserCourseAssociation userCourse = new UserCourseAssociation();
+        userCourse.setUserId(UserId);
+        userCourse.setCourseId(course.getCourseId());
+        userCourseAsses.add(userCourse);
+        if (checkedStudents != null) {
+            for (Integer u : checkedStudents) {
+                UserCourseAssociation uC = new UserCourseAssociation();
+                uC.setCourseId(course.getCourseId());
+                uC.setUserId(u);
+                userCourseAsses.add(uC);
+            }
+        }
+        if(checkedInstructors != null) {
+            for (Integer u : checkedInstructors) {
+                UserCourseAssociation uC = new UserCourseAssociation();
+                uC.setCourseId(course.getCourseId());
+                uC.setUserId(u);
+                userCourseAsses.add(uC);
+            }
+        }
+        userCourseAssociationRepository.saveAll(userCourseAsses);
+        return "redirect:/instructor/index";
     }
 
 
