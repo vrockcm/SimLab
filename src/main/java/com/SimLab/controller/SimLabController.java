@@ -132,7 +132,8 @@ public class SimLabController {
     public ModelAndView createNewCourse(@RequestParam String courseName,
                                         @RequestParam String courseDesc,
                                         @RequestParam(required = false) List<Integer> checkedStudents,
-                                        @RequestParam(required = false) List<Integer> checkedInstructors) {
+                                        @RequestParam(required = false) List<Integer> checkedInstructors,
+                                        @RequestParam Integer UserId) {
         ModelAndView modelAndView = new ModelAndView();
         Course course = new Course();
         course.setCourseName(courseName);
