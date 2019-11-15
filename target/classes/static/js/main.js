@@ -538,7 +538,7 @@ $(document).ready(function() {
                 type: 'GET',
                 async: false,
                 data : {
-                    'courseId' : 26
+                    'courseId' : courseId
                 },
                 dataType: 'json',
                 success : function(data){
