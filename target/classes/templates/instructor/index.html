@@ -92,7 +92,7 @@
 			</div>
 
 			<div class="form-wrap">
-				<h1 class="form-header"></h1>
+				<h1 id="form-header"></h1>
 				<form class="add-lab-form" th:action="@{/MakeLab}" method="POST">
 				  <div class="form-group">
 					<label for="LabName">Lab Name</label>
@@ -194,7 +194,6 @@
 			var email = [[${Email}]];
 			var userid = [[${UserId}]];
 			var csspath = [[@{/js/main.js}]];
-			alert(csspath);
 		/*]]>*/
 	</script>
 	<script>
