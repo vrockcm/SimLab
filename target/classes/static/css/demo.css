@@ -306,6 +306,17 @@ a:hover {
 	border-radius: 5px;
 }
 
+.form-header{
+    text-align: center;
+    color: #29abe2;
+}
+.step-number{
+  font-size: 18px;
+  margin-bottom: 1px;
+  text-align: center;
+  color: black;
+}
+
 .info {
 	font-size: 1.1em;
 	font-weight: bold;

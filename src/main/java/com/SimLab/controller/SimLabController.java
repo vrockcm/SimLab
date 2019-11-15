@@ -126,7 +126,6 @@ public class SimLabController {
                                         @RequestParam(required = false) List<Integer> checkedStudents,
                                         @RequestParam(required = false) List<Integer> checkedInstructors,
                                         @RequestParam Integer UserId) {
-        ModelAndView modelAndView = new ModelAndView();
         Course course = new Course();
         course.setCourseName(courseName);
         course.setCourseDesc(courseDesc);
@@ -186,15 +185,15 @@ public class SimLabController {
     @RequestMapping(value = "/MakeLab", method = RequestMethod.POST)
     public ModelAndView createNewLab(@RequestParam String courseId,
                                         @RequestParam String labName,
-                                        @RequestParam String labDescription,
-                                        @RequestParam List<String> materialNames,
-                                        @RequestParam List<String> instructionNames,
-                                        @RequestParam List<String> instMat1Names,
-                                        @RequestParam List<String> instMat2Names,
-                                        @RequestParam List<String> instMat3Names,
-                                        @RequestParam List<String> instParam1Names,
-                                        @RequestParam List<String> instParam2Names,
-                                        @RequestParam List<String> instParam3Names) {
+                                        @RequestParam(required = false) String labDescription,
+                                        @RequestParam(required = false) List<String> materialNames,
+                                        @RequestParam(required = false) List<String> instructionNames,
+                                        @RequestParam(required = false) List<String> instMat1Names,
+                                        @RequestParam(required = false) List<String> instMat2Names,
+                                        @RequestParam(required = false) List<String> instMat3Names,
+                                        @RequestParam(required = false) List<String> instParam1Names,
+                                        @RequestParam(required = false) List<String> instParam2Names,
+                                        @RequestParam(required = false) List<String> instParam3Names) {
 
         ModelAndView modelAndView = new ModelAndView();
         Lab lab = new Lab();

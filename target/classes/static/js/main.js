@@ -391,6 +391,7 @@ $(document).ready(function() {
     //This gets the email from the front end and passes calls the loadCourses function with this email.
     loadCourses();
     initialize();
+    $( ".addl_btn" ).prop( "disabled", true );
 
     $(".dropdown-item").on('click', function(event){
         event.stopPropagation();
@@ -407,8 +408,37 @@ $(document).ready(function() {
 
     function cardMaker(cardHeader) {
         var values = $('#Equipment').val();
-        $('.instruction_cards').append('<div class="card instruction"><div class="card-body"><h4 class="card-title">'+
-        cardHeader+'</h4></div></div>');
+        var newCardNumber = $('.instruction_cards').children().length +1;
+        if(cardHeader == "Measure" || cardHeader == "Move"){
+            var html = '<div class="card instruction"><div class="card-body">'+
+            '<p class="step-number">'+newCardNumber+'</p>'+
+            '<h4 class="card-title">'+cardHeader+'</h4>'+
+            '<input name="instructionNames" type="hidden" value="'+cardHeader+'">' +
+            '<select name="instMat1Names" class="selectpicker" data-width="fit">';
+            for(x of values){
+                html += '<option>'+x+'</option>';
+            }
+            html +='</select></div></div>';
+            $('.instruction_cards').append(html);
+         }
+         else{
+                     var html = '<div class="card instruction"><div class="card-body">'+
+                     '<p class="step-number">'+newCardNumber+'</p>'+
+                     '<h4 class="card-title">'+cardHeader+'</h4>'+
+                     '<input name="instructionNames" type="hidden" value="'+cardHeader+'">' +
+                     '<div style="display: inline-grid;"><select name="instMat1Names" class="selectpicker" data-width="fit">';
+                     for(x of values){
+                         html += '<option>'+x+'</option>';
+                     }
+                     html +='</select></br>'+
+                     '<select name="instMat2Names" class="selectpicker" data-width="fit">';
+                      for(x of values){
+                          html += '<option>'+x+'</option>';
+                      }
+                     '</select></div></div></div>';
+                     $('.instruction_cards').append(html);
+         }
+         $(".selectpicker").selectpicker('refresh');
     }
 
 
@@ -463,21 +493,6 @@ $(document).ready(function() {
         });
 	});
 
-	$('.add-lab-form').on('submit', function(e) {
-        e.preventDefault();
-        toggle();
-        // $.ajax({
-        //     url : $(this).attr('action') || window.location.pathname,
-        //     type: "GET",
-        //     data: $(this).serialize(),
-        //     success: function (data) {
-        //         $("#form_output").html(data);
-        //     },
-        //     error: function (jXHR, textStatus, errorThrown) {
-        //         alert(errorThrown);
-        //     }
-        // });
-    });
 
 
 		$('#material-tabs').each(function() {
@@ -509,6 +524,7 @@ $(document).ready(function() {
 		});
 		//userid is the current id of the user logged in.
         function loadCourses(){
+
             $.ajax({
                 url : '/loadCourses',
                 type : 'GET',
@@ -519,7 +535,7 @@ $(document).ready(function() {
                 dataType:'json',
                 success : function(data) {
                     for (var x = 0; x<data.length; x++){
-                       $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link" aria-owns="submenu-1" href="#">'+ data[x] + '</a>'+
+                       $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link" aria-owns="submenu-1" href="#" value="'+data.courseId+'">'+ data.courseName + '</a>'+
                        '<a class="edit-anchor" onclick="editForm()"><img class="edit-icon" src="/images/edit.png"></a></li>');
                     }
                 },
@@ -569,7 +585,8 @@ $(document).ready(function() {
                     else if($(".add-lab-form").is(":visible")){
                         toggleL();
                     }
-
+                    $('#CourseNumberDiv').empty();
+                    $('#CourseNumberDiv').append('<input name="courseId" type="hidden" value="'+ $(".menu__link--current").attr("value") +'">')
                     $.ajax({
                         url : '/loadLabs',
                         type : 'GET',
@@ -579,6 +596,7 @@ $(document).ready(function() {
                         },
                         dataType:'json',
                         success : function(data) {
+                                $( ".addl_btn" ).prop( "disabled", false );
                                 ev.preventDefault();
                                 closeMenu();
                                 gridWrapper1.innerHTML = '';
