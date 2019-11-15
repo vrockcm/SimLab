@@ -388,11 +388,6 @@
 
 
 $(document).ready(function() {
-    var el = document.getElementById('cardigans');
-    var sortable = Sortable.create(el, {
-         animation: 150,
-         ghostClass: "ghost"
-    });
     //This gets the email from the front end and passes calls the loadCourses function with this email.
     loadCourses();
     initialize();
@@ -411,7 +406,9 @@ $(document).ready(function() {
     });
 
     function cardMaker(cardHeader) {
-        $('.instruction_cards').append('<div class="card instruction"><div class="card-body"><h4 class="card-title"><a>'+cardHeader+'</a></h4></div></div>');
+        var values = $('#Equipment').val();
+        $('.instruction_cards').append('<div class="card instruction"><div class="card-body"><h4 class="card-title">'+
+        cardHeader+'</h4></div></div>');
     }
 
 
@@ -522,7 +519,8 @@ $(document).ready(function() {
                 dataType:'json',
                 success : function(data) {
                     for (var x = 0; x<data.length; x++){
-                       $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">'+ data[x] + '</a></li>');
+                       $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link" aria-owns="submenu-1" href="#">'+ data[x] + '</a>'+
+                       '<a class="edit-anchor" onclick="editForm()"><img class="edit-icon" src="/images/edit.png"></a></li>');
                     }
                 },
                 error : function(request,error)

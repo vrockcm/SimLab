@@ -391,122 +391,6 @@ $(document).ready(function() {
     //This gets the email from the front end and passes calls the loadCourses function with this email.
     loadCourses();
     initialize();
-
-    $(".dropdown-item").on('click', function(event){
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-        cardMaker(this.value);
-    })
-
-    $(".instruction_cards").mousewheel(function(event, delta) {
-               this.scrollLeft -= (delta * 50);
-               this.scrollRight -= (delta * 50);
-               this.style.transition = '1s';
-               event.preventDefault();
-    });
-
-    function cardMaker(cardHeader) {
-        var values = $('#Equipment').val();
-        $('.instruction_cards').append('<div class="card instruction"><div class="card-body"><h4 class="card-title">'+
-        cardHeader+'</h4></div></div>');
-    }
-
-
-	function toggleL() {
-	    if($(".add-lab-form").is(":visible")){
-	        $('.add-lab-form').fadeOut( "fast" , function() {
-                $(".tabs-visb").fadeIn( "fast");
-            });
-	    }
-	    else{
-            if($(".add-course-form").is(":visible")){
-                $(".add-course-form").fadeOut( "fast", function() {
-                    $('.add-lab-form').fadeIn( "fast" );
-                });
-                $(".tabs-visb").fadeOut("fast");
-            }else{
-                $(".tabs-visb").fadeOut("fast", function() {
-                       $('.add-lab-form').fadeIn( "fast" );
-                });
-            }
-	    }
-	}
-
-	function toggleC() {
-    	    if($(".add-course-form").is(":visible")){
-    	        $('.add-course-form').fadeOut( "fast" , function() {
-                    $(".tabs-visb").fadeIn( "fast");
-                });
-    	    }
-    	    else{
-    	        if($(".add-lab-form").is(":visible")){
-    	            $(".add-lab-form").fadeOut( "fast", function() {
-                        $('.add-course-form').fadeIn( "fast" );
-                    });
-                    $(".tabs-visb").fadeOut("fast");
-    	        }else{
-    	            $(".tabs-visb").fadeOut("fast", function() {
-                           $('.add-course-form').fadeIn( "fast" );
-                    });
-    	        }
-    	    }
-    	}
-
-	$(function () {
-		$(".add-lab-form").hide();
-		$(".add-course-form").hide();
-		$('.addl_btn').click(function(){
-			toggleL();
-		});
-		$('.addc_btn').click(function(){
-        	toggleC();
-        });
-	});
-
-	$('.add-lab-form').on('submit', function(e) {
-        e.preventDefault();
-        toggle();
-        // $.ajax({
-        //     url : $(this).attr('action') || window.location.pathname,
-        //     type: "GET",
-        //     data: $(this).serialize(),
-        //     success: function (data) {
-        //         $("#form_output").html(data);
-        //     },
-        //     error: function (jXHR, textStatus, errorThrown) {
-        //         alert(errorThrown);
-        //     }
-        // });
-    });
-
-
-		$('#material-tabs').each(function() {
-
-				var $active, $content, $links = $(this).find('a');
-
-				$active = $($links[0]);
-				$active.addClass('active');
-
-				$content = $($active[0].hash);
-
-				$links.not($active).each(function() {
-						$(this.hash).hide();
-				});
-
-				$(this).on('click', 'a', function(e) {
-
-						$active.removeClass('active');
-						$content.hide();
-
-						$active = $(this);
-						$content = $(this.hash);
-
-						$active.addClass('active');
-						$content.show();
-
-						e.preventDefault();
-				});
-		});
 		//userid is the current id of the user logged in.
         function loadCourses(){
             $.ajax({
@@ -519,8 +403,7 @@ $(document).ready(function() {
                 dataType:'json',
                 success : function(data) {
                     for (var x = 0; x<data.length; x++){
-                       $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link" aria-owns="submenu-1" href="#">'+ data[x] + '</a>'+
-                       '<a class="edit-anchor" onclick="editForm()"><img class="edit-icon" src="/images/edit.png"></a></li>');
+                       $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">'+ data[x] + '</a></li>');
                     }
                 },
                 error : function(request,error)
@@ -559,17 +442,9 @@ $(document).ready(function() {
         		}
 
         		// simulate grid content loading
-        		var gridWrapper1 = document.querySelector('#saved');
-        		var gridWrapper2 = document.querySelector('#published');
+        		var gridWrapper1 = document.querySelector('.display-labs');
 
                 function loadLabs(ev,itemName){
-                    if($(".add-course-form").is(":visible")){
-                        toggleC();
-                    }
-                    else if($(".add-lab-form").is(":visible")){
-                        toggleL();
-                    }
-
                     $.ajax({
                         url : '/loadLabs',
                         type : 'GET',
@@ -582,11 +457,8 @@ $(document).ready(function() {
                                 ev.preventDefault();
                                 closeMenu();
                                 gridWrapper1.innerHTML = '';
-                                gridWrapper2.innerHTML = '';
                                 classie.add(gridWrapper1, 'content--loading');
-                                classie.add(gridWrapper2, 'content--loading');
                                 setTimeout(function() {
-                                    alert(JSON.stringify(data[0]));
                                     classie.remove(gridWrapper1, 'content--loading');
                                     var content = '<ul class="products">';
 
@@ -597,8 +469,6 @@ $(document).ready(function() {
                                     }
                                     content+="</ul>"
                                     gridWrapper1.innerHTML = content;
-                                    classie.remove(gridWrapper2, 'content--loading');
-                                    gridWrapper2.innerHTML = content;
                                 }, 700);
                         },
                         error : function(request,error)
@@ -607,29 +477,6 @@ $(document).ready(function() {
                         }
                     });
                 }
-        //		function loadDummyData(ev, itemName) {
-        //			ev.preventDefault();
-        //			closeMenu();
-        //			gridWrapper1.innerHTML = '';
-        //			gridWrapper2.innerHTML = '';
-        //			classie.add(gridWrapper1, 'content--loading');
-        //			classie.add(gridWrapper2, 'content--loading');
-        //			setTimeout(function() {
-        //				classie.remove(gridWrapper1, 'content--loading');
-        //				var content = '<ul class="products">';
-        //
-        //				var i = 0;
-        //				for(i = 0;i<5;i++){
-        //					content+= dummyData[itemName];
-        //
-        //				}
-        //				content+="</ul>"
-        //				gridWrapper1.innerHTML = content;
-        //				classie.remove(gridWrapper2, 'content--loading');
-        //				gridWrapper2.innerHTML = content;
-        //			}, 700);
-        //
-        //		}
         }
 });
 
