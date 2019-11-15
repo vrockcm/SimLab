@@ -9,7 +9,6 @@
 	<title>SimLab Homepage</title>
 	<meta name="description" content="Labs Made Easy" />
 	<meta name="keywords" content="simlab, labs, chemistry, physics" />
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
 	<!-- Font Awesome -->
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 	<!-- Bootstrap core CSS -->
@@ -32,6 +31,7 @@
 	<link rel="stylesheet" type="text/css" th:href="@{/css/component.css}"/>
 	<script th:src="@{/js/modernizr-custom.js}"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 </head>
 
@@ -92,10 +92,14 @@
 			</div>
 
 			<div class="form-wrap">
+				<h1 id="form-header"></h1>
 				<form class="add-lab-form" th:action="@{/MakeLab}" method="POST">
 				  <div class="form-group">
 					<label for="LabName">Lab Name</label>
 					<input type="text" class="form-control" name="labName" id="LabName" placeholder="Acid-Base Lab">
+					  <div id="CourseNumberDiv">
+
+					  </div>
 				  </div>
 				   <div class="form-group">
 					<label for="LabDesc">Lab Description</label>
@@ -103,7 +107,7 @@
 				  </div>
 				  <div class="form-group">
 					<label for="Equipment">Select Equipment</label> </br>
-					<select class="selectpicker" id="Equipment" data-live-search="true"multiple title="Choose Equipment">
+					<select class="selectpicker" id="Equipment" name="materialNames" data-live-search="true" multiple title="Choose Equipment">
 					  <optgroup label="Glassware">
 						<option value="Beaker" name="materialNames">Beaker</option>
 						<option value="Flask" name="materialNames">Flask</option>
@@ -126,13 +130,8 @@
 						Select Steps
 					  </button>
 					  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-						<button class="dropdown-item" value="swirl" type="button">Swirl</button>
 						<button class="dropdown-item" value="Measure" type="button">Measure</button>
 						<button class="dropdown-item" value="Move" type="button">Move into workspace</button>
-						<button class="dropdown-item" value="Titrate" type="button">Titrate</button>
-						<button class="dropdown-item" value="Heat" type="button">Heat</button>
-						<button class="dropdown-item" value="Cool" type="button">Cool</button>
-						<button class="dropdown-item" value="Calculate" type="button">Calculate</button>
 						<button class="dropdown-item" value="Mix" type="button">Mix</button>
 					  </div>
 					</div>
@@ -141,6 +140,9 @@
 				  </div>
 				  <button type="submit" class="btn btn-primary">Submit</button>
 				</form>
+
+
+
 				<form class="add-course-form" th:action="@{/MakeCourse}" method="POST">
 					<div class="form-group">
 						<label for="CourseName">Course Name</label>
@@ -191,7 +193,23 @@
     	/*<![CDATA[*/
 			var email = [[${Email}]];
 			var userid = [[${UserId}]];
+			var csspath = [[@{/js/main.js}]];
 		/*]]>*/
+	</script>
+	<script>
+		$(document).ready(function() {
+			var el = document.getElementById('cardigans');
+			var sortable = Sortable.create(el, {
+				 animation: 150,
+				 ghostClass: "ghost",
+				 onSort: function (evt) {
+				 	console.log("Hello");
+					$(".step-number").each(function (index, element) {
+						$(element).text(index+1);
+					});
+			     },
+			});
+		});
 	</script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
 </body>
