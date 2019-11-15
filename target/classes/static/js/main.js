@@ -532,6 +532,59 @@ $(document).ready(function() {
             });
         }
 
+        function loadInfoAboutCourse(){
+            $.ajax({
+                url : '/editCourse',
+                type: 'GET',
+                async: false,
+                data : {
+                    'courseId' : 26
+                },
+                dataType: 'json',
+                success : function(data){
+                    $("#CourseName").val(data.courseName)
+                    $("#CourseDesc").val(data.courseDesc)
+                    $("#StudentList").empty();
+                    $("#InstructorList").empty();
+
+                    for(var i=0; i<data.allStudents.length; i++){
+                        var checkedIndex = 0;
+                        if(data.allStudents[i].id == data.students[checkedIndex].id){
+                            $("#StudentList").append('<li class="list-group-item"><div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="' + data.allStudents[i].id +
+                                                    '" name="checkedStudents" value="'+data.allStudents[i].id+'" checked>'+
+                                                    '<label class="custom-control-label" for="'+data.allStudents[i].id+'">'+data.allStudents[i].name+
+                                                    ' '+data.allStudents[i].lastName+'</label></div></li>');
+                            checkedIndex++;
+                        }else{
+                             $("#StudentList").append('<li class="list-group-item"><div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="' + data.allStudents[i].id +
+                                                        '" name="checkedStudents" value="'+data.allStudents[i].id+'">'+
+                                                        '<label class="custom-control-label" for="'+data.allStudents[i].id+'">'+data.allStudents[i].name+
+                                                        ' '+data.allStudents[i].lastName+'</label></div></li>');
+                        }
+                    }
+                    for(var i=0; i<data.allInstructors.length; i++){
+                        var checkedIndex = 0;
+                             if(data.allInstructors[i].id == data.instructors[checkedIndex].id){
+                                  $("#InstructorList").append('<li class="list-group-item"><div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="' + data.allInstructors[i].id +
+                                                             '" name="checkedStudents" value="'+data.allInstructors[i].id+'" checked>'+
+                                                             '<label class="custom-control-label" for="'+data.allInstructors[i].id+'">'+data.allInstructors[i].name+
+                                                             ' '+data.allInstructors[i].lastName+'</label></div></li>');
+                                  checkedIndex++;
+                             }else{
+                                 $("#InstructorList").append('<li class="list-group-item"><div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="' + data.allInstructors[i].id +
+                                                              '" name="checkedStudents" value="'+data.allInstructors[i].id+'">'+
+                                                              '<label class="custom-control-label" for="'+data.allInstructors[i].id+'">'+data.allInstructors[i].name+
+                                                              ' '+data.allInstructors[i].lastName+'</label></div></li>');
+                             }
+                         }
+                },
+                error : function(request, error)
+                {
+                    alert("Request: "+JSON.stringify(request))
+                }
+            });
+        }
+
         function initialize() {
         		var menuEl = document.getElementById('ml-menu'),
         			mlmenu = new MLMenu(menuEl, {
@@ -565,6 +618,7 @@ $(document).ready(function() {
         		var gridWrapper2 = document.querySelector('#published');
 
                 function loadLabs(ev,itemName){
+                    loadInfoAboutCourse()
                     if($(".add-course-form").is(":visible")){
                         toggleC();
                     }
