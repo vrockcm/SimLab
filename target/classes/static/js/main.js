@@ -558,7 +558,7 @@ $(document).ready(function() {
 
                                     for(var i=0; i<data.allStudents.length; i++){
                                         var checkedIndex = 0;
-                                        if(data.allStudents[i].id == data.students[checkedIndex].id){
+                                        if(data.students[checkedIndex] != null && data.allStudents[i].id == data.students[checkedIndex].id){
                                             $("#StudentList").append('<li class="list-group-item"><div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="' + data.allStudents[i].id +
                                                                     '" name="checkedStudents" value="'+data.allStudents[i].id+'" checked>'+
                                                                     '<label class="custom-control-label" for="'+data.allStudents[i].id+'">'+data.allStudents[i].name+
@@ -573,7 +573,7 @@ $(document).ready(function() {
                                     }
                                     for(var i=0; i<data.allInstructors.length; i++){
                                         var checkedIndex = 0;
-                                             if(data.allInstructors[i].id == data.instructors[checkedIndex].id){
+                                             if(data.instructors[checkedIndex] != null && data.allInstructors[i].id == data.instructors[checkedIndex].id){
                                                   $("#InstructorList").append('<li class="list-group-item"><div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="' + data.allInstructors[i].id +
                                                                              '" name="checkedStudents" value="'+data.allInstructors[i].id+'" checked>'+
                                                                              '<label class="custom-control-label" for="'+data.allInstructors[i].id+'">'+data.allInstructors[i].name+
@@ -635,7 +635,6 @@ $(document).ready(function() {
         		var gridWrapper2 = document.querySelector('#published');
 
                 function loadLabs(ev,itemName){
-                    loadInfoAboutCourse()
                     if($(".add-course-form").is(":visible")){
                         toggleC();
                     }
