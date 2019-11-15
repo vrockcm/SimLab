@@ -1,6 +1,7 @@
 package com.SimLab.controller;
 
-
+import lombok.var;
+import com.SimLab.model.CourseInfo;
 import com.SimLab.model.dao.*;
 import com.SimLab.model.dao.Repository.*;
 import com.SimLab.service.UserService;
@@ -115,6 +116,8 @@ public class SimLabController {
         modelAndView.addObject("students", studentsObjects);
         modelAndView.addObject("instructors", instructorsObjects);
         modelAndView.setViewName("/instructor/index");
+
+        editCourse("27");
         return modelAndView;
     }
 
@@ -171,6 +174,38 @@ public class SimLabController {
             userCoursesName.add(userCourses.get(x).getCourseName());
         }
         return userCoursesName;
+    }
+
+    @ResponseBody
+    @GetMapping(path = "/editCourse", produces = "application/json; charset=UTF-8")
+    public CourseInfo editCourse(@RequestParam String courseId ){
+        Course course = courseRepository.findById(Integer.parseInt(courseId));
+        List<User> associatedUsers = userCourseAssociationRepository.findAllUsers(Integer.parseInt(courseId));
+        List<User> students = new ArrayList<User>();
+        List<User> instructors = new ArrayList<User>();
+        List<User> allStudents = new ArrayList<User>();
+        List<User> allInst = new ArrayList<User>();
+        for(User u: associatedUsers){
+            int roleId = userService.findRoleIdByUserId(u.getId());
+            if(roleId == 0){
+                students.add(u);
+            }else{
+                instructors.add(u);
+            }
+        }
+        allStudents = userService.findAllStudents();
+        allInst = userService.findAllInstructors();
+        CourseInfo courseInfo = new CourseInfo();
+        courseInfo.setCourseName(course.getCourseName());
+        courseInfo.setCourseDesc(course.getCourseDesc());
+        courseInfo.setStudents(students);
+        courseInfo.setInstructors(instructors);
+        courseInfo.setAllInstructors(allInst);
+        courseInfo.setAllStudents(allStudents);
+
+        var toReturn = (CourseInfo)courseInfo;
+        return toReturn;
+
     }
 
     @ResponseBody
