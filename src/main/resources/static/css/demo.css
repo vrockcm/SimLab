@@ -266,9 +266,10 @@ a:hover {
 }
 
 .content {
+    background-color: #3b3d44;
 	position: relative;
-	min-height: 300px;
-	    margin: 0 -15px 0 285px;
+	height: inherit;
+	margin: 0 -15px 0 285px;
 }
 
 .workbench{
@@ -310,7 +311,7 @@ a:hover {
 	font-weight: bold;
 	padding: 20vh 1em 0;
 	text-align: center;
-	color: #47484c;
+	color: #d7d7d7;
 }
 
 body #cdawrap {
@@ -356,6 +357,7 @@ body #cdawrap a:hover.carbon-poweredby {
 }
 
 .nav{
+    background: #2a2b30;
 	justify-content: space-around;
 	border-bottom: 1px solid #29abe2;
 }
@@ -587,4 +589,17 @@ user-select: none;
 .ghost {
   opacity: .5;
   background: #C8EBFB;
+}
+
+.display-labs{
+        min-height: 300px;
+}
+.edit-icon{
+    width: 20px;
+}
+
+.edit-anchor{
+    float: right;
+    top: 15px;
+    position: relative;
 }
