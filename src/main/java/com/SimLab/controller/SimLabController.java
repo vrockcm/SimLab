@@ -117,7 +117,6 @@ public class SimLabController {
         modelAndView.addObject("instructors", instructorsObjects);
         modelAndView.setViewName("/instructor/index");
 
-        editCourse("27");
         return modelAndView;
     }
 
@@ -129,7 +128,6 @@ public class SimLabController {
                                         @RequestParam(required = false) List<Integer> checkedStudents,
                                         @RequestParam(required = false) List<Integer> checkedInstructors,
                                         @RequestParam Integer UserId) {
-        ModelAndView modelAndView = new ModelAndView();
         Course course = new Course();
         course.setCourseName(courseName);
         course.setCourseDesc(courseDesc);
@@ -168,13 +166,10 @@ public class SimLabController {
 
     @ResponseBody
     @GetMapping("/loadCourses")
-    public List<String> loadCourse(@RequestParam String userid ){
+    public List<Course> loadCourse(@RequestParam String userid ){
         List<Course> userCourses = userCourseAssociationRepository.loadUserCourses(Integer.parseInt(userid));
-        List<String> userCoursesName = new ArrayList<String>();
-        for (int x = 0; x< userCourses.size(); x++){
-            userCoursesName.add(userCourses.get(x).getCourseName());
-        }
-        return userCoursesName;
+        var toReturn = userCourses;
+        return toReturn;
     }
 
     @ResponseBody
@@ -204,7 +199,7 @@ public class SimLabController {
         courseInfo.setAllInstructors(allInst);
         courseInfo.setAllStudents(allStudents);
 
-        var toReturn = (CourseInfo)courseInfo;
+        var toReturn = courseInfo;
         return toReturn;
 
     }
@@ -219,17 +214,17 @@ public class SimLabController {
     }
 
     @RequestMapping(value = "/MakeLab", method = RequestMethod.POST)
-    public ModelAndView createNewLab(@RequestParam String courseId,
+    public String createNewLab(@RequestParam String courseId,
                                         @RequestParam String labName,
-                                        @RequestParam String labDescription,
-                                        @RequestParam List<String> materialNames,
-                                        @RequestParam List<String> instructionNames,
-                                        @RequestParam List<String> instMat1Names,
-                                        @RequestParam List<String> instMat2Names,
-                                        @RequestParam List<String> instMat3Names,
-                                        @RequestParam List<String> instParam1Names,
-                                        @RequestParam List<String> instParam2Names,
-                                        @RequestParam List<String> instParam3Names) {
+                                        @RequestParam(required = false, defaultValue = "") String labDescription,
+                                        @RequestParam(required = false, defaultValue = "") List<String> materialNames,
+                                        @RequestParam(required = false, defaultValue = "") List<String> instructionNames,
+                                        @RequestParam(required = false, defaultValue = "") List<String> instMat1Names,
+                                        @RequestParam(required = false, defaultValue = "") List<String> instMat2Names,
+                                        @RequestParam(required = false, defaultValue = "") List<String> instMat3Names,
+                                        @RequestParam(required = false, defaultValue = "") List<String> instParam1Names,
+                                        @RequestParam(required = false, defaultValue = "") List<String> instParam2Names,
+                                        @RequestParam(required = false, defaultValue = "") List<String> instParam3Names) {
 
         ModelAndView modelAndView = new ModelAndView();
         Lab lab = new Lab();
@@ -244,7 +239,7 @@ public class SimLabController {
         courseLab.setLabId(lab.getLabId());
         courseLabAssociationRepository.save(courseLab);
         modelAndView.setViewName("/instructor/index");
-        return modelAndView;
+        return "redirect:/instructor/index";
     }
 
     private void addMaterialsToLab(Lab lab, List<String> materials){
@@ -267,22 +262,39 @@ public class SimLabController {
                 inst.setMaterial1Id(null);
                 inst.setMaterial2Id(null);
                 inst.setMaterial3Id(null);
-                String matName = instMat1Names.get(i);
-                if(!matName.equals("")) inst.setMaterial1Id(materialRepository.findIdByName(instMat1Names.get(i)).get(0));
-                matName = instMat2Names.get(i);
-                if(!matName.equals("")) inst.setMaterial2Id(materialRepository.findIdByName(instMat2Names.get(i)).get(0));
-                matName = instMat3Names.get(i);
-                if(!matName.equals("")) inst.setMaterial3Id(materialRepository.findIdByName(instMat3Names.get(i)).get(0));
+                String matName;
+                if(instMat1Names.size()!=0) {
+                    matName = instMat1Names.get(i);
+                    if (!matName.equals(""))
+                        inst.setMaterial1Id(materialRepository.findIdByName(instMat1Names.get(i)).get(0));
+                }
+                if(instMat2Names.size()!=0) {
+                    matName = instMat2Names.get(i);
+                    if (!matName.equals(""))
+                        inst.setMaterial2Id(materialRepository.findIdByName(instMat2Names.get(i)).get(0));
+                }
+                if(instMat3Names.size()!=0) {
+                    matName = instMat3Names.get(i);
+                    if (!matName.equals(""))
+                        inst.setMaterial3Id(materialRepository.findIdByName(instMat3Names.get(i)).get(0));
+                }
                 //set all parameters to null then check if a param was specified
                 inst.setParameter1(null);
                 inst.setParameter2(null);
                 inst.setParameter3(null);
-                String param = instParam1Names.get(i);
-                if(!param.equals("")) inst.setParameter1(param);
-                param = instParam2Names.get(i);
-                if(!param.equals("")) inst.setParameter2(param);
-                param = instParam3Names.get(i);
-                if(!param.equals("")) inst.setParameter3(param);
+                String param;
+                if(instParam1Names.size()!=0) {
+                    param = instParam1Names.get(i);
+                    if (!param.equals("")) inst.setParameter1(param);
+                }
+                if(instParam2Names.size()!=0) {
+                    param = instParam2Names.get(i);
+                    if (!param.equals("")) inst.setParameter2(param);
+                }
+                if(instParam3Names.size()!=0) {
+                    param = instParam3Names.get(i);
+                    if (!param.equals("")) inst.setParameter3(param);
+                }
                 instructionRepository.save(inst);
                 LabInstructionAssociation labInst = new LabInstructionAssociation();
                 labInst.setLabId(lab.getLabId());
