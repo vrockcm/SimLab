@@ -1,6 +1,8 @@
 package com.SimLab.service;
 
 
+import com.SimLab.model.dao.Course;
+import com.SimLab.model.dao.Repository.CourseRepository;
 import com.SimLab.model.dao.Role;
 import com.SimLab.model.dao.Repository.RoleRepository;
 import com.SimLab.model.dao.User;
@@ -46,5 +48,4 @@ public class UserService {
         user.setRoles(new HashSet<Role>(Arrays.asList(userRole)));
         userRepository.save(user);
     }
-
 }
