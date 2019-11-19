@@ -1,7 +1,10 @@
 package com.SimLab.model.dao;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
+@Data
 @Entity
 public class Lab {
     @Id

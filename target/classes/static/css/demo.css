@@ -266,9 +266,10 @@ a:hover {
 }
 
 .content {
+    background-color: #3b3d44;
 	position: relative;
-	min-height: 300px;
-	    margin: 0 -15px 0 285px;
+	height: inherit;
+	margin: 0 -15px 0 285px;
 }
 
 .workbench{
@@ -297,10 +298,23 @@ a:hover {
 }
 
 .product {
+    width: 100%;
 	display: inline-block;
 	margin: 10px;
+	width: 100%;
     max-width: 380px;
 	border-radius: 5px;
+}
+
+#form-header{
+    text-align: center;
+    color: #29abe2;
+}
+.step-number{
+  font-size: 18px;
+  margin-bottom: 1px;
+  text-align: center;
+  color: black;
 }
 
 .info {
@@ -308,7 +322,7 @@ a:hover {
 	font-weight: bold;
 	padding: 20vh 1em 0;
 	text-align: center;
-	color: #47484c;
+	color: #d7d7d7;
 }
 
 body #cdawrap {
@@ -354,6 +368,7 @@ body #cdawrap a:hover.carbon-poweredby {
 }
 
 .nav{
+    background: #2a2b30;
 	justify-content: space-around;
 	border-bottom: 1px solid #29abe2;
 }
@@ -459,6 +474,7 @@ table{
 	margin: 0 auto;
 	max-width: 50vw;
 	padding-top: 40px;
+	padding-bottom: 40px;
 }
 
 @media screen and (max-width: 40em) {
@@ -554,4 +570,47 @@ user-select: none;
 .form-wrap{
     overflow: auto;
     height: calc(100vh - 105px);
+}
+
+.instruction_cards{
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    height: 25em;
+    border-radius: .25rem;
+    margin: 0;
+    padding: 2em;
+    overflow: auto;
+    border: white;
+    border: solid #676767;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    border-width: 8px;
+    transition: all 1s ease 0s;
+}
+
+.instruction{
+    width: 12em;
+    height: 90%;
+    display: inline-block;
+    margin: 10px;
+    border-radius: 5px;
+}
+
+.ghost {
+  opacity: .5;
+  background: #C8EBFB;
+}
+
+.display-labs{
+        min-height: 300px;
+}
+.edit-icon{
+    width: 20px;
+}
+
+.edit-anchor{
+    float: right;
+    top: 15px;
+    position: relative;
 }
