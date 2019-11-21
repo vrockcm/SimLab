@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,4 +17,7 @@ public interface UserCourseAssociationRepository extends CrudRepository <UserCou
     public List<User> findAllUsers(@Param("courseId") int courseId);
     @Query("SELECT y FROM UserCourseAssociation  x, Course y WHERE x.userId = :userId AND x.courseId = y.id")
     public List<Course> loadUserCourses(@Param("userId") int userId);
+
+    @Transactional
+    public void removeByCourseId(int courseId);
 }

@@ -86,3 +86,7 @@ p{
   -ms-transition: all 0.3s ease;
   left: 135px;
 }
+
+.validation-message{
+    color: red;
+}

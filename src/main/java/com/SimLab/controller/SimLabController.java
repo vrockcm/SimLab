@@ -121,22 +121,18 @@ public class SimLabController {
     }
 
 
-
-    @RequestMapping(value = "/MakeCourse", method = RequestMethod.POST)
-    public String createNewCourse(@RequestParam String courseName,
-                                        @RequestParam String courseDesc,
-                                        @RequestParam(required = false) List<Integer> checkedStudents,
-                                        @RequestParam(required = false) List<Integer> checkedInstructors,
-                                        @RequestParam Integer UserId) {
-        Course course = new Course();
+    @RequestMapping(value = "/EditCourse", method = RequestMethod.POST)
+    public String editCourse(@RequestParam String courseName,
+                              @RequestParam String courseDesc,
+                              @RequestParam(required = false) List<Integer> checkedStudents,
+                              @RequestParam(required = false) List<Integer> checkedInstructors,
+                              @RequestParam Integer courseId) {
+        Course course = courseRepository.findByCourseId(courseId);
         course.setCourseName(courseName);
         course.setCourseDesc(courseDesc);
         courseRepository.save(course);
+        userCourseAssociationRepository.removeByCourseId(course.getCourseId());
         List<UserCourseAssociation> userCourseAsses = new ArrayList<UserCourseAssociation>();
-        UserCourseAssociation userCourse = new UserCourseAssociation();
-        userCourse.setUserId(UserId);
-        userCourse.setCourseId(course.getCourseId());
-        userCourseAsses.add(userCourse);
         if (checkedStudents != null) {
             for (Integer u : checkedStudents) {
                 UserCourseAssociation uC = new UserCourseAssociation();
@@ -150,6 +146,42 @@ public class SimLabController {
                 UserCourseAssociation uC = new UserCourseAssociation();
                 uC.setCourseId(course.getCourseId());
                 uC.setUserId(u);
+                userCourseAsses.add(uC);
+            }
+        }
+        userCourseAssociationRepository.saveAll(userCourseAsses);
+        return "redirect:/instructor/index";
+    }
+
+
+    @RequestMapping(value = "/MakeCourse", method = RequestMethod.POST)
+    public String createNewCourse(@RequestParam String courseName,
+                                        @RequestParam String courseDesc,
+                                        @RequestParam(value = "students", required = false) String[] students,
+                                        @RequestParam(value = "instructors", required = false) String[] instructors,
+                                        @RequestParam Integer UserId) {
+        Course course = new Course();
+        course.setCourseName(courseName);
+        course.setCourseDesc(courseDesc);
+        courseRepository.save(course);
+        List<UserCourseAssociation> userCourseAsses = new ArrayList<UserCourseAssociation>();
+        UserCourseAssociation userCourse = new UserCourseAssociation();
+        userCourse.setUserId(UserId);
+        userCourse.setCourseId(course.getCourseId());
+        userCourseAsses.add(userCourse);
+        if (students != null) {
+            for (String u : students){
+                UserCourseAssociation uC = new UserCourseAssociation();
+                uC.setCourseId(course.getCourseId());
+                uC.setUserId(Integer.parseInt(u));
+                userCourseAsses.add(uC);
+            }
+        }
+        if (instructors != null) {
+            for (String u : instructors){
+                UserCourseAssociation uC = new UserCourseAssociation();
+                uC.setCourseId(course.getCourseId());
+                uC.setUserId(Integer.parseInt(u));
                 userCourseAsses.add(uC);
             }
         }
@@ -173,14 +205,14 @@ public class SimLabController {
     }
 
     @ResponseBody
-    @GetMapping(path = "/editCourse", produces = "application/json; charset=UTF-8")
-    public CourseInfo editCourse(@RequestParam String courseId ){
-        Course course = courseRepository.findById(Integer.parseInt(courseId));
+    @GetMapping(path = "/fetchCourseInfo", produces = "application/json; charset=UTF-8")
+    public CourseInfo fetchCourseInfo(@RequestParam String courseId ){
+        Course course = courseRepository.findByCourseId(Integer.parseInt(courseId));
         List<User> associatedUsers = userCourseAssociationRepository.findAllUsers(Integer.parseInt(courseId));
         List<User> students = new ArrayList<User>();
         List<User> instructors = new ArrayList<User>();
-        List<User> allStudents = new ArrayList<User>();
-        List<User> allInst = new ArrayList<User>();
+        List<User> allStudents = userService.findAllStudents();
+        List<User> allInst = userService.findAllInstructors();
         for(User u: associatedUsers){
             int roleId = userService.findRoleIdByUserId(u.getId());
             if(roleId == 0){
@@ -189,8 +221,6 @@ public class SimLabController {
                 instructors.add(u);
             }
         }
-        allStudents = userService.findAllStudents();
-        allInst = userService.findAllInstructors();
         CourseInfo courseInfo = new CourseInfo();
         courseInfo.setCourseName(course.getCourseName());
         courseInfo.setCourseDesc(course.getCourseDesc());
