@@ -386,6 +386,12 @@
 
 })(window);
 
+//duplicate pressed
+function duplicateLab(x){
+    id = $(x).parents()[1].id;
+    
+    alert("Pressed " + $(x).parents()[1].id);
+}
 
 $(document).ready(function() {
     //This gets the email from the front end and passes calls the loadCourses function with this email.
@@ -405,6 +411,7 @@ $(document).ready(function() {
                this.style.transition = '1s';
                event.preventDefault();
     });
+
 
     function cardMaker(cardHeader) {
         var values = $('#Equipment').val();
@@ -666,7 +673,8 @@ $(document).ready(function() {
                                     var i = 0;
                                     for(i = 0;i<data.length;i++){
                                        var lab = data[i];
-                                       content+= dummyData["cardbody1"]+lab.labName + dummyData["cardbody2"] + lab.labDesc + dummyData["cardbody3"];
+                                       content+= dummyData["cardbody1"]+lab.labId+dummyData["cardbody2"]+lab.labName + dummyData["cardbody3"] + lab.labDesc + dummyData["cardbody4"];
+
                                     }
                                     content+="</ul>"
                                     gridWrapper1.innerHTML = content;
@@ -680,6 +688,7 @@ $(document).ready(function() {
                         }
                     });
                 }
+
         //		function loadDummyData(ev, itemName) {
         //			ev.preventDefault();
         //			closeMenu();
