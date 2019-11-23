@@ -97,6 +97,7 @@ public class SimLabController {
         modelAndView.addObject("UserId", user.getId());
         modelAndView.addObject("Name", user.getName());
         modelAndView.setViewName("/student/index");
+
         return modelAndView;
     }
 
@@ -241,6 +242,36 @@ public class SimLabController {
         List<Lab> associatedLabs = courseLabAssociationRepository.loadAssociatedLabs(courseId);
         String json = new Gson().toJson(associatedLabs);
         return json;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/DuplicateLab", method = RequestMethod.POST)
+    public String duplicateLab(@RequestParam String labId, @RequestParam String courseName){
+        Lab lab = labRepository.findByLabId(Integer.parseInt(labId));
+        Lab newLab = new Lab();
+        newLab.setLabName(lab.getLabName()+"(copy)");
+        newLab.setLabDesc(lab.getLabDesc());
+        labRepository.save(newLab);
+        List<LabMaterialAssociation> labMats = labMaterialAssociationRepository.findMaterialsByLabId(Integer.parseInt(labId));
+        List<LabInstructionAssociation> labInsts = labInstructionAssociationRepository.findInstructionsByLabId(Integer.parseInt(labId));
+        for(LabMaterialAssociation lM: labMats){
+            LabMaterialAssociation newLM = new LabMaterialAssociation();
+            newLM.setLabId(newLab.getLabId());
+            newLM.setMaterialId(lM.getMaterialId());
+            labMaterialAssociationRepository.save(newLM);
+        }
+        for(LabInstructionAssociation lI: labInsts){
+            LabInstructionAssociation newLI = new LabInstructionAssociation();
+            newLI.setLabId(newLab.getLabId());
+            newLI.setInstructionId(lI.getInstructionId());
+            labInstructionAssociationRepository.save(newLI);
+        }
+        int courseId = courseRepository.getCourseId(courseName);
+        CourseLabAssociation courseLab = new CourseLabAssociation();
+        courseLab.setLabId(newLab.getLabId());
+        courseLab.setCourseId(courseId);
+        courseLabAssociationRepository.save(courseLab);
+        return "{ \"age\":30 }";
     }
 
     @RequestMapping(value = "/MakeLab", method = RequestMethod.POST)

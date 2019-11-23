@@ -389,9 +389,48 @@
 
 //duplicate pressed
 function duplicateLab(x){
-    id = $(x).parents()[1].id;
+    id = $(x).parents()[1].id; //CSE222###9
+    labInfo = id.split("###");
+    $.ajax({
+                            url : '/DuplicateLab',
+                            type : 'POST',
+                            async: false,
+                            data : {
+                                'labId' : labInfo[1],
+                                'courseName' : labInfo[0]
+                            },
+                            success : function(data) {
+                                var obj = $(".menu__link--current");
+                                $(".menu__link--current")[0].click();
+//                                $( ".addl_btn" ).prop( "disabled", false );
+//                                closeMenu();
+//                                gridWrapper1.innerHTML = '';
+//                                gridWrapper2.innerHTML = '';
+//                                classie.add(gridWrapper1, 'content--loading');
+//                                classie.add(gridWrapper2, 'content--loading');
+//                                setTimeout(function() {
+//                                    classie.remove(gridWrapper1, 'content--loading');
+//                                    var content = '<ul class="products">';
+//
+//                                    var i = 0;
+//                                    for(i = 0;i<data.length;i++){
+//                                       var lab = data[i];
+//                                       content+= dummyData["cardbody1"]+labInfo[0]+"###"+lab.labId+dummyData["cardbody2"]+lab.labName + dummyData["cardbody3"] + lab.labDesc + dummyData["cardbody4"];
+//
+//                                    }
+//                                    content+="</ul>"
+//                                    gridWrapper1.innerHTML = content;
+//                                    classie.remove(gridWrapper2, 'content--loading');
+//                                    gridWrapper2.innerHTML = content;
+//                                }, 700);
+                            },
+                            error : function(request,error)
+                            {
+                                alert("Request: "+JSON.stringify(request));
+                            }
+                        });
 
-    alert("Pressed " + $(x).parents()[1].id);
+    alert("Pressed " + id);
 }
 
 $(document).ready(function() {
@@ -600,37 +639,6 @@ $(document).ready(function() {
                                     });
                                     $('.CourseNumberDiv').empty().append('<input name="courseId" type="hidden" value="'+ courseId +'">')
                                     for(var i=0; i<data.allStudents.length; i++){
-<<<<<<< HEAD
-                                        var checkedIndex = 0;
-                                        if(data.students[checkedIndex] != null && data.allStudents[i].id == data.students[checkedIndex].id){
-                                            $("#StudentList").append('<li class="list-group-item"><div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="' + data.allStudents[i].id +
-                                                                    '" name="checkedStudents" value="'+data.allStudents[i].id+'" checked>'+
-                                                                    '<label class="custom-control-label" for="'+data.allStudents[i].id+'">'+data.allStudents[i].name+
-                                                                    ' '+data.allStudents[i].lastName+'</label></div></li>');
-                                            checkedIndex++;
-                                        }else{
-                                             $("#StudentList").append('<li class="list-group-item"><div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="' + data.allStudents[i].id +
-                                                                        '" name="checkedStudents" value="'+data.allStudents[i].id+'">'+
-                                                                        '<label class="custom-control-label" for="'+data.allStudents[i].id+'">'+data.allStudents[i].name+
-                                                                        ' '+data.allStudents[i].lastName+'</label></div></li>');
-                                        }
-                                    }
-                                    for(var i=0; i<data.allInstructors.length; i++){
-                                        var checkedIndex = 0;
-                                             if(data.instructors[checkedIndex] != null && data.allInstructors[i].id == data.instructors[checkedIndex].id){
-                                                  $("#InstructorList").append('<li class="list-group-item"><div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="' + data.allInstructors[i].id +
-                                                                             '" name="checkedStudents" value="'+data.allInstructors[i].id+'" checked>'+
-                                                                             '<label class="custom-control-label" for="'+data.allInstructors[i].id+'">'+data.allInstructors[i].name+
-                                                                             ' '+data.allInstructors[i].lastName+'</label></div></li>');
-                                                  checkedIndex++;
-                                             }else{
-                                                 $("#InstructorList").append('<li class="list-group-item"><div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="' + data.allInstructors[i].id +
-                                                                              '" name="checkedStudents" value="'+data.allInstructors[i].id+'">'+
-                                                                              '<label class="custom-control-label" for="'+data.allInstructors[i].id+'">'+data.allInstructors[i].name+
-                                                                              ' '+data.allInstructors[i].lastName+'</label></div></li>');
-                                             }
-                                         }
-=======
                                         if(studentExists(data.allStudents[i].id)){
                                            $('#StudentList').multiSelect('select', data.allStudents[i].id.toString());
                                         }
@@ -642,7 +650,6 @@ $(document).ready(function() {
                                     }
                                     $('#StudentList').multiSelect("refresh");
                                     $('#InstructorList').multiSelect("refresh");
->>>>>>> edbdbc5f38420384e78186d949461768877a90eb
                                 },
                                 error : function(request, error)
                                 {
@@ -723,7 +730,7 @@ $(document).ready(function() {
                                     var i = 0;
                                     for(i = 0;i<data.length;i++){
                                        var lab = data[i];
-                                       content+= dummyData["cardbody1"]+lab.labId+dummyData["cardbody2"]+lab.labName + dummyData["cardbody3"] + lab.labDesc + dummyData["cardbody4"];
+                                       content+= dummyData["cardbody1"]+itemName+"###"+lab.labId+dummyData["cardbody2"]+lab.labName + dummyData["cardbody3"] + lab.labDesc + dummyData["cardbody4"];
 
                                     }
                                     content+="</ul>"
@@ -738,33 +745,6 @@ $(document).ready(function() {
                         }
                     });
                 }
-<<<<<<< HEAD
-
-        //		function loadDummyData(ev, itemName) {
-        //			ev.preventDefault();
-        //			closeMenu();
-        //			gridWrapper1.innerHTML = '';
-        //			gridWrapper2.innerHTML = '';
-        //			classie.add(gridWrapper1, 'content--loading');
-        //			classie.add(gridWrapper2, 'content--loading');
-        //			setTimeout(function() {
-        //				classie.remove(gridWrapper1, 'content--loading');
-        //				var content = '<ul class="products">';
-        //
-        //				var i = 0;
-        //				for(i = 0;i<5;i++){
-        //					content+= dummyData[itemName];
-        //
-        //				}
-        //				content+="</ul>"
-        //				gridWrapper1.innerHTML = content;
-        //				classie.remove(gridWrapper2, 'content--loading');
-        //				gridWrapper2.innerHTML = content;
-        //			}, 700);
-        //
-        //		}
-=======
->>>>>>> edbdbc5f38420384e78186d949461768877a90eb
         }
 });
 
