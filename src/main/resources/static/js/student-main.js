@@ -391,27 +391,26 @@ $(document).ready(function() {
     //This gets the email from the front end and passes calls the loadCourses function with this email.
     loadCourses();
     initialize();
-		//userid is the current id of the user logged in.
-        function loadCourses(){
-            $.ajax({
-                url : '/loadCourses',
-                type : 'GET',
-                async: false,
-                data : {
-                    'userid' : userid
-                },
-                dataType:'json',
-                success : function(data) {
-                    for (var x = 0; x<data.length; x++){
-                       $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link"  aria-owns="submenu-1" href="#">'+ data[x] + '</a></li>');
-                    }
-                },
-                error : function(request,error)
-                {
-                    alert("Request: "+JSON.stringify(request));
+                function loadCourses(){
+                    $.ajax({
+                        url : '/loadCourses',
+                        type : 'GET',
+                        async: false,
+                        data : {
+                            'userid' : userid
+                        },
+                        dataType:'json',
+                        success : function(data) {
+                            for (var x = 0; x<data.length; x++){
+                               $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link" aria-owns="submenu-1" href="#" value="'+data[x].courseId+'">'+ data[x].courseName + '</a></li>');
+                            }
+                        },
+                        error : function(request,error)
+                        {
+                            alert("Request: "+JSON.stringify(request));
+                        }
+                    });
                 }
-            });
-        }
 
         function initialize() {
         		var menuEl = document.getElementById('ml-menu'),

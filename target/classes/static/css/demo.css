@@ -306,9 +306,10 @@ a:hover {
 	border-radius: 5px;
 }
 
-#form-header{
+.form-header{
     text-align: center;
     color: #29abe2;
+    margin-top: 1em;
 }
 .step-number{
   font-size: 18px;
@@ -473,7 +474,7 @@ table{
 .add-lab-form,.add-course-form{
 	margin: 0 auto;
 	max-width: 50vw;
-	padding-top: 40px;
+	padding-top: 20px;
 	padding-bottom: 40px;
 }
 

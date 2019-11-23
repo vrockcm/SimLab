@@ -395,6 +395,9 @@ function duplicateLab(x){
 }
 
 $(document).ready(function() {
+
+    var editingFlag=0;
+    var students,instructors;
     //This gets the email from the front end and passes calls the loadCourses function with this email.
     loadCourses();
     initialize();
@@ -472,7 +475,7 @@ $(document).ready(function() {
 
 	function toggleC() {
         if($(".add-course-form").is(":visible")){
-            $('.add-course-form').fadeOut( "fast" , function() {
+            $('.add-course-form ').fadeOut( "fast" , function() {
                 $(".tabs-visb").fadeIn( "fast");
             });
         }
@@ -493,14 +496,25 @@ $(document).ready(function() {
 	$(function () {
 		$(".add-lab-form").hide();
 		$(".add-course-form").hide();
-		$("#form-header").hide();
 		$('.addl_btn').click(function(){
-			$("#form-header").text("Add Lab");
 			toggleL();
 		});
 		$('.addc_btn').click(function(){
-		    $("#form-header").text("Add Course");
-        	toggleC();
+		    $("#Change-Header").text("Add Course");
+		    $(".add-course-form").attr("action", actionMakeCourse);
+		    $("#CourseName").val("");
+            $("#CourseDesc").val("");
+            $('#StudentList').multiSelect('deselect_all');
+            $('#InstructorList').multiSelect('deselect_all');
+        	if(editingFlag!=1)
+        	    toggleC();
+        	else{
+        	     editingFlag = 0;
+        	     $(".form-wrap").scrollTop(0);
+        	     $(".add-course-form").fadeOut("fast", function() {
+                       $('.add-course-form').fadeIn( "fast" );
+                });
+        	}
         });
 	});
 
@@ -548,23 +562,45 @@ $(document).ready(function() {
                        $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link" aria-owns="submenu-1" href="#" value="'+data[x].courseId+'">'+ data[x].courseName + '</a>'+
                        '<a id="'+data[x].courseId+'" class="edit-anchor"><img class="edit-icon" src="/images/edit.png"></a></li>');
                         $("#"+data[x].courseId).click(function() {
-                            $("#form-header").text("Edit Course");
-                            toggleC();
+                            $("#Change-Header").text("Edit Course");
+                            if($(".add-course-form").is(":hidden")){
+                                toggleC();
+                            }
+                            editingFlag = 1;
+                            var courseId  = this.id;
                             $.ajax({
-                                url : '/editCourse',
+                                url : '/fetchCourseInfo',
                                 type: 'GET',
                                 async: false,
                                 data : {
-                                    'courseId' : this.id
+                                    'courseId' : courseId
                                 },
                                 dataType: 'json',
                                 success : function(data){
-                                    $("#CourseName").val(data.courseName)
-                                    $("#CourseDesc").val(data.courseDesc)
-                                    $("#StudentList").empty();
-                                    $("#InstructorList").empty();
 
+                                    function studentExists(id) {
+                                      return data.students.some(function(el) {
+                                        return el.id === id;
+                                      });
+                                    }
+                                    function instructorExists(id) {
+                                      return data.instructors.some(function(el) {
+                                        return el.id === id;
+                                      });
+                                    }
+
+                                    $(".add-course-form").attr("action", actionEditCourse);
+                                    $("#CourseName").val(data.courseName);
+                                    $("#CourseDesc").val(data.courseDesc);
+                                    $('#StudentList').multiSelect('deselect_all');
+                                    $('#InstructorList').multiSelect('deselect_all');
+                                    $(".form-wrap").scrollTop(0);
+                                    $(".add-course-form").fadeOut("fast", function() {
+                                           $('.add-course-form').fadeIn( "fast" );
+                                    });
+                                    $('.CourseNumberDiv').empty().append('<input name="courseId" type="hidden" value="'+ courseId +'">')
                                     for(var i=0; i<data.allStudents.length; i++){
+<<<<<<< HEAD
                                         var checkedIndex = 0;
                                         if(data.students[checkedIndex] != null && data.allStudents[i].id == data.students[checkedIndex].id){
                                             $("#StudentList").append('<li class="list-group-item"><div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="' + data.allStudents[i].id +
@@ -594,6 +630,19 @@ $(document).ready(function() {
                                                                               ' '+data.allInstructors[i].lastName+'</label></div></li>');
                                              }
                                          }
+=======
+                                        if(studentExists(data.allStudents[i].id)){
+                                           $('#StudentList').multiSelect('select', data.allStudents[i].id.toString());
+                                        }
+                                    }
+                                    for(var i=0; i<data.allInstructors.length; i++){
+                                        if(data.allInstructors[i].id !=userid && instructorExists(data.allInstructors[i].id)){
+                                           $('#InstructorList').multiSelect('select', data.allInstructors[i].id.toString());
+                                        }
+                                    }
+                                    $('#StudentList').multiSelect("refresh");
+                                    $('#InstructorList').multiSelect("refresh");
+>>>>>>> edbdbc5f38420384e78186d949461768877a90eb
                                 },
                                 error : function(request, error)
                                 {
@@ -649,8 +698,8 @@ $(document).ready(function() {
                     else if($(".add-lab-form").is(":visible")){
                         toggleL();
                     }
-                    $('#CourseNumberDiv').empty();
-                    $('#CourseNumberDiv').append('<input name="courseId" type="hidden" value="'+ $(".menu__link--current").attr("value") +'">')
+                    $('.CourseNumberDiv').empty();
+                    $('.CourseNumberDiv').append('<input name="courseId" type="hidden" value="'+ $(".menu__link--current").attr("value") +'">')
                     $.ajax({
                         url : '/loadLabs',
                         type : 'GET',
@@ -689,6 +738,7 @@ $(document).ready(function() {
                         }
                     });
                 }
+<<<<<<< HEAD
 
         //		function loadDummyData(ev, itemName) {
         //			ev.preventDefault();
@@ -713,6 +763,8 @@ $(document).ready(function() {
         //			}, 700);
         //
         //		}
+=======
+>>>>>>> edbdbc5f38420384e78186d949461768877a90eb
         }
 });
 
