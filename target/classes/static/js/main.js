@@ -3,7 +3,8 @@
  * http://www.codrops.com
  *
  * Licensed under the MIT license.
- * http://www.opensource.org/licenses/mit-license.php
+ * http://www.opensource.org/licenses
+ it-license.php
  *
  * Copyright 2015, Codrops
  * http://www.codrops.com
@@ -389,7 +390,7 @@
 //duplicate pressed
 function duplicateLab(x){
     id = $(x).parents()[1].id;
-    
+
     alert("Pressed " + $(x).parents()[1].id);
 }
 
