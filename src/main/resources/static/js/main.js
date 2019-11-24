@@ -386,6 +386,27 @@
 	window.MLMenu = MLMenu;
 
 })(window);
+function deleteLab(x){
+    id = $(x).parents()[1].id;
+    labInfo = id.split("###");
+    $.ajax({
+        url : '/DeleteLab',
+        type : 'POST',
+        async: false,
+        data : {
+            'labId' : labInfo[1],
+            'courseName' : labInfo[0]
+        },
+        success : function(data) {
+            $(".menu__link--current")[0].click();
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
+
 
 //duplicate pressed
 function duplicateLab(x){
@@ -402,35 +423,12 @@ function duplicateLab(x){
                             success : function(data) {
                                 var obj = $(".menu__link--current");
                                 $(".menu__link--current")[0].click();
-//                                $( ".addl_btn" ).prop( "disabled", false );
-//                                closeMenu();
-//                                gridWrapper1.innerHTML = '';
-//                                gridWrapper2.innerHTML = '';
-//                                classie.add(gridWrapper1, 'content--loading');
-//                                classie.add(gridWrapper2, 'content--loading');
-//                                setTimeout(function() {
-//                                    classie.remove(gridWrapper1, 'content--loading');
-//                                    var content = '<ul class="products">';
-//
-//                                    var i = 0;
-//                                    for(i = 0;i<data.length;i++){
-//                                       var lab = data[i];
-//                                       content+= dummyData["cardbody1"]+labInfo[0]+"###"+lab.labId+dummyData["cardbody2"]+lab.labName + dummyData["cardbody3"] + lab.labDesc + dummyData["cardbody4"];
-//
-//                                    }
-//                                    content+="</ul>"
-//                                    gridWrapper1.innerHTML = content;
-//                                    classie.remove(gridWrapper2, 'content--loading');
-//                                    gridWrapper2.innerHTML = content;
-//                                }, 700);
                             },
                             error : function(request,error)
                             {
                                 alert("Request: "+JSON.stringify(request));
                             }
                         });
-
-    alert("Pressed " + id);
 }
 
 $(document).ready(function() {

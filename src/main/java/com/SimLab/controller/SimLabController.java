@@ -245,6 +245,14 @@ public class SimLabController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/DeleteLab", method = RequestMethod.POST)
+    public String deleteLab(@RequestParam String labId, @RequestParam String courseName){
+        Lab lab = labRepository.findByLabId(Integer.parseInt(labId));
+        labRepository.delete(lab);
+        return "";
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/DuplicateLab", method = RequestMethod.POST)
     public String duplicateLab(@RequestParam String labId, @RequestParam String courseName){
         Lab lab = labRepository.findByLabId(Integer.parseInt(labId));
@@ -261,9 +269,12 @@ public class SimLabController {
             labMaterialAssociationRepository.save(newLM);
         }
         for(LabInstructionAssociation lI: labInsts){
+            Instruction inst = instructionRepository.findByInstId(lI.getInstructionId());
+            Instruction newInst = new Instruction(inst);
+            instructionRepository.save(newInst);
             LabInstructionAssociation newLI = new LabInstructionAssociation();
             newLI.setLabId(newLab.getLabId());
-            newLI.setInstructionId(lI.getInstructionId());
+            newLI.setInstructionId(newInst.getInstId());
             labInstructionAssociationRepository.save(newLI);
         }
         int courseId = courseRepository.getCourseId(courseName);
@@ -271,7 +282,7 @@ public class SimLabController {
         courseLab.setLabId(newLab.getLabId());
         courseLab.setCourseId(courseId);
         courseLabAssociationRepository.save(courseLab);
-        return "{ \"age\":30 }";
+        return "";
     }
 
     @RequestMapping(value = "/MakeLab", method = RequestMethod.POST)
