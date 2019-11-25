@@ -26,4 +26,15 @@ public class Instruction {
     private String parameter2;
     @Column(name = "Parameter3")
     private String parameter3;
+
+    public Instruction(Instruction inst){
+        name = inst.getName();
+        material1Id = inst.getMaterial1Id();
+        material2Id = inst.getMaterial2Id();
+        material3Id = inst.getMaterial3Id();
+        parameter1 = inst.getParameter1();
+        parameter2 = inst.getParameter2();
+        parameter3 = inst.getParameter3();
+    }
+    public Instruction(){}
 }

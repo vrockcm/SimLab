@@ -15,21 +15,12 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 	<!-- Material Design Bootstrap -->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.10/css/mdb.min.css" rel="stylesheet">
-	<!-- JQuery -->
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<!-- Bootstrap tooltips -->
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
-	<!-- Bootstrap core JavaScript -->
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
-	<!-- MDB core JavaScript -->
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.10/js/mdb.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
 	<link rel="shortcut icon" href="favicon.ico">
 	<!-- demo styles -->
 	<link rel="stylesheet" type="text/css" th:href="@{/css/demo.css}"/>
 	<!-- menu styles -->
 	<link rel="stylesheet" type="text/css" th:href="@{/css/component.css}"/>
-	<script th:src="@{/js/modernizr-custom.js}"></script>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/multi-select.css}"/>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
@@ -92,12 +83,12 @@
 			</div>
 
 			<div class="form-wrap">
-				<h1 id="form-header"></h1>
 				<form class="add-lab-form" th:action="@{/MakeLab}" method="POST">
+					<h1 class="form-header">Add Lab</h1>
 				  <div class="form-group">
 					<label for="LabName">Lab Name</label>
 					<input type="text" class="form-control" name="labName" id="LabName" placeholder="Acid-Base Lab">
-					  <div id="CourseNumberDiv">
+					  <div class="CourseNumberDiv">
 
 					  </div>
 				  </div>
@@ -144,9 +135,13 @@
 
 
 				<form class="add-course-form" th:action="@{/MakeCourse}" method="POST">
+					<h1 class="form-header" id="Change-Header">Add Course</h1>
 					<div class="form-group">
 						<label for="CourseName">Course Name</label>
 						<input type="text" class="form-control" name="courseName" id="CourseName" placeholder="Eg: CHE131">
+						<div class="CourseNumberDiv">
+
+						</div>
 					</div>
 					<div class="form-group">
 						<label for="CourseDesc">Course Description</label>
@@ -154,30 +149,22 @@
 					</div>
 					<div class="form-group">
 						<label>Select Students</label>
-						<div class="Select">
-							<ul class="list-group list-group-flush", id="StudentList">
-								<li class="list-group-item" th:each="student : ${students}">
-									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" th:id="${student.id}" name="checkedStudents" th:value="${student.id}">
-										<label class="custom-control-label" th:for="${student.id}" th:text="${student.name + ' '+ student.lastName}"></label>
-									</div>
-								</li>
-							</ul>
-						</div>
+						<select multiple='multiple' id="StudentList" name="students">
+								<optgroup id="outgroup-student" label='Students'>
+								<option th:id="${student.id}" th:value="${student.id}" th:each="student : ${students}"
+										th:text="${student.name + ' '+ student.lastName}"></option>
+								</optgroup>
+						</select>
 					</div>
 					<div class="form-group">
 						<label>Select Instructors</label>
-						<div class="Select">
-							<ul class="list-group list-group-flush", id="InstructorList">
-								<li class="list-group-item" th:each="instructor : ${instructors}">
-									<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" th:id="${instructor.id}" name="checkedInstructors" th:value="${instructor.id}">
-										<label class="custom-control-label" th:for="${instructor.id}" th:text="${instructor.name + ' '+ instructor.lastName}"></label>
-									</div>
-								</li>
-							</ul>
-							<input type="hidden" name="UserId" th:value="${UserId}">
-						</div>
+						<select multiple='multiple' id="InstructorList" name="instructors">
+							<optgroup id="outgroup-instructor" label='Instructors'>
+							<option th:id="${instructor.id}" th:value="${instructor.id}" th:each="instructor : ${instructors}"
+									th:text="${instructor.name + ' '+ instructor.lastName}"></option>
+							</optgroup>
+						</select>
+						<input type="hidden" name="UserId" th:value="${UserId}">
 					</div>
 					<button type="submit" class="btn btn-primary">Submit</button>
 				</form>
@@ -185,7 +172,18 @@
 
 		</div>
 	</div>
+
+	<!-- JQuery -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<!-- Bootstrap tooltips -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+	<!-- Bootstrap core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<!-- MDB core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.10/js/mdb.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
 	<!-- /view -->
+	<script th:src="@{/js/modernizr-custom.js}"></script>
 	<script th:src="@{/js/classie.js}"></script>
 	<script th:src="@{/js/dummydata.js}"></script>
 	<script th:src="@{/js/main.js}"></script>
@@ -194,10 +192,16 @@
 			var email = [[${Email}]];
 			var userid = [[${UserId}]];
 			var csspath = [[@{/js/main.js}]];
+			var actionMakeCourse = [[@{/MakeCourse}]];
+			var actionEditCourse = [[@{/EditCourse}]];
+			var actionMakeCourse = [[@{/MakeCourse}]];
+			var actionEditCourse = [[@{/EditCourse}]];
 		/*]]>*/
 	</script>
 	<script>
 		$(document).ready(function() {
+			$('#StudentList').multiSelect({ selectableOptgroup: true });
+			$('#InstructorList').multiSelect({ selectableOptgroup: true });
 			var el = document.getElementById('cardigans');
 			var sortable = Sortable.create(el, {
 				 animation: 150,
@@ -211,7 +215,7 @@
 			});
 		});
 	</script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
+	<script th:src="@{/js/jquery.multi-select.js}"></script>
 </body>
 
 </html>
