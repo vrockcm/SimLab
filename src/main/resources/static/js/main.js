@@ -406,6 +406,44 @@ function deleteLab(x){
         }
     });
 }
+function deleteInstruction(card){
+    $(card).parents()[0].remove();
+}
+
+
+
+function MakeLab(){
+    var instructions = [];
+    for(var i = 0 ; i < $('.instruction_cards').children().length ; i++){
+        instructions.push({
+          Container1: $($('.Container1')[i]).val(),
+          Container2: $($('.Container2')[i]).val(),
+          targetTemp : $($('.targetTemp')[i]).val(),
+          targetVolume: $($('.targetVolume')[i]).val()
+        });
+    }
+    $.ajax({
+        url : '/MakeLab',
+        type : 'POST',
+        async: false,
+        data : {
+            'courseId' : $("#courseId").val(),
+            'labName' : $("#LabName").val(),
+            'labDescription' : $("#LabDesc").val(),
+            'Solutions' : $("#Solutions").val(),
+            'Containers' : $("#Containers").val(),
+            'Tools' : $("#Tools").val(),
+            'Instructions' : instructions
+        },
+        dataType:'json',
+        success : function(data) {
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
 
 
 //duplicate pressed
@@ -413,22 +451,22 @@ function duplicateLab(x){
     id = $(x).parents()[1].id; //CSE222###9
     labInfo = id.split("###");
     $.ajax({
-                            url : '/DuplicateLab',
-                            type : 'POST',
-                            async: false,
-                            data : {
-                                'labId' : labInfo[1],
-                                'courseName' : labInfo[0]
-                            },
-                            success : function(data) {
-                                var obj = $(".menu__link--current");
-                                $(".menu__link--current")[0].click();
-                            },
-                            error : function(request,error)
-                            {
-                                alert("Request: "+JSON.stringify(request));
-                            }
-                        });
+        url : '/DuplicateLab',
+        type : 'POST',
+        async: false,
+        data : {
+            'labId' : labInfo[1],
+            'courseName' : labInfo[0]
+        },
+        success : function(data) {
+            var obj = $(".menu__link--current");
+            $(".menu__link--current")[0].click();
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
 }
 
 $(document).ready(function() {
@@ -455,38 +493,61 @@ $(document).ready(function() {
 
 
     function cardMaker(cardHeader) {
-        var values = $('#Equipment').val();
-        var newCardNumber = $('.instruction_cards').children().length +1;
-        if(cardHeader == "Measure" || cardHeader == "Move"){
-            var html = '<div class="card instruction"><div class="card-body">'+
-            '<p class="step-number">'+newCardNumber+'</p>'+
-            '<h4 class="card-title">'+cardHeader+'</h4>'+
-            '<input name="instructionNames" type="hidden" value="'+cardHeader+'">' +
-            '<select name="instMat1Names" class="selectpicker" data-width="fit">';
-            for(x of values){
-                html += '<option>'+x+'</option>';
-            }
-            html +='</select></div></div>';
-            $('.instruction_cards').append(html);
-         }
-         else{
-                     var html = '<div class="card instruction"><div class="card-body">'+
-                     '<p class="step-number">'+newCardNumber+'</p>'+
-                     '<h4 class="card-title">'+cardHeader+'</h4>'+
-                     '<input name="instructionNames" type="hidden" value="'+cardHeader+'">' +
-                     '<div style="display: inline-grid;"><select name="instMat1Names" class="selectpicker" data-width="fit">';
-                     for(x of values){
-                         html += '<option>'+x+'</option>';
-                     }
-                     html +='</select></br>'+
-                     '<select name="instMat2Names" class="selectpicker" data-width="fit">';
-                      for(x of values){
-                          html += '<option>'+x+'</option>';
-                      }
-                     '</select></div></div></div>';
-                     $('.instruction_cards').append(html);
-         }
-         $(".selectpicker").selectpicker('refresh');
+        var newCardNumber = $('.instruction_cards').children().length;
+        var html = '<div class="card instruction">'+
+                   '<button type="button" class="close" onclick="deleteInstruction(this)" aria-label="Close"><span aria-hidden="true">×</span></button>'+
+                   '<div class="card-body">'+
+                   '<p class="step-number">'+(newCardNumber+1)+'</p>'+
+                   '<h4 class="card-title">'+cardHeader+'</h4>'+
+                   '<input class="instructionNames" type="hidden" value="'+cardHeader+'">';
+            html += '<select class="selectpicker Container1" data-width="fit"><optgroup label="Solutions">';
+                for(x of $('#Solutions').val()){
+                    html += '<option>'+x+'</option>';
+                }
+            html +='</outgroup><optgroup label="Containers">';
+                for(x of $('#Containers').val()){
+                    html += '<option>'+x+'</option>';
+                }
+            html +='</outgroup></select></br>';
+
+            html += '<select class="selectpicker Container2" data-width="fit"><optgroup label="Solutions">';
+                for(x of $('#Solutions').val()){
+                    html += '<option>'+x+'</option>';
+                }
+            html +='</outgroup><optgroup label="Containers">';
+                for(x of $('#Containers').val()){
+                    html += '<option>'+x+'</option>';
+                }
+            html +='</outgroup></select>';
+
+            html +=  '<div class="input-group mb-2 targetTempDiv">'+
+                     '<input type="text" class="form-control" class="targetTemp">'+
+                     '<div class="input-group-append"><div class="input-group-text">°C</div></div></div>';
+            html +=  '<div class="input-group mb-2 targetVolumeDiv">'+
+                     '<input type="text" class="form-control" class="targetVolume">'+
+                     '<div class="input-group-append"><div class="input-group-text">mL</div></div></div>';
+            html += '</div></div>';
+
+        $('.instruction_cards').append(html);
+        $(".selectpicker").selectpicker('refresh');
+        newCardNumber = $('.instruction_cards').children().length - 1;
+        if(cardHeader == "Mix" || cardHeader == "Transfer"){
+            $($(".targetTempDiv")[newCardNumber]).hide();
+            $($(".targetVolumeDiv")[newCardNumber]).hide();
+        }
+        else if(cardHeader == "Weigh" || cardHeader == "Swirl" || cardHeader == "Rinse"){
+            $($(".Container2")[newCardNumber*2]).selectpicker('hide');
+            $($(".targetTempDiv")[newCardNumber]).hide();
+            $($(".targetVolumeDiv")[newCardNumber]).hide();
+        }
+        else if(cardHeader == "Heat" || cardHeader == "Cool"){
+            $($(".Container2")[newCardNumber*2]).selectpicker('hide');
+            $($(".targetVolumeDiv")[newCardNumber]).hide();
+        }
+        else if(cardHeader == "Draw Up"){
+            $($(".Container2")[newCardNumber*2]).selectpicker('hide');
+            $($(".targetTempDiv")[newCardNumber]).hide();
+        }
     }
 
 
@@ -635,7 +696,7 @@ $(document).ready(function() {
                                     $(".add-course-form").fadeOut("fast", function() {
                                            $('.add-course-form').fadeIn( "fast" );
                                     });
-                                    $('.CourseNumberDiv').empty().append('<input name="courseId" type="hidden" value="'+ courseId +'">')
+                                    $('.CourseNumberDiv').empty().append('<input name="courseId" id="courseId" type="hidden" value="'+ courseId +'">')
                                     for(var i=0; i<data.allStudents.length; i++){
                                         if(studentExists(data.allStudents[i].id)){
                                            $('#StudentList').multiSelect('select', data.allStudents[i].id.toString());

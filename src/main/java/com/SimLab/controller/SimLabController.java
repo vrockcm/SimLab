@@ -289,28 +289,11 @@ public class SimLabController {
     public String createNewLab(@RequestParam String courseId,
                                         @RequestParam String labName,
                                         @RequestParam(required = false, defaultValue = "") String labDescription,
-                                        @RequestParam(required = false, defaultValue = "") List<String> materialNames,
-                                        @RequestParam(required = false, defaultValue = "") List<String> instructionNames,
-                                        @RequestParam(required = false, defaultValue = "") List<String> instMat1Names,
-                                        @RequestParam(required = false, defaultValue = "") List<String> instMat2Names,
-                                        @RequestParam(required = false, defaultValue = "") List<String> instMat3Names,
-                                        @RequestParam(required = false, defaultValue = "") List<String> instParam1Names,
-                                        @RequestParam(required = false, defaultValue = "") List<String> instParam2Names,
-                                        @RequestParam(required = false, defaultValue = "") List<String> instParam3Names) {
+                                        @RequestParam(required = false, defaultValue = "") List<String> Solutions,
+                                        @RequestParam(required = false, defaultValue = "") List<String> Containers,
+                                        @RequestParam(required = false, defaultValue = "") List<String> Tools,
+                                        @RequestParam(required = false, defaultValue = "") List<Instruction> Instructions) {
 
-        ModelAndView modelAndView = new ModelAndView();
-        Lab lab = new Lab();
-        lab.setLabName(labName);
-        lab.setLabDesc(labDescription);
-        labRepository.save(lab);
-        addMaterialsToLab(lab, materialNames);
-        addInstructionsToLab(lab, instructionNames, instMat1Names, instMat2Names, instMat3Names,
-                instParam1Names, instParam2Names, instParam3Names);
-        CourseLabAssociation courseLab = new CourseLabAssociation();
-        courseLab.setCourseId(Integer.parseInt(courseId));
-        courseLab.setLabId(lab.getLabId());
-        courseLabAssociationRepository.save(courseLab);
-        modelAndView.setViewName("/instructor/index");
         return "redirect:/instructor/index";
     }
 

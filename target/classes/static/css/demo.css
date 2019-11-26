@@ -593,7 +593,7 @@ user-select: none;
 .instruction{
     width: 12em;
     height: 90%;
-    display: inline-block;
+    display: inline-flex;
     margin: 10px;
     border-radius: 5px;
 }

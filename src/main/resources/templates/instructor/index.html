@@ -83,37 +83,48 @@
 			</div>
 
 			<div class="form-wrap">
-				<form class="add-lab-form" th:action="@{/MakeLab}" method="POST">
+				<form class="add-lab-form" onsubmit="MakeLab()" method="POST">
 					<h1 class="form-header">Add Lab</h1>
-				  <div class="form-group">
-					<label for="LabName">Lab Name</label>
-					<input type="text" class="form-control" name="labName" id="LabName" placeholder="Acid-Base Lab">
-					  <div class="CourseNumberDiv">
+				  	<div class="form-group">
+						<label for="LabName">Lab Name</label>
+						<input type="text" class="form-control" name="labName" id="LabName" placeholder="Acid-Base Lab">
+							<div class="CourseNumberDiv">
 
-					  </div>
+							</div>
+				  	</div>
+				    <div class="form-group">
+						<label for="LabDesc">Lab Description</label>
+						<textarea class="form-control" id="LabDesc" name="labDescription" rows="3"></textarea>
+				  	</div>
+				  	<div class="form-group">
+						<div class="row">
+							<div class="col-sm text-center mx-auto">
+								<label for="Solutions">Solutions</label>
+								<select class="selectpicker" id="Solutions" name="Solutions" data-live-search="true" multiple title="Choose Solutions">
+<!--									<option th:id="${solution.id}" th:value="${solution.id}" th:each="solution : ${solutions}"-->
+<!--											th:text="${solution.name}"></option>-->
+									<option value="HCl" name="materialNames">HCl</option>
+									<option value="Poop" name="materialNames">Poop</option>
+								</select>
+							</div>
+							<div class="col-sm text-center mx-auto">
+								<label for="Containers">Containers</label>
+								<select class="selectpicker" id="Containers" name="Containers" data-live-search="true" multiple title="Choose Containers">
+<!--									<option th:id="${container.id}" th:value="${container.id}" th:each="container : ${containers}"-->
+<!--											th:text="${container.name}"></option>-->
+										<option value="Beaker" name="materialNames">Beaker</option>
+										<option value="Flask" name="materialNames">Flask</option>
+								</select>
+							</div>
+							<div class="col-sm text-center mx-auto">
+								<label for="Tools">Tools</label>
+								<select class="selectpicker" id="Tools" name="Tools" data-live-search="true" multiple title="Choose Tools">
+									<option th:id="${tool.id}" th:value="${tool.id}" th:each="tool : ${tools}"
+											th:text="${tool.name}"></option>
+								</select>
+							</div>
+					  	</div>
 				  </div>
-				   <div class="form-group">
-					<label for="LabDesc">Lab Description</label>
-					<textarea class="form-control" id="LabDesc" name="labDescription" rows="3"></textarea>
-				  </div>
-				  <div class="form-group">
-					<label for="Equipment">Select Equipment</label> </br>
-					<select class="selectpicker" id="Equipment" name="materialNames" data-live-search="true" multiple title="Choose Equipment">
-					  <optgroup label="Glassware">
-						<option value="Beaker" name="materialNames">Beaker</option>
-						<option value="Flask" name="materialNames">Flask</option>
-					  </optgroup>
-					  <optgroup label="Solutions">
-						<option value="HCl" name="materialNames">HCl</option>
-						<option value="NaCl" name="materialNames">NaCl</option>
-						<option value="Na2CO3" name="materialNames">Na2CO3</option>
-						</optgroup>
-						<optgroup label="Tools">
-							<option value="Scale" name="materialNames">Scale</option>
-						</optgroup>
-					</select>
-				  </div>
-
 				  <div class="form-group">
 					<label style="margin-top: 10px;">Add Steps</label>
 					<div class="dropdown">
@@ -121,9 +132,14 @@
 						Select Steps
 					  </button>
 					  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-						<button class="dropdown-item" value="Measure" type="button">Measure</button>
-						<button class="dropdown-item" value="Move" type="button">Move into workspace</button>
-						<button class="dropdown-item" value="Mix" type="button">Mix</button>
+						  <button class="dropdown-item" value="Mix" type="button">Mix</button>
+						  <button class="dropdown-item" value="Weigh" type="button">Weigh</button>
+						  <button class="dropdown-item" value="Swirl" type="button">Swirl</button>
+						  <button class="dropdown-item" value="Transfer" type="button">Transfer</button>
+						  <button class="dropdown-item" value="Heat" type="button">Heat</button>
+						  <button class="dropdown-item" value="Cool" type="button">Cool</button>
+						  <button class="dropdown-item" value="Rinse" type="button">Rinse</button>
+						  <button class="dropdown-item" value="Draw Up" type="button">Draw Up</button>
 					  </div>
 					</div>
 					<div class="instruction_cards" id="cardigans">
@@ -151,7 +167,7 @@
 						<label>Select Students</label>
 						<select multiple='multiple' id="StudentList" name="students">
 								<optgroup id="outgroup-student" label='Students'>
-								<option th:id="${student.id}" th:value="${student.id}" th:each="student : ${students}"
+								<option th:value="${student.id}" th:each="student : ${students}"
 										th:text="${student.name + ' '+ student.lastName}"></option>
 								</optgroup>
 						</select>
@@ -160,7 +176,7 @@
 						<label>Select Instructors</label>
 						<select multiple='multiple' id="InstructorList" name="instructors">
 							<optgroup id="outgroup-instructor" label='Instructors'>
-							<option th:id="${instructor.id}" th:value="${instructor.id}" th:each="instructor : ${instructors}"
+							<option th:value="${instructor.id}" th:each="instructor : ${instructors}"
 									th:text="${instructor.name + ' '+ instructor.lastName}"></option>
 							</optgroup>
 						</select>
@@ -182,6 +198,7 @@
 	<!-- MDB core JavaScript -->
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.10/js/mdb.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
 	<!-- /view -->
 	<script th:src="@{/js/modernizr-custom.js}"></script>
 	<script th:src="@{/js/classie.js}"></script>
