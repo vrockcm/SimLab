@@ -1,23 +1,19 @@
 package com.SimLab.model.dao;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
+@Data
 @Entity
-public class Material {
+@Inheritance
+public abstract class Material {
+
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
-    @Column(name = "Id")
-    private int materialId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name= "material_id")
+    private int id;
 
-    @Column(name = "Name")
-    private String materialName;
-    @Column(name = "Description")
-    private String materialDesc;
-    @Column(name = "Attribute1")
-    private String attribute1;
-    @Column(name = "Attribute2")
-    private String attribute2;
-    @Column(name = "Attribute3")
-    private String attribute3;
-
+    @Column(name = "material_name")
+    private String name;
 }

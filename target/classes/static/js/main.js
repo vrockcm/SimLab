@@ -407,6 +407,10 @@ function deleteLab(x){
     });
 }
 
+function deleteCourse(x){
+
+}
+
 
 //duplicate pressed
 function duplicateLab(x){

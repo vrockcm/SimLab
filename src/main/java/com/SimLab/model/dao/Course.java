@@ -3,6 +3,7 @@ package com.SimLab.model.dao;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -18,4 +19,7 @@ public class Course {
     private String courseName;
     @Column(name = "Description")
     private String courseDesc;
+
+    @ManyToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private Set<UserCourseAssociation> userCourse;
 }

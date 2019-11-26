@@ -1,5 +1,6 @@
 package com.SimLab.controller;
 
+import com.SimLab.service.LabService;
 import lombok.var;
 import com.SimLab.model.CourseInfo;
 import com.SimLab.model.dao.*;
@@ -15,9 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 @Controller
@@ -36,14 +35,20 @@ public class SimLabController {
     private UserService userService;
 
     @Autowired
-    private LabRepository labRepository;
+    private LabService labService;
+
     @Autowired
     private MaterialRepository materialRepository;
     @Autowired
-    private InstructionRepository instructionRepository;
-
+    private LabRepository labRepository;
     @Autowired
-    private LabMaterialAssociationRepository labMaterialAssociationRepository;
+    private ToolRepository toolRepository;
+    @Autowired
+    private ContainerRepository containerRepository;
+    @Autowired
+    private SolutionRepository solutionRepository;
+    @Autowired
+    private InstructionRepository instructionRepository;
 
     @Autowired
     private LabInstructionAssociationRepository labInstructionAssociationRepository;
@@ -253,21 +258,26 @@ public class SimLabController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/DeleteCourse", method = RequestMethod.POST)
+    public String deleteCourse(@RequestParam String courseName){
+        User user = userService.findUserByEmail(courseName);
+        userService.removeUser(user);
+        return "";
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/DuplicateLab", method = RequestMethod.POST)
     public String duplicateLab(@RequestParam String labId, @RequestParam String courseName){
         Lab lab = labRepository.findByLabId(Integer.parseInt(labId));
         Lab newLab = new Lab();
         newLab.setLabName(lab.getLabName()+"(copy)");
         newLab.setLabDesc(lab.getLabDesc());
+        newLab.setTools(lab.getTools());
+        newLab.setContainers(lab.getContainers());
+        newLab.setSolutions(lab.getSolutions());
         labRepository.save(newLab);
-        List<LabMaterialAssociation> labMats = labMaterialAssociationRepository.findMaterialsByLabId(Integer.parseInt(labId));
+
         List<LabInstructionAssociation> labInsts = labInstructionAssociationRepository.findInstructionsByLabId(Integer.parseInt(labId));
-        for(LabMaterialAssociation lM: labMats){
-            LabMaterialAssociation newLM = new LabMaterialAssociation();
-            newLM.setLabId(newLab.getLabId());
-            newLM.setMaterialId(lM.getMaterialId());
-            labMaterialAssociationRepository.save(newLM);
-        }
         for(LabInstructionAssociation lI: labInsts){
             Instruction inst = instructionRepository.findByInstId(lI.getInstructionId());
             Instruction newInst = new Instruction(inst);
@@ -289,7 +299,9 @@ public class SimLabController {
     public String createNewLab(@RequestParam String courseId,
                                         @RequestParam String labName,
                                         @RequestParam(required = false, defaultValue = "") String labDescription,
-                                        @RequestParam(required = false, defaultValue = "") List<String> materialNames,
+                                        @RequestParam(required = false, defaultValue = "") List<String> toolNames,
+                                        @RequestParam(required = false, defaultValue = "") List<String> containerNames,
+                                        @RequestParam(required = false, defaultValue = "") List<String> solutionNames,
                                         @RequestParam(required = false, defaultValue = "") List<String> instructionNames,
                                         @RequestParam(required = false, defaultValue = "") List<String> instMat1Names,
                                         @RequestParam(required = false, defaultValue = "") List<String> instMat2Names,
@@ -302,8 +314,7 @@ public class SimLabController {
         Lab lab = new Lab();
         lab.setLabName(labName);
         lab.setLabDesc(labDescription);
-        labRepository.save(lab);
-        addMaterialsToLab(lab, materialNames);
+        addMaterialsToLab(lab, toolNames, containerNames, solutionNames);
         addInstructionsToLab(lab, instructionNames, instMat1Names, instMat2Names, instMat3Names,
                 instParam1Names, instParam2Names, instParam3Names);
         CourseLabAssociation courseLab = new CourseLabAssociation();
@@ -314,14 +325,20 @@ public class SimLabController {
         return "redirect:/instructor/index";
     }
 
-    private void addMaterialsToLab(Lab lab, List<String> materials){
-        for(String mat: materials){
-            List<Integer> id = materialRepository.findIdByName(mat);
-            LabMaterialAssociation labMat = new LabMaterialAssociation();
-            labMat.setLabId(lab.getLabId());
-            labMat.setMaterialId(id.get(0));
-            labMaterialAssociationRepository.save(labMat);
+    private void addMaterialsToLab(Lab lab, List<String> toolNames, List<String> containerNames, List<String> solutionNames){
+        Set<Tool> tools = new HashSet<Tool>();
+        Set<Container> containers = new HashSet<Container>();
+        Set<Solution> solutions = new HashSet<Solution>();
+        for(String mat: toolNames){
+            tools.add(toolRepository.findByName(mat));
         }
+        for(String mat: containerNames){
+            containers.add(containerRepository.findByName(mat));
+        }
+        for(String mat: solutionNames){
+            solutions.add(solutionRepository.findByName(mat));
+        }
+        labService.saveLab(lab, tools, containers, solutions);
     }
 
     private void addInstructionsToLab(Lab lab, List<String> instNames, List<String> instMat1Names,
@@ -338,17 +355,17 @@ public class SimLabController {
                 if(instMat1Names.size()!=0) {
                     matName = instMat1Names.get(i);
                     if (!matName.equals(""))
-                        inst.setMaterial1Id(materialRepository.findIdByName(instMat1Names.get(i)).get(0));
+                        inst.setMaterial1Id(materialRepository.findByName(instMat1Names.get(i)).getId());
                 }
                 if(instMat2Names.size()!=0) {
                     matName = instMat2Names.get(i);
                     if (!matName.equals(""))
-                        inst.setMaterial2Id(materialRepository.findIdByName(instMat2Names.get(i)).get(0));
+                        inst.setMaterial2Id(materialRepository.findByName(instMat2Names.get(i)).getId());
                 }
                 if(instMat3Names.size()!=0) {
                     matName = instMat3Names.get(i);
                     if (!matName.equals(""))
-                        inst.setMaterial3Id(materialRepository.findIdByName(instMat3Names.get(i)).get(0));
+                        inst.setMaterial3Id(materialRepository.findByName(instMat3Names.get(i)).getId());
                 }
                 //set all parameters to null then check if a param was specified
                 inst.setParameter1(null);
