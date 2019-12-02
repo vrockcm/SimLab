@@ -14,27 +14,23 @@ public class Instruction {
 
     @Column(name = "Name")
     private String name;
-    @Column(name = "Material1Id")
-    private Integer material1Id;
-    @Column(name = "Material2Id")
-    private Integer material2Id;
-    @Column(name = "Material3Id")
-    private Integer material3Id;
-    @Column(name = "Parameter1")
-    private String parameter1;
-    @Column(name = "Parameter2")
-    private String parameter2;
-    @Column(name = "Parameter3")
-    private String parameter3;
+    @Column(name = "Container1Name")
+    private String Container1;
+    @Column(name = "Container2Name")
+    private String Container2;
+    @Column(name = "TargetTemp")
+    private int targetTemp;
+    @Column(name = "TargetVolume")
+    private int targetVolume;
+
+
 
     public Instruction(Instruction inst){
         name = inst.getName();
-        material1Id = inst.getMaterial1Id();
-        material2Id = inst.getMaterial2Id();
-        material3Id = inst.getMaterial3Id();
-        parameter1 = inst.getParameter1();
-        parameter2 = inst.getParameter2();
-        parameter3 = inst.getParameter3();
+        Container1 = inst.getContainer1();
+        Container2 = inst.getContainer2();
+        targetTemp = inst.getTargetTemp();
+        targetVolume = inst.getTargetVolume();
     }
     public Instruction(){}
 }
