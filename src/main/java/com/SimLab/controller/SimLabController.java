@@ -1,6 +1,9 @@
 package com.SimLab.controller;
 
+import com.SimLab.model.InstructionInfo;
 import com.SimLab.service.LabService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.var;
 import com.SimLab.model.CourseInfo;
 import com.SimLab.model.dao.*;
@@ -251,7 +254,7 @@ public class SimLabController {
 
     @ResponseBody
     @RequestMapping(value = "/DeleteLab", method = RequestMethod.POST)
-    public String deleteLab(@RequestParam String labId, @RequestParam String courseName){
+    public String deleteLab(@RequestParam String labId){
         Lab lab = labRepository.findByLabId(Integer.parseInt(labId));
         labRepository.delete(lab);
         return "";
@@ -259,15 +262,14 @@ public class SimLabController {
 
     @ResponseBody
     @RequestMapping(value = "/DeleteCourse", method = RequestMethod.POST)
-    public String deleteCourse(@RequestParam String courseName){
-        User user = userService.findUserByEmail(courseName);
-        userService.removeUser(user);
+    public String deleteCourse(@RequestParam String courseId){
+
         return "";
     }
 
     @ResponseBody
     @RequestMapping(value = "/DuplicateLab", method = RequestMethod.POST)
-    public String duplicateLab(@RequestParam String labId, @RequestParam String courseName){
+    public String duplicateLab(@RequestParam String labId, @RequestParam String courseId){
         Lab lab = labRepository.findByLabId(Integer.parseInt(labId));
         Lab newLab = new Lab();
         newLab.setLabName(lab.getLabName()+"(copy)");
@@ -287,41 +289,29 @@ public class SimLabController {
             newLI.setInstructionId(newInst.getInstId());
             labInstructionAssociationRepository.save(newLI);
         }
-        int courseId = courseRepository.getCourseId(courseName);
         CourseLabAssociation courseLab = new CourseLabAssociation();
         courseLab.setLabId(newLab.getLabId());
-        courseLab.setCourseId(courseId);
+        courseLab.setCourseId(Integer.parseInt(courseId));
         courseLabAssociationRepository.save(courseLab);
         return "";
     }
 
     @RequestMapping(value = "/MakeLab", method = RequestMethod.POST)
     public String createNewLab(@RequestParam String courseId,
-                                        @RequestParam String labName,
-                                        @RequestParam(required = false, defaultValue = "") String labDescription,
-                                        @RequestParam(required = false, defaultValue = "") List<String> toolNames,
-                                        @RequestParam(required = false, defaultValue = "") List<String> containerNames,
-                                        @RequestParam(required = false, defaultValue = "") List<String> solutionNames,
-                                        @RequestParam(required = false, defaultValue = "") List<String> instructionNames,
-                                        @RequestParam(required = false, defaultValue = "") List<String> instMat1Names,
-                                        @RequestParam(required = false, defaultValue = "") List<String> instMat2Names,
-                                        @RequestParam(required = false, defaultValue = "") List<String> instMat3Names,
-                                        @RequestParam(required = false, defaultValue = "") List<String> instParam1Names,
-                                        @RequestParam(required = false, defaultValue = "") List<String> instParam2Names,
-                                        @RequestParam(required = false, defaultValue = "") List<String> instParam3Names) {
+                                @RequestParam String labName,
+                                @RequestParam(required = false, defaultValue = "") String labDescription,
+                                @RequestParam(required = false, defaultValue = "") List<String> Solutions,
+                                @RequestParam(required = false, defaultValue = "") List<String> Containers,
+                                @RequestParam(required = false, defaultValue = "") List<String> Tools,
+                                @RequestParam String Instructions) {
 
-        ModelAndView modelAndView = new ModelAndView();
-        Lab lab = new Lab();
-        lab.setLabName(labName);
-        lab.setLabDesc(labDescription);
-        addMaterialsToLab(lab, toolNames, containerNames, solutionNames);
-        addInstructionsToLab(lab, instructionNames, instMat1Names, instMat2Names, instMat3Names,
-                instParam1Names, instParam2Names, instParam3Names);
-        CourseLabAssociation courseLab = new CourseLabAssociation();
-        courseLab.setCourseId(Integer.parseInt(courseId));
-        courseLab.setLabId(lab.getLabId());
-        courseLabAssociationRepository.save(courseLab);
-        modelAndView.setViewName("/instructor/index");
+        ObjectMapper mapper = new ObjectMapper();
+        List<InstructionInfo> myObjects;
+        try {
+            myObjects = mapper.readValue(Instructions, mapper.getTypeFactory().constructCollectionType(List.class, InstructionInfo.class));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         return "redirect:/instructor/index";
     }
 
