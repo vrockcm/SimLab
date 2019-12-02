@@ -41,7 +41,6 @@ body {
 	font-family: 'Avenir Next', Avenir, 'Helvetica Neue', 'Lato', 'Segoe UI', Helvetica, Arial, sans-serif;
 	overflow: hidden;
 	margin: 0;
-	color: #cecece;
 	background: #2a2b30;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -474,6 +473,7 @@ table{
 .add-lab-form,.add-course-form{
 	margin: 0 auto;
 	max-width: 50vw;
+	display:none;
 	padding-top: 20px;
 	padding-bottom: 40px;
 }
@@ -574,14 +574,11 @@ user-select: none;
 }
 
 .instruction_cards{
-    overflow-x: scroll;
-    overflow-y: hidden;
     white-space: nowrap;
     height: 25em;
     border-radius: .25rem;
     margin: 0;
     padding: 2em;
-    overflow: auto;
     border: white;
     border: solid #676767;
     border-radius: 1.25rem;
@@ -614,4 +611,12 @@ user-select: none;
     float: right;
     top: 15px;
     position: relative;
+}
+
+.fa-search{
+    color: white;
+}
+
+label{
+    color: white;
 }

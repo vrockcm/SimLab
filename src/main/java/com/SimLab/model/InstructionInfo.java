@@ -12,9 +12,9 @@ public class InstructionInfo {
 
     private String name;
 
-    private String Container1;
+    private String container1;
 
-    private String Container2;
+    private String container2;
 
     private int targetTemp;
 
