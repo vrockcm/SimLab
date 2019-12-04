@@ -605,7 +605,7 @@ $('#delete-course').click(function(){
                     text: 'Delete Course',
                     action: function () {
                         $.ajax({
-                                url : '/deleteCourse',
+                                url : '/DeleteCourse',
                                 type : 'POST',
                                 async: false,
                                 data : {

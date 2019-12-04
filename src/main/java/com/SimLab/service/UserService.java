@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Service("userService")
 public class UserService {
@@ -35,6 +33,7 @@ public class UserService {
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+    public User findUserById(int id){ return userRepository.findById(id);}
 
 
     public List<User> findAllInstructors(){ return userRepository.findAllUsingRole("INSTRUCTOR");}
@@ -52,4 +51,14 @@ public class UserService {
     public void removeUser(User user){
         userRepository.delete(user);
     }
+
+    public List<User> findAll(){ return userRepository.findAll(); }
+
+    public List<Course> loadCoursesByUserId(int userId){
+        User user = userRepository.findById(userId);
+        Set<Course> courses = user.getCourses();
+        return new ArrayList<Course>(courses);
+    }
+
+
 }

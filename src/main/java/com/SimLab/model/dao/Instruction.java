@@ -3,6 +3,7 @@ package com.SimLab.model.dao;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @Entity
@@ -22,6 +23,9 @@ public class Instruction {
     private int targetTemp;
     @Column(name = "TargetVolume")
     private int targetVolume;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Lab lab;
 
 
 

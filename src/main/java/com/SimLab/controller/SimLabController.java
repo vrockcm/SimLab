@@ -1,6 +1,7 @@
 package com.SimLab.controller;
 
 import com.SimLab.model.InstructionInfo;
+import com.SimLab.service.CourseService;
 import com.SimLab.service.LabService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,19 +27,16 @@ import java.util.*;
 public class SimLabController {
 
     @Autowired
-    private CourseLabAssociationRepository courseLabAssociationRepository;
-
-    @Autowired
     private CourseRepository courseRepository;
-
-    @Autowired
-    private UserCourseAssociationRepository userCourseAssociationRepository;
 
     @Autowired
     private UserService userService;
 
     @Autowired
     private LabService labService;
+
+    @Autowired
+    private CourseService courseService;
 
     @Autowired
     private MaterialRepository materialRepository;
@@ -52,9 +50,6 @@ public class SimLabController {
     private SolutionRepository solutionRepository;
     @Autowired
     private InstructionRepository instructionRepository;
-
-    @Autowired
-    private LabInstructionAssociationRepository labInstructionAssociationRepository;
 
 
 
@@ -143,29 +138,21 @@ public class SimLabController {
                               @RequestParam(required = false) List<Integer> checkedStudents,
                               @RequestParam(required = false) List<Integer> checkedInstructors,
                               @RequestParam Integer courseId) {
-        Course course = courseRepository.findByCourseId(courseId);
+        Course course = courseService.findByCourseId(courseId);
         course.setCourseName(courseName);
         course.setCourseDesc(courseDesc);
+        List<User> allUsers = userService.findAll();
+        Set<User> checkedUsers = new HashSet<User>();
+        for(User u: allUsers){
+            if(checkedStudents != null && checkedStudents.contains(u.getId())){
+                checkedUsers.add(u);
+            }if(checkedInstructors != null && checkedInstructors.contains(u.getId())){
+                checkedUsers.add(u);
+            }
+        }
+        course.setUsers(checkedUsers);
+
         courseRepository.save(course);
-        userCourseAssociationRepository.removeByCourseId(course.getCourseId());
-        List<UserCourseAssociation> userCourseAsses = new ArrayList<UserCourseAssociation>();
-        if (checkedStudents != null) {
-            for (Integer u : checkedStudents) {
-                UserCourseAssociation uC = new UserCourseAssociation();
-                uC.setCourseId(course.getCourseId());
-                uC.setUserId(u);
-                userCourseAsses.add(uC);
-            }
-        }
-        if(checkedInstructors != null) {
-            for (Integer u : checkedInstructors) {
-                UserCourseAssociation uC = new UserCourseAssociation();
-                uC.setCourseId(course.getCourseId());
-                uC.setUserId(u);
-                userCourseAsses.add(uC);
-            }
-        }
-        userCourseAssociationRepository.saveAll(userCourseAsses);
         return "redirect:/instructor/index";
     }
 
@@ -176,32 +163,19 @@ public class SimLabController {
                                         @RequestParam(value = "students", required = false) String[] students,
                                         @RequestParam(value = "instructors", required = false) String[] instructors,
                                         @RequestParam Integer UserId) {
-        Course course = new Course();
-        course.setCourseName(courseName);
-        course.setCourseDesc(courseDesc);
-        courseRepository.save(course);
-        List<UserCourseAssociation> userCourseAsses = new ArrayList<UserCourseAssociation>();
-        UserCourseAssociation userCourse = new UserCourseAssociation();
-        userCourse.setUserId(UserId);
-        userCourse.setCourseId(course.getCourseId());
-        userCourseAsses.add(userCourse);
-        if (students != null) {
-            for (String u : students){
-                UserCourseAssociation uC = new UserCourseAssociation();
-                uC.setCourseId(course.getCourseId());
-                uC.setUserId(Integer.parseInt(u));
-                userCourseAsses.add(uC);
+
+        String[] instructorPlusCreator;
+        if(instructors != null){
+            instructorPlusCreator = new String[instructors.length+1];
+            for(int i=0;i<instructors.length;i++){
+                instructorPlusCreator[i+1] = instructors[i];
             }
+        }else{
+            instructorPlusCreator = new String[1];
         }
-        if (instructors != null) {
-            for (String u : instructors){
-                UserCourseAssociation uC = new UserCourseAssociation();
-                uC.setCourseId(course.getCourseId());
-                uC.setUserId(Integer.parseInt(u));
-                userCourseAsses.add(uC);
-            }
-        }
-        userCourseAssociationRepository.saveAll(userCourseAsses);
+        instructorPlusCreator[0] = Integer.toString(UserId);
+        courseService.createCourse(courseName, courseDesc, students, instructorPlusCreator);
+
         return "redirect:/instructor/index";
     }
 
@@ -215,8 +189,15 @@ public class SimLabController {
     @ResponseBody
     @GetMapping("/loadCourses")
     public List<Course> loadCourse(@RequestParam String userid ){
-        List<Course> userCourses = userCourseAssociationRepository.loadUserCourses(Integer.parseInt(userid));
-        var toReturn = userCourses;
+        User user = userService.findUserById(Integer.parseInt(userid));
+        Set<Course> userCourses = user.getCourses();
+        for(Course c: userCourses){
+            c.setUsers(null);
+            Course dummyCourse = courseService.findByCourseId(c.getCourseId());
+            dummyCourse.setCourseDesc("DDD");
+        }
+        List<Course> uCList = new ArrayList<Course>(userCourses);
+        var toReturn = uCList;
         return toReturn;
     }
 
@@ -224,12 +205,19 @@ public class SimLabController {
     @GetMapping(path = "/fetchCourseInfo", produces = "application/json; charset=UTF-8")
     public CourseInfo fetchCourseInfo(@RequestParam String courseId ){
         Course course = courseRepository.findByCourseId(Integer.parseInt(courseId));
-        List<User> associatedUsers = userCourseAssociationRepository.findAllUsers(Integer.parseInt(courseId));
+        Set<User> associatedUsers = courseService.findByCourseId(Integer.parseInt(courseId)).getUsers();
         List<User> students = new ArrayList<User>();
         List<User> instructors = new ArrayList<User>();
         List<User> allStudents = userService.findAllStudents();
         List<User> allInst = userService.findAllInstructors();
+        for(User u: allStudents){
+            u.setCourses(null);
+        }
+        for(User u: allInst){
+            u.setCourses(null);
+        }
         for(User u: associatedUsers){
+            u.setCourses(null);
             int roleId = userService.findRoleIdByUserId(u.getId());
             if(roleId == 0){
                 students.add(u);
@@ -253,8 +241,8 @@ public class SimLabController {
     @ResponseBody
     @GetMapping("/loadLabs")
     public String loadLabs(@RequestParam String courseName){
-        int courseId = courseRepository.getCourseId(courseName);
-        List<Lab> associatedLabs = courseLabAssociationRepository.loadAssociatedLabs(courseId);
+        Course course = courseService.findByCourseName(courseName);
+        List<Lab> associatedLabs = new ArrayList<Lab>(course.getLabs());
         String json = new Gson().toJson(associatedLabs);
         return json;
     }
@@ -270,7 +258,7 @@ public class SimLabController {
     @ResponseBody
     @RequestMapping(value = "/DeleteCourse", method = RequestMethod.POST)
     public String deleteCourse(@RequestParam String courseId){
-
+        courseService.deleteByCourseId(Integer.parseInt(courseId));
         return "";
     }
 
@@ -284,22 +272,10 @@ public class SimLabController {
         newLab.setTools(lab.getTools());
         newLab.setContainers(lab.getContainers());
         newLab.setSolutions(lab.getSolutions());
+        newLab.setInstructions(lab.getInstructions());
         labRepository.save(newLab);
 
-        List<LabInstructionAssociation> labInsts = labInstructionAssociationRepository.findInstructionsByLabId(Integer.parseInt(labId));
-        for(LabInstructionAssociation lI: labInsts){
-            Instruction inst = instructionRepository.findByInstId(lI.getInstructionId());
-            Instruction newInst = new Instruction(inst);
-            instructionRepository.save(newInst);
-            LabInstructionAssociation newLI = new LabInstructionAssociation();
-            newLI.setLabId(newLab.getLabId());
-            newLI.setInstructionId(newInst.getInstId());
-            labInstructionAssociationRepository.save(newLI);
-        }
-        CourseLabAssociation courseLab = new CourseLabAssociation();
-        courseLab.setLabId(newLab.getLabId());
-        courseLab.setCourseId(Integer.parseInt(courseId));
-        courseLabAssociationRepository.save(courseLab);
+        courseService.addLab(courseService.findByCourseId(Integer.parseInt(courseId)), newLab);
         return "";
     }
 
