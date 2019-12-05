@@ -24,7 +24,7 @@ public class Instruction {
     @Column(name = "TargetVolume")
     private int targetVolume;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Lab lab;
 
 

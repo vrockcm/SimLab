@@ -120,6 +120,8 @@ public class SimLabController {
         List<Container> containerObjects = containerRepository.findAll();
         List<Solution> solutionObjects = solutionRepository.findAll();
         instructorsObjects.remove(user);
+        List<Course> courses = new ArrayList<>(user.getCourses());
+        modelAndView.addObject("courses", courses);
         modelAndView.addObject("students", studentsObjects);
         modelAndView.addObject("instructors", instructorsObjects);
         modelAndView.addObject("tools", toolObjects);
@@ -134,25 +136,11 @@ public class SimLabController {
 
     @RequestMapping(value = "/EditCourse", method = RequestMethod.POST)
     public String editCourse(@RequestParam String courseName,
-                              @RequestParam String courseDesc,
-                              @RequestParam(required = false) List<Integer> checkedStudents,
-                              @RequestParam(required = false) List<Integer> checkedInstructors,
-                              @RequestParam Integer courseId) {
-        Course course = courseService.findByCourseId(courseId);
-        course.setCourseName(courseName);
-        course.setCourseDesc(courseDesc);
-        List<User> allUsers = userService.findAll();
-        Set<User> checkedUsers = new HashSet<User>();
-        for(User u: allUsers){
-            if(checkedStudents != null && checkedStudents.contains(u.getId())){
-                checkedUsers.add(u);
-            }if(checkedInstructors != null && checkedInstructors.contains(u.getId())){
-                checkedUsers.add(u);
-            }
-        }
-        course.setUsers(checkedUsers);
-
-        courseRepository.save(course);
+                             @RequestParam String courseDesc,
+                             @RequestParam(value = "students", required = false) String[] students,
+                             @RequestParam(value = "instructors", required = false) String[] instructors,
+                             @RequestParam Integer courseId) {
+        courseService.editCourse(courseName, courseDesc, students, instructors);
         return "redirect:/instructor/index";
     }
 
@@ -180,25 +168,9 @@ public class SimLabController {
     }
 
 
-
     @GetMapping("/access-denied")
     public String accessDenied() {
         return "/error/access-denied";
-    }
-
-    @ResponseBody
-    @GetMapping("/loadCourses")
-    public List<Course> loadCourse(@RequestParam String userid ){
-        User user = userService.findUserById(Integer.parseInt(userid));
-        Set<Course> userCourses = user.getCourses();
-        for(Course c: userCourses){
-            c.setUsers(null);
-            Course dummyCourse = courseService.findByCourseId(c.getCourseId());
-            dummyCourse.setCourseDesc("DDD");
-        }
-        List<Course> uCList = new ArrayList<Course>(userCourses);
-        var toReturn = uCList;
-        return toReturn;
     }
 
     @ResponseBody
@@ -255,11 +227,10 @@ public class SimLabController {
         return "";
     }
 
-    @ResponseBody
     @RequestMapping(value = "/DeleteCourse", method = RequestMethod.POST)
     public String deleteCourse(@RequestParam String courseId){
         courseService.deleteByCourseId(Integer.parseInt(courseId));
-        return "";
+        return "redirect:/instructor/index";
     }
 
     @ResponseBody
@@ -289,30 +260,33 @@ public class SimLabController {
                                 @RequestParam String Instructions) {
 
         ObjectMapper mapper = new ObjectMapper();
-        List<InstructionInfo> myObjects;
+        List<InstructionInfo> myObjects = null;
         try {
             myObjects = mapper.readValue(Instructions, mapper.getTypeFactory().constructCollectionType(List.class, InstructionInfo.class));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        if(myObjects!=null) {
+            labService.saveLab(labName,labDescription, Solutions, Containers, Tools, myObjects);
+        }
         return "redirect:/instructor/index";
     }
 
-    private void addMaterialsToLab(Lab lab, List<String> toolNames, List<String> containerNames, List<String> solutionNames){
-        Set<Tool> tools = new HashSet<Tool>();
-        Set<Container> containers = new HashSet<Container>();
-        Set<Solution> solutions = new HashSet<Solution>();
-        for(String mat: toolNames){
-            tools.add(toolRepository.findByName(mat));
-        }
-        for(String mat: containerNames){
-            containers.add(containerRepository.findByName(mat));
-        }
-        for(String mat: solutionNames){
-            solutions.add(solutionRepository.findByName(mat));
-        }
-        labService.saveLab(lab, tools, containers, solutions);
-    }
+//    private void addMaterialsToLab(Lab lab, List<String> toolNames, List<String> containerNames, List<String> solutionNames){
+//        Set<Tool> tools = new HashSet<Tool>();
+//        Set<Container> containers = new HashSet<Container>();
+//        Set<Solution> solutions = new HashSet<Solution>();
+//        for(String mat: toolNames){
+//            tools.add(toolRepository.findByName(mat));
+//        }
+//        for(String mat: containerNames){
+//            containers.add(containerRepository.findByName(mat));
+//        }
+//        for(String mat: solutionNames){
+//            solutions.add(solutionRepository.findByName(mat));
+//        }
+//        labService.saveLab(lab, tools, containers, solutions);
+//    }
 
     private void addInstructionsToLab(Lab lab, List<InstructionInfo> instructions) {
 //            for(InstructionInfo instInfo: instructions){
