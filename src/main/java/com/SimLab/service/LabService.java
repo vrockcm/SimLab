@@ -33,9 +33,4 @@ public class LabService {
 
     public Lab findByLabId(int labId){return labRepository.findByLabId(labId);}
 
-    public void saveLab(String labName, String labDescription, List<String> Solutions, List<String> Containers, List<String> Tools, List<InstructionInfo> instructions){
-        Lab lab= new Lab();
-        lab.setLabName(labName);
-        lab.setLabDesc(labDescription);
-    }
 }

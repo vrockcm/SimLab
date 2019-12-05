@@ -266,9 +266,6 @@ public class SimLabController {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        if(myObjects!=null) {
-            labService.saveLab(labName,labDescription, Solutions, Containers, Tools, myObjects);
-        }
         return "redirect:/instructor/index";
     }
 
