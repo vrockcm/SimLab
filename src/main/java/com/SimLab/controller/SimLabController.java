@@ -215,15 +215,17 @@ public class SimLabController {
     public String loadLabs(@RequestParam String courseName){
         Course course = courseService.findByCourseName(courseName);
         List<Lab> associatedLabs = new ArrayList<Lab>(course.getLabs());
+        for(Lab l: associatedLabs){
+            l.setCourses(null);
+        }
         String json = new Gson().toJson(associatedLabs);
         return json;
     }
 
     @ResponseBody
     @RequestMapping(value = "/DeleteLab", method = RequestMethod.POST)
-    public String deleteLab(@RequestParam String labId){
-        Lab lab = labRepository.findByLabId(Integer.parseInt(labId));
-        labRepository.delete(lab);
+    public String deleteLab(@RequestParam String labId, @RequestParam String courseId){
+        labService.deleteByLabId(Integer.parseInt(labId), Integer.parseInt(courseId));
         return "";
     }
 
@@ -237,12 +239,8 @@ public class SimLabController {
     @RequestMapping(value = "/DuplicateLab", method = RequestMethod.POST)
     public String duplicateLab(@RequestParam String labId, @RequestParam String courseId){
         Lab lab = labRepository.findByLabId(Integer.parseInt(labId));
-        Lab newLab = new Lab();
-        newLab.setLabName(lab.getLabName()+"(copy)");
-        newLab.setLabDesc(lab.getLabDesc());
-        labService.saveLab(newLab, lab.getTools(), lab.getContainers(), lab.getSolutions(), lab.getInstructions());
+        labService.duplicateLab(lab, courseId);
 
-        courseService.addLab(courseService.findByCourseId(Integer.parseInt(courseId)), newLab);
         return "";
     }
 

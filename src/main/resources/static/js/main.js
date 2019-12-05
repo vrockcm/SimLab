@@ -455,7 +455,7 @@ function duplicateLab(x){
         type : 'POST',
         async: false,
         data : {
-            'labId' : labInfo[1],
+            'labId' : id,
             'courseId' : $(".menu__link--current").attr("value")
         },
         success : function(data) {
@@ -468,6 +468,27 @@ function duplicateLab(x){
         }
     });
 }
+function deleteLab(x){
+    id = $(x).parents()[1].id;
+    $.ajax({
+        url : '/DeleteLab',
+        type : 'POST',
+        async: false,
+        data : {
+            'labId' : id,
+            'courseId' : $(".menu__link--current").attr("value")
+        },
+        success : function(data) {
+            var obj = $(".menu__link--current");
+            $(".menu__link--current")[0].click();
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
+
 function cardMaker(cardHeader) {
         var newCardNumber = $('.instruction_cards').children().length;
         var html = '<div class="card instruction">'+

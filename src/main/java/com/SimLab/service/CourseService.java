@@ -93,6 +93,10 @@ public class CourseService {
         course.getLabs().add(lab);
         courseRepository.save(course);
     }
+    public void removeLab(Course course, Lab lab){
+        course.getLabs().remove(lab);
+        courseRepository.save(course);
+    }
 
 
 

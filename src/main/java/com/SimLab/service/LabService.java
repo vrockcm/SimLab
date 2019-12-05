@@ -34,6 +34,7 @@ public class LabService {
     }
 
     public Lab findByLabId(int labId){return labRepository.findByLabId(labId);}
+    public List<Lab> findAll(){ return (List<Lab>)labRepository.findAll();}
 
     public void createLab(String courseId,
                           String labName,
@@ -78,17 +79,40 @@ public class LabService {
 
         lab.setLabName(labName);
         lab.setLabDesc(labDescription);
-        saveLab(lab, toolSet, containerSet, solutionSet, instructionSet);
-        Course course = courseService.findByCourseId(Integer.parseInt(courseId));
-        courseService.addLab(course, lab);
+        saveLab(lab, toolSet, containerSet, solutionSet, instructionSet, Integer.parseInt(courseId));
     }
 
-    public void saveLab(Lab lab, Set<Tool> tools, Set<Container> containers, Set<Solution> solutions, Set<Instruction> instructions){
+    public void duplicateLab(Lab lab, String courseId){
+        Lab newLab = new Lab();
+        newLab.setLabName(lab.getLabName()+"(copy)");
+        newLab.setLabDesc(lab.getLabDesc());
+        Set<Solution> solutions = new HashSet<>();
+        Set<Container> containers = new HashSet<>();
+        Set<Tool> tools = new HashSet<>();
+        for(Solution s: lab.getSolutions()){
+            solutions.add(s);
+        }
+        for(Container s: lab.getContainers()){
+            containers.add(s);
+        }
+        for(Tool s: lab.getTools()){
+            tools.add(s);
+        }
+        Set<Instruction> instructions = new HashSet<Instruction>();
+        for(Instruction i: lab.getInstructions()){
+            Instruction newI = new Instruction(i);
+            instructions.add(newI);
+        }
+        saveLab(newLab, tools, containers, solutions, instructions, Integer.parseInt(courseId));
+    }
+
+    public void saveLab(Lab lab, Set<Tool> tools, Set<Container> containers, Set<Solution> solutions, Set<Instruction> instructions, int courseId){
         lab.setTools(tools);
         lab.setContainers(containers);
         lab.setSolutions(solutions);
         lab.setInstructions(instructions);
         labRepository.save(lab);
+        courseService.addLab(courseService.findByCourseId(courseId), lab);
     }
 
     public List<Solution> getAllSolutions(){
@@ -98,19 +122,11 @@ public class LabService {
 
     public List<Container> getAllContainer(){ return containerRepository.findAll(); }
 
-    public void setupMaterials(){
-        Solution hcl = new Solution();
-        hcl.setName("HCl");
-        solutionRepository.save(hcl);
-        Solution Poop = new Solution();
-        Poop.setName("Poop");
-        solutionRepository.save(Poop);
-        Container c1 = new Container();
-        c1.setName("Beaker");
-        containerRepository.save(c1);
-        Container c2 = new Container();
-        c2.setName("Flask");
-        containerRepository.save(c2);
+    public void deleteByLabId(int labId, int courseId){
+        Lab lab = findByLabId(labId);
+        courseService.removeLab(courseService.findByCourseId(courseId), lab);
+        labRepository.delete(lab);
+
     }
 
 

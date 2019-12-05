@@ -36,4 +36,7 @@ public class Lab {
     @JoinTable(name = "lab_instruction", joinColumns = @JoinColumn(name = "lab_id"), inverseJoinColumns = @JoinColumn(name = "Id"))
     private Set<Instruction> instructions;
 
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "labs")
+    private Set<Course> courses;
+
 }
