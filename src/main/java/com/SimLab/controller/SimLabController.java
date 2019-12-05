@@ -269,11 +269,7 @@ public class SimLabController {
         Lab newLab = new Lab();
         newLab.setLabName(lab.getLabName()+"(copy)");
         newLab.setLabDesc(lab.getLabDesc());
-        newLab.setTools(lab.getTools());
-        newLab.setContainers(lab.getContainers());
-        newLab.setSolutions(lab.getSolutions());
-        newLab.setInstructions(lab.getInstructions());
-        labRepository.save(newLab);
+        labService.saveLab(newLab, lab.getTools(), lab.getContainers(), lab.getSolutions(), lab.getInstructions());
 
         courseService.addLab(courseService.findByCourseId(Integer.parseInt(courseId)), newLab);
         return "";
@@ -292,6 +288,45 @@ public class SimLabController {
         List<InstructionInfo> myObjects;
         try {
             myObjects = mapper.readValue(Instructions, mapper.getTypeFactory().constructCollectionType(List.class, InstructionInfo.class));
+            Lab lab = new Lab();
+
+            Set<Solution> solutionSet = new HashSet<Solution>();
+            Set<Container> containerSet = new HashSet<Container>();
+            Set<Tool> toolSet = new HashSet<Tool>();
+            Set<Instruction> instructionSet = new HashSet<Instruction>();
+            List<Solution> allSolutions = labService.getAllSolutions();
+            List<Container> allContainers = labService.getAllContainer();
+            List<Tool> allTools = labService.getAllTools();
+            for(Solution s: allSolutions){
+                if(Solutions.contains("[\"" +s.getName() + "\"]")){
+                    solutionSet.add(s);
+                }
+            }
+            for(Container c: allContainers){
+                if(Containers.contains("[\"" +c.getName() + "\"]")){
+                    containerSet.add(c);
+                }
+            }
+            for(Tool t: allTools){
+                if(Tools.contains("[\"" +t.getName() + "\"]")){
+                    toolSet.add(t);
+                }
+            }
+            for(InstructionInfo iInfo: myObjects){
+                Instruction i = new Instruction();
+                i.setName(iInfo.getName());
+                i.setContainer1(iInfo.getContainer1());
+                i.setContainer2(iInfo.getContainer2());
+                i.setTargetVolume(iInfo.getTargetVolume());
+                i.setTargetTemp(iInfo.getTargetTemp());
+                instructionSet.add(i);
+            }
+
+            lab.setLabName(labName);
+            lab.setLabDesc(labDescription);
+            labService.saveLab(lab, toolSet, containerSet, solutionSet, instructionSet);
+            Course course = courseService.findByCourseId(Integer.parseInt(courseId));
+            courseService.addLab(course, lab);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -311,7 +346,7 @@ public class SimLabController {
         for(String mat: solutionNames){
             solutions.add(solutionRepository.findByName(mat));
         }
-        labService.saveLab(lab, tools, containers, solutions);
+
     }
 
     private void addInstructionsToLab(Lab lab, List<InstructionInfo> instructions) {
