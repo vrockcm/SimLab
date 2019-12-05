@@ -1,12 +1,15 @@
 package com.SimLab.model.dao;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "course")
 public class Course {
@@ -20,6 +23,11 @@ public class Course {
     @Column(name = "Description")
     private String courseDesc;
 
-    @ManyToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private Set<UserCourseAssociation> userCourse;
+    @ManyToMany()
+    @JoinTable(name = "course_user", joinColumns = @JoinColumn(name = "course_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    Set<User> users;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "course_lab", joinColumns = @JoinColumn(name = "course_id"), inverseJoinColumns = @JoinColumn(name = "lab_id"))
+    Set<Lab> labs;
 }
