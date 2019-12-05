@@ -37,6 +37,33 @@ public class CourseService {
         return true;
     }
 
+    public boolean editCourse(String courseName, String courseDesc, String[] students, String[] instructors){
+        Course course = findByCourseName(courseName);
+        course.setCourseName(courseName);
+        course.setCourseDesc(courseDesc);
+
+        Set<User> users = new HashSet<User>();
+        if (students != null) {
+            for (String u : students){
+                User userObj = userService.findUserById(Integer.parseInt(u));
+                users.add(userObj);
+                userObj.getCourses().add(course);
+            }
+        }
+        if (instructors != null) {
+            for (String u : instructors){
+                User userObj = userService.findUserById(Integer.parseInt(u));
+                users.add(userObj);
+                userObj.getCourses().add(course);
+            }
+        }
+        course.setUsers(users);
+        courseRepository.save(course);
+        return true;
+    }
+
+
+
     public boolean createCourse(String courseName, String courseDesc, String[] students, String[] instructors){
         Course course = new Course();
         course.setCourseName(courseName);

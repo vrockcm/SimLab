@@ -56,6 +56,10 @@
 			<button class="action action--close" aria-label="Close Menu"><span class="icon icon--cross"></span></button>
 			<div class="menu__wrap">
 				<ul data-menu="main" class="menu__level" tabindex="-1" role="menu">
+					<li class="menu__item" role="menuitem" th:each="course : ${courses}">
+						<a class="menu__link" aria-owns="submenu-1" href="#" th:value="${course.courseId}" th:text="${course.courseName}"></a>
+						<a th:id="${course.courseId}" class="edit-anchor" onclick="editCourse(this)"><img class="edit-icon" src="/images/edit.png"></a>
+					</li>
 				</ul>
 			</div>
 		</nav>
@@ -119,8 +123,8 @@
 							<div class="col-sm text-center mx-auto">
 								<label for="Tools">Tools</label>
 								<select class="selectpicker" id="Tools" name="Tools" data-live-search="true" multiple title="Choose Tools">
-									<option th:id="${tool.id}" th:value="${tool.id}" th:each="tool : ${tools}"
-											th:text="${tool.name}"></option>
+<!--									<option th:value="${tool.id}" th:each="tool : ${tools}"-->
+<!--											th:text="${tool.name}"></option>-->
 								</select>
 							</div>
 					  	</div>
