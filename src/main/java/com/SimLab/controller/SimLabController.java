@@ -259,116 +259,11 @@ public class SimLabController {
         List<InstructionInfo> myObjects = null;
         try {
             myObjects = mapper.readValue(Instructions, mapper.getTypeFactory().constructCollectionType(List.class, InstructionInfo.class));
-            Lab lab = new Lab();
-
-            Set<Solution> solutionSet = new HashSet<Solution>();
-            Set<Container> containerSet = new HashSet<Container>();
-            Set<Tool> toolSet = new HashSet<Tool>();
-            Set<Instruction> instructionSet = new HashSet<Instruction>();
-            List<Solution> allSolutions = labService.getAllSolutions();
-            List<Container> allContainers = labService.getAllContainer();
-            List<Tool> allTools = labService.getAllTools();
-            for(Solution s: allSolutions){
-                if(Solutions.contains("[\"" +s.getName() + "\"]")){
-                    solutionSet.add(s);
-                }
-            }
-            for(Container c: allContainers){
-                if(Containers.contains("[\"" +c.getName() + "\"]")){
-                    containerSet.add(c);
-                }
-            }
-            for(Tool t: allTools){
-                if(Tools.contains("[\"" +t.getName() + "\"]")){
-                    toolSet.add(t);
-                }
-            }
-            for(InstructionInfo iInfo: myObjects){
-                Instruction i = new Instruction();
-                i.setName(iInfo.getName());
-                i.setContainer1(iInfo.getContainer1());
-                i.setContainer2(iInfo.getContainer2());
-                i.setTargetVolume(iInfo.getTargetVolume());
-                i.setTargetTemp(iInfo.getTargetTemp());
-                instructionSet.add(i);
-            }
-
-            lab.setLabName(labName);
-            lab.setLabDesc(labDescription);
-            labService.saveLab(lab, toolSet, containerSet, solutionSet, instructionSet);
-            Course course = courseService.findByCourseId(Integer.parseInt(courseId));
-            courseService.addLab(course, lab);
+            labService.createLab(courseId,labName,labDescription,Solutions,Containers,Tools,myObjects);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
         return "redirect:/instructor/index";
     }
 
-
-//    private void addMaterialsToLab(Lab lab, List<String> toolNames, List<String> containerNames, List<String> solutionNames){
-//        Set<Tool> tools = new HashSet<Tool>();
-//        Set<Container> containers = new HashSet<Container>();
-//        Set<Solution> solutions = new HashSet<Solution>();
-//        for(String mat: toolNames){
-//            tools.add(toolRepository.findByName(mat));
-//        }
-//        for(String mat: containerNames){
-//            containers.add(containerRepository.findByName(mat));
-//        }
-//        for(String mat: solutionNames){
-//            solutions.add(solutionRepository.findByName(mat));
-//        }
-//        labService.saveLab(lab, tools, containers, solutions);
-//    }
-
-//    private void addInstructionsToLab(Lab lab, List<InstructionInfo> instructions) {
-//            for(InstructionInfo instInfo: instructions){
-//                Instruction inst = new Instruction();
-//                inst.setName(instInfo.getName());         //name of instruction
-//                // set all materials as null first then check if there is a material by that name exists and if does then set to matX
-//                inst.setContainer1(instInfo.getContainer1());
-//                inst.setContainer2(instInfo.getContainer2());
-//                inst.setTargetTemp(instInfo.getTargetTemp());
-//                inst.setTargetVolume(instInfo.getTargetVolume());
-//                String matName;
-//                if(instInfo.getContainer1() != null) {
-//                    matName = instMat1Names.get(i);
-//                    if (!matName.equals(""))
-//                        inst.setMaterial1Id(materialRepository.findByName(instMat1Names.get(i)).getId());
-//                }
-//                if(instMat2Names.size()!=0) {
-//                    matName = instMat2Names.get(i);
-//                    if (!matName.equals(""))
-//                        inst.setMaterial2Id(materialRepository.findByName(instMat2Names.get(i)).getId());
-//                }
-//                if(instMat3Names.size()!=0) {
-//                    matName = instMat3Names.get(i);
-//                    if (!matName.equals(""))
-//                        inst.setMaterial3Id(materialRepository.findByName(instMat3Names.get(i)).getId());
-//                }
-//                //set all parameters to null then check if a param was specified
-//                inst.setParameter1(null);
-//                inst.setParameter2(null);
-//                inst.setParameter3(null);
-//                String param;
-//                if(instParam1Names.size()!=0) {
-//                    param = instParam1Names.get(i);
-//                    if (!param.equals("")) inst.setParameter1(param);
-//                }
-//                if(instParam2Names.size()!=0) {
-//                    param = instParam2Names.get(i);
-//                    if (!param.equals("")) inst.setParameter2(param);
-//                }
-//                if(instParam3Names.size()!=0) {
-//                    param = instParam3Names.get(i);
-//                    if (!param.equals("")) inst.setParameter3(param);
-//                }
-//                instructionRepository.save(inst);
-//                LabInstructionAssociation labInst = new LabInstructionAssociation();
-//                labInst.setLabId(lab.getLabId());
-//                labInst.setInstructionId(inst.getInstId());
-//                labInstructionAssociationRepository.save(labInst);
-//            }
-//    }
-//    }
 }
