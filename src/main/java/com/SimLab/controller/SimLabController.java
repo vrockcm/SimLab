@@ -229,10 +229,11 @@ public class SimLabController {
         return "";
     }
 
+    @ResponseBody
     @RequestMapping(value = "/DeleteCourse", method = RequestMethod.POST)
     public String deleteCourse(@RequestParam String courseId){
         courseService.deleteByCourseId(Integer.parseInt(courseId));
-        return "redirect:/instructor/index";
+        return "";
     }
 
     @ResponseBody
@@ -244,6 +245,7 @@ public class SimLabController {
         return "";
     }
 
+    @ResponseBody
     @RequestMapping(value = "/MakeLab", method = RequestMethod.POST)
     public String createNewLab(@RequestParam String courseId,
                                 @RequestParam String labName,
@@ -252,16 +254,14 @@ public class SimLabController {
                                 @RequestParam(required = false, defaultValue = "") List<String> Containers,
                                 @RequestParam(required = false, defaultValue = "") List<String> Tools,
                                 @RequestParam String Instructions) {
-
         ObjectMapper mapper = new ObjectMapper();
-        List<InstructionInfo> myObjects = null;
         try {
+            List<InstructionInfo> myObjects = null;
             myObjects = mapper.readValue(Instructions, mapper.getTypeFactory().constructCollectionType(List.class, InstructionInfo.class));
-            labService.createLab(courseId,labName,labDescription,Solutions,Containers,Tools,myObjects);
+            labService.createLab(courseId, labName, labDescription, Solutions, Containers, Tools, myObjects);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return "redirect:/instructor/index";
+        return "";
     }
-
 }

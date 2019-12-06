@@ -387,6 +387,7 @@ var editingFlag=0;
 	window.MLMenu = MLMenu;
 
 })(window);
+
 function deleteLab(x){
     id = $(x).parents()[1].id;
     $.ajax({
@@ -411,6 +412,7 @@ function deleteInstruction(card){
         $($('.step-number')[i]).text(i+1);
     }
 }
+
 function MakeLab(){
     var instructions = [];
     var container = 0;
@@ -440,7 +442,8 @@ function MakeLab(){
             Tools : JSON.stringify($("#Tools").val()),
             Instructions : JSON.stringify(instructions)
         },
-        success : function(data) {
+        success : function() {
+            $(".menu__link--current")[0].click();
         },
         error : function(request,error)
         {
@@ -459,7 +462,6 @@ function duplicateLab(x){
             'courseId' : $(".menu__link--current").attr("value")
         },
         success : function(data) {
-            var obj = $(".menu__link--current");
             $(".menu__link--current")[0].click();
         },
         error : function(request,error)
@@ -633,7 +635,7 @@ $('#delete-course').click(function(){
                                     courseId : $("#courseId").attr("value"),
                                 },
                                 success : function(data) {
-                                    toggleC();
+                                    location.reload();
                                     $.alert('Course has been deleted!');
                                 },
                                 error : function(request,error)

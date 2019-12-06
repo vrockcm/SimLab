@@ -5,6 +5,8 @@ import com.SimLab.model.dao.Lab;
 import com.SimLab.model.dao.Repository.*;
 import com.SimLab.model.dao.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -41,8 +43,10 @@ public class CourseService {
         Course course = findByCourseName(courseName);
         course.setCourseName(courseName);
         course.setCourseDesc(courseDesc);
-
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
         Set<User> users = new HashSet<User>();
+        users.add(user);
         if (students != null) {
             for (String u : students){
                 User userObj = userService.findUserById(Integer.parseInt(u));
