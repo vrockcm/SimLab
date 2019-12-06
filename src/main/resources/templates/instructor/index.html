@@ -56,6 +56,10 @@
 			<button class="action action--close" aria-label="Close Menu"><span class="icon icon--cross"></span></button>
 			<div class="menu__wrap">
 				<ul data-menu="main" class="menu__level" tabindex="-1" role="menu">
+					<li class="menu__item" role="menuitem" th:each="course : ${courses}">
+						<a class="menu__link" aria-owns="submenu-1" href="#" th:value="${course.courseId}" th:text="${course.courseName}"></a>
+						<a th:id="${course.courseId}" class="edit-anchor" onclick="editCourse(this)"><img class="edit-icon" src="/images/edit.png"></a>
+					</li>
 				</ul>
 			</div>
 		</nav>
@@ -83,7 +87,7 @@
 			</div>
 
 			<div class="form-wrap">
-				<form class="add-lab-form" onsubmit="MakeLab()" method="POST">
+				<form class="add-lab-form">
 					<h1 class="form-header">Add Lab</h1>
 				  	<div class="form-group">
 						<label for="LabName">Lab Name</label>
@@ -101,25 +105,25 @@
 							<div class="col-sm text-center mx-auto">
 								<label for="Solutions">Solutions</label>
 								<select class="selectpicker" id="Solutions" name="Solutions" data-live-search="true" multiple title="Choose Solutions">
-<!--									<option th:id="${solution.id}" th:value="${solution.id}" th:each="solution : ${solutions}"-->
-<!--											th:text="${solution.name}"></option>-->
-									<option value="HCl" name="materialNames">HCl</option>
-									<option value="Poop" name="materialNames">Poop</option>
+									<option  th:value="${solution.name}" th:each="solution : ${solutions}"
+											th:text="${solution.name}"></option>
+<!--									<option value="HCl" name="materialNames">HCl</option>-->
+<!--									<option value="Poop" name="materialNames">Poop</option>-->
 								</select>
 							</div>
 							<div class="col-sm text-center mx-auto">
 								<label for="Containers">Containers</label>
 								<select class="selectpicker" id="Containers" name="Containers" data-live-search="true" multiple title="Choose Containers">
-<!--									<option th:id="${container.id}" th:value="${container.id}" th:each="container : ${containers}"-->
-<!--											th:text="${container.name}"></option>-->
-										<option value="Beaker" name="materialNames">Beaker</option>
-										<option value="Flask" name="materialNames">Flask</option>
+									<option th:value="${container.name}" th:each="container : ${containers}"
+											th:text="${container.name}"></option>
+<!--										<option value="Beaker" name="materialNames">Beaker</option>-->
+<!--										<option value="Flask" name="materialNames">Flask</option>-->
 								</select>
 							</div>
 							<div class="col-sm text-center mx-auto">
 								<label for="Tools">Tools</label>
 								<select class="selectpicker" id="Tools" name="Tools" data-live-search="true" multiple title="Choose Tools">
-									<option th:id="${tool.id}" th:value="${tool.id}" th:each="tool : ${tools}"
+									<option th:value="${tool.name}" th:each="tool : ${tools}"
 											th:text="${tool.name}"></option>
 								</select>
 							</div>
@@ -145,7 +149,7 @@
 					<div class="instruction_cards" id="cardigans">
 					</div>
 				  </div>
-				  <button type="submit" class="btn btn-primary">Submit</button>
+				  <button type="button" onclick="MakeLab()" class="btn btn-primary">Submit</button>
 				</form>
 
 

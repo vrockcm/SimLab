@@ -17,17 +17,26 @@ public class Lab {
     private String labName;
     @Column(name = "Description")
     private String labDesc;
+    @Column(name = "Published")
+    private int published;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "lab_tool", joinColumns = @JoinColumn(name = "lab_id"), inverseJoinColumns = @JoinColumn(name = "tool_id"))
     private Set<Tool> tools;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "lab_container", joinColumns = @JoinColumn(name = "lab_id"), inverseJoinColumns = @JoinColumn(name = "container_id"))
     private Set<Container> containers;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "lab_solution", joinColumns = @JoinColumn(name = "lab_id"), inverseJoinColumns = @JoinColumn(name = "solution_id"))
     private Set<Solution> solutions;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "lab_instruction", joinColumns = @JoinColumn(name = "lab_id"), inverseJoinColumns = @JoinColumn(name = "Id"))
+    private Set<Instruction> instructions;
+
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "labs")
+    private Set<Course> courses;
 
 }

@@ -10,12 +10,6 @@ import java.util.Set;
 @Table(name = "container")
 public class Container extends Material{
 
-    @Column(name = "SolutionpH")
-    private int pH;
-
-    @Column(name = "SolutionTemp")
-    private int temperature;
-
     @Column(name = "Capacity")
     private int capacity;
 
