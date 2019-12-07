@@ -7,7 +7,6 @@ import com.SimLab.model.dao.Role;
 import com.SimLab.model.dao.Repository.RoleRepository;
 import com.SimLab.model.dao.User;
 import com.SimLab.model.dao.Repository.UserRepository;
-//import com.SimLab.model.dao.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

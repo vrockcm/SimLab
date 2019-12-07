@@ -183,14 +183,6 @@ public class SimLabController {
         Set<User> associatedUsers = courseService.findByCourseId(Integer.parseInt(courseId)).getUsers();
         List<User> students = new ArrayList<User>();
         List<User> instructors = new ArrayList<User>();
-        List<User> allStudents = userService.findAllStudents();
-        List<User> allInst = userService.findAllInstructors();
-        for(User u: allStudents){
-            u.setCourses(null);
-        }
-        for(User u: allInst){
-            u.setCourses(null);
-        }
         for(User u: associatedUsers){
             u.setCourses(null);
             int roleId = userService.findRoleIdByUserId(u.getId());
@@ -205,9 +197,6 @@ public class SimLabController {
         courseInfo.setCourseDesc(course.getCourseDesc());
         courseInfo.setStudents(students);
         courseInfo.setInstructors(instructors);
-        courseInfo.setAllInstructors(allInst);
-        courseInfo.setAllStudents(allStudents);
-
         var toReturn = courseInfo;
         return toReturn;
 
@@ -215,7 +204,7 @@ public class SimLabController {
 
     @ResponseBody
     @GetMapping(path = "/fetchLabInfo", produces = "application/json; charset=UTF-8")
-    public Lab fetchLabInfo(@RequestParam String labId ){
+    public Lab fetchLabInfo(@RequestParam String labId){
         Lab lab = labService.findByLabId(Integer.parseInt(labId));
         lab.setCourses(null);
         var toReturn = lab;
@@ -269,7 +258,6 @@ public class SimLabController {
                                 @RequestParam String Instructions) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            System.out.println(Instructions);
             List<InstructionInfo> myObjects = null;
             myObjects = mapper.readValue(Instructions, mapper.getTypeFactory().constructCollectionType(List.class, InstructionInfo.class));
             labService.createLab(courseId, labName, labDescription, Solutions, Containers, Tools, myObjects);

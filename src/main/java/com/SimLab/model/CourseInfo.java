@@ -8,13 +8,8 @@ import java.util.List;
 
 @Data
 public class CourseInfo {
-
     private String courseName;
-
     private String courseDesc;
-
     private List<User> students;
     private List<User> instructors;
-    private List<User> allStudents;
-    private List<User> allInstructors;
 }

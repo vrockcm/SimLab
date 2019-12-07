@@ -10,7 +10,7 @@
  * http://www.codrops.com
  */
 
-var editingFlag=0;
+var editingFlag,editingLabFlag=0;
 ;(function(window) {
 
 	'use strict';
@@ -389,6 +389,33 @@ var editingFlag=0;
 })(window);
 
 
+$('#Solutions').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+    var value = $("#Solutions>option").map(function() { return $(this).val(); })[clickedIndex];
+    if(isSelected == false){
+        $('.outgroup-Sol').find(`[value=${value}]`).remove();
+        $('.Container1, .Container2').selectpicker('refresh');
+    }
+    else{
+        $('.outgroup-Sol').append(new Option(value, value));
+        $('.Container1, .Container2').selectpicker('refresh');
+    }
+});
+
+$('#Containers').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+    var value = $("#Containers>option").map(function() { return $(this).val(); })[clickedIndex];
+    if(isSelected == false){
+        $('.outgroup-Con').find(`[value=${value}]`).remove();
+        $('.Container1, .Container2').selectpicker('refresh');
+    }
+    else{
+        $('.outgroup-Con').append(new Option(value, value));
+        $('.Container1, .Container2').selectpicker('refresh');
+    }
+});
+
+
+
+
 function deleteInstruction(card){
     $(card).parents()[0].remove();
     for(var i = 0 ; i < $('.instruction_cards').children().length ; i++){
@@ -396,7 +423,7 @@ function deleteInstruction(card){
     }
 }
 
-function MakeLab(){
+function LabWork(url, LabId = -1){
     var instructions = [];
     var container = 0;
     for(var i = 0 ; i < $('.instruction_cards').children().length ; i++){
@@ -413,16 +440,17 @@ function MakeLab(){
         });
     }
     $.ajax({
-        url : '/MakeLab',
+        url : url,
         type : 'POST',
         async: false,
         data : {
+            labId : LabId,
             courseId : $(".menu__link--current").attr("value"),
             labName : $("#LabName").val(),
             labDescription : $("#LabDesc").val(),
-            Solutions : JSON.stringify($("#Solutions").val()),
-            Containers : JSON.stringify($("#Containers").val()),
-            Tools : JSON.stringify($("#Tools").val()),
+            Solutions : $("#Solutions").val().toString(),
+            Containers : $("#Containers").val().toString(),
+            Tools : $("#Tools").val().toString(),
             Instructions : JSON.stringify(instructions)
         },
         success : function() {
@@ -433,6 +461,92 @@ function MakeLab(){
             alert("Request: "+JSON.stringify(request));
         }
     });
+}
+
+function fetchLab(labEditButton){
+        $("#Change-Lab-Header").text("Edit Lab");
+        var labId  = $(labEditButton).attr("value");
+        $("#Make-Edit-Lab-Button").on("click", function(){
+              LabWork('/EditLab',labId);
+        });
+        if($(".add-lab-form").is(":hidden")){
+            toggleL();
+        }
+        editingLabFlag = 1;
+        $.ajax({
+            url : '/fetchLabInfo',
+            type: 'GET',
+            async: false,
+            data : {
+                'labId' : labId
+            },
+            dataType: 'json',
+            success : function(data){
+                $("#cardigans").empty();
+                $("#LabName").val(data.labName);
+                $("#LabDesc").val(data.labDesc);
+                $(".selectpicker").selectpicker('deselectAll');
+                for(solution of data.solutions) {
+                  $('#Solutions').selectpicker('val', solution.name);
+                }
+                for(container of data.containers) {
+                  $('#Containers').selectpicker('val', container.name);
+                }
+                for(tool of data.tools) {
+                  $('#Tools').selectpicker('val', tool.name);
+                }
+                for(instruction of data.instructions) {
+                  cardMaker(instruction.name, 1, instruction.container1,instruction.container2,instruction.targetTemp, instruction.targetVolume);
+                }
+                $(".form-wrap").scrollTop(0);
+            },
+            error : function(request, error)
+            {
+                alert("Request: "+JSON.stringify(request))
+            }
+        });
+}
+function editCourse(course){
+        $('#delete-course').show();
+        $("#Change-Header").text("Edit Course");
+        if($(".add-course-form").is(":hidden")){
+            toggleC();
+        }
+        editingFlag = 1;
+        var courseId  = course.id;
+        $.ajax({
+            url : '/fetchCourseInfo',
+            type: 'GET',
+            async: false,
+            data : {
+                'courseId' : courseId
+            },
+            dataType: 'json',
+            success : function(data){
+                $(".add-course-form").attr("action", actionEditCourse);
+                $("#CourseName").val(data.courseName);
+                $("#CourseDesc").val(data.courseDesc);
+                $('#StudentList').multiSelect('deselect_all');
+                $('#InstructorList').multiSelect('deselect_all');
+                $(".form-wrap").scrollTop(0);
+                $(".add-course-form").fadeOut("fast", function() {
+                       $('.add-course-form').fadeIn( "fast" );
+                });
+                $('.CourseNumberDiv').empty().append('<input id="courseId" name="courseId" type="hidden" value="'+ courseId +'">')
+                for(var i=0; i<data.students.length; i++){
+                       $('#StudentList').multiSelect('select', data.students[i].id.toString());
+                }
+                for(var i=0; i<data.instructors.length; i++){
+                       $('#InstructorList').multiSelect('select', data.instructors[i].id.toString());
+                }
+                $('#StudentList').multiSelect("refresh");
+                $('#InstructorList').multiSelect("refresh");
+            },
+            error : function(request, error)
+            {
+                alert("Request: "+JSON.stringify(request))
+            }
+        });
 }
 function duplicateLab(x){
     id = $(x).parents()[1].id;
@@ -455,26 +569,39 @@ function duplicateLab(x){
 }
 function deleteLab(x){
     id = $(x).parents()[1].id;
-    $.ajax({
-        url : '/DeleteLab',
-        type : 'POST',
-        async: false,
-        data : {
-            'labId' : id,
-            'courseId' : $(".menu__link--current").attr("value")
-        },
-        success : function(data) {
-            var obj = $(".menu__link--current");
-            $(".menu__link--current")[0].click();
-        },
-        error : function(request,error)
-        {
-            alert("Request: "+JSON.stringify(request));
-        }
-    });
+    $.confirm({
+            title: 'Confirmation',
+            content: 'Are you sure you want to delete this Lab?',
+            autoClose: 'cancel|8000',
+                buttons: {
+                    deleteUser: {
+                        text: 'Delete Lab',
+                        action: function () {
+                            $.ajax({
+                                url : '/DeleteLab',
+                                type : 'POST',
+                                async: false,
+                                data : {
+                                    'labId' : id,
+                                    'courseId' : $(".menu__link--current").attr("value")
+                                },
+                                success : function(data) {
+                                    var obj = $(".menu__link--current");
+                                    $(".menu__link--current")[0].click();
+                                },
+                                error : function(request,error)
+                                {
+                                    alert("Request: "+JSON.stringify(request));
+                                }
+                            });
+                        }
+                    },
+                    cancel: function () {
+                    }
+                }
+        });
 }
-
-function cardMaker(cardHeader) {
+function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", targetTemp = -1, targetVolume = -1) {
         var newCardNumber = $('.instruction_cards').children().length;
         var html = '<div class="card instruction">'+
                    '<button type="button" class="close" onclick="deleteInstruction(this)" aria-label="Close"><span aria-hidden="true">×</span></button>'+
@@ -482,61 +609,72 @@ function cardMaker(cardHeader) {
                    '<p class="step-number">'+(newCardNumber+1)+'</p>'+
                    '<h4 class="card-title">'+cardHeader+'</h4>'+
                    '<input class="instructionNames" type="hidden" value="'+cardHeader+'">';
-            html += '<select class="selectpicker Container1" data-width="fit" data-container="body"><optgroup label="Solutions">';
+            html += '<select class="selectpicker Container1" data-width="100%" data-container="body"><optgroup class="outgroup-Sol" label="Solutions">';
                 for(x of $('#Solutions').val()){
                     html += '<option>'+x+'</option>';
                 }
-            html +='</outgroup><optgroup label="Containers">';
+            html +='</outgroup><optgroup class="outgroup-Con" label="Containers">';
                 for(x of $('#Containers').val()){
                     html += '<option>'+x+'</option>';
                 }
             html +='</outgroup></select></br>';
 
-            html += '<select class="selectpicker Container2" data-width="fit" data-container="body"><optgroup label="Solutions">';
+            html += '<select class="selectpicker Container2" data-width="100%" data-container="body"><optgroup class="outgroup-Sol" label="Solutions">';
                 for(x of $('#Solutions').val()){
                     html += '<option>'+x+'</option>';
                 }
-            html +='</outgroup><optgroup label="Containers">';
+            html +='</outgroup><optgroup class="outgroup-Con" label="Containers">';
                 for(x of $('#Containers').val()){
                     html += '<option>'+x+'</option>';
                 }
             html +='</outgroup></select>';
 
             html +=  '<div class="input-group mb-2 targetTempDiv">'+
-                     '<input type="text" class="form-control" class="targetTemp">'+
+                     '<input type="number" class="form-control targetTemp">'+
                      '<div class="input-group-append"><div class="input-group-text">°C</div></div></div>';
             html +=  '<div class="input-group mb-2 targetVolumeDiv">'+
-                     '<input type="text" class="form-control" class="targetVolume">'+
+                     '<input type="number" class="form-control targetVolume">'+
                      '<div class="input-group-append"><div class="input-group-text">mL</div></div></div>';
             html += '</div></div>';
 
         $('.instruction_cards').append(html);
         $(".selectpicker").selectpicker('refresh');
         newCardNumber = $('.instruction_cards').children().length - 1;
-        var containerRemove = 0;
-        if(newCardNumber == 1)
-            containerRemove = newCardNumber + 2;
-        else
-            containerRemove = (newCardNumber * 2) + 1;
+        var card = $('.instruction_cards').children()[newCardNumber];
         if(cardHeader == "Mix" || cardHeader == "Transfer"){
-            $($(".targetTempDiv")[newCardNumber]).hide();
-            $($(".targetVolumeDiv")[newCardNumber]).hide();
+            if(fetchflag==1){
+                $($(card).find(".Container1")[1]).selectpicker('val', selCon1);
+                $($(card).find(".Container2")[1]).selectpicker('val', selCon2);
+            }
+            $(card).find(".targetTempDiv").hide();
+            $(card).find(".targetVolumeDiv").hide();
         }
         else if(cardHeader == "Weigh" || cardHeader == "Swirl" || cardHeader == "Rinse"){
-            $($(".Container2")[containerRemove]).selectpicker('hide');
-            $($(".Container2")[containerRemove]).children().remove();
-            $($(".targetTempDiv")[newCardNumber]).hide();
-            $($(".targetVolumeDiv")[newCardNumber]).hide();
+            if(fetchflag==1){
+                $($(card).find(".Container1")[1]).selectpicker('val', selCon1);
+            }
+            $($(card).find(".Container2")[1]).selectpicker('hide');
+            $($(card).find(".Container2")[1]).children().remove();
+            $(card).find(".targetTempDiv").hide();
+            $(card).find(".targetVolumeDiv").hide();
         }
         else if(cardHeader == "Heat" || cardHeader == "Cool"){
-            $($(".Container2")[containerRemove]).selectpicker('hide');
-            $($(".Container2")[containerRemove]).children().remove();
-            $($(".targetVolumeDiv")[newCardNumber]).hide();
+            if(fetchflag==1){
+                $($(card).find(".Container1")[1]).selectpicker('val', selCon1);
+                $(card).find(".targetTemp").text(targetTemp);
+            }
+            $($(card).find(".Container2")[1]).selectpicker('hide');
+            $($(card).find(".Container2")[1]).children().remove();
+            $(card).find(".targetVolumeDiv").hide();
         }
         else if(cardHeader == "Draw Up"){
-            $($(".Container2")[containerRemove]).selectpicker('hide');
-            $($(".Container2")[containerRemove]).children().remove();
-            $($(".targetTempDiv")[newCardNumber]).hide();
+            if(fetchflag==1){
+                $($(card).find(".Container1")[1]).selectpicker('val', selCon1);
+                $(card).find(".targetVolume").text(targetTemp);
+            }
+            $($(card).find(".Container2")[1]).selectpicker('hide');
+            $($(card).find(".Container2")[1]).children().remove();
+            $(card).find(".targetTempDiv").hide();
         }
     }
 function toggleL() {
@@ -579,7 +717,23 @@ function toggleC() {
     }
 
 $('.addl_btn').click(function(){
+    $("#Change-Lab-Header").text("Add Lab");
+    $("#Make-Edit-Lab-Button").on("click", function(){
+      LabWork('/MakeLab');
+    });
+    $("#LabName").val("");
+    $("#LabDesc").val("");
+    $(".selectpicker").selectpicker('deselectAll');
+    $("#cardigans").empty();
+    if(editingLabFlag!=1)
         toggleL();
+    else{
+         editingLabFlag = 0;
+         $(".form-wrap").scrollTop(0);
+         $(".add-lab-form").fadeOut("fast", function() {
+               $('.add-lab-form').fadeIn( "fast" );
+        });
+    }
 });
 
 $('.addc_btn').click(function(){
@@ -635,64 +789,6 @@ $('#delete-course').click(function(){
 });
 
 
-function editCourse(course){
-        $('#delete-course').show();
-        $("#Change-Header").text("Edit Course");
-        if($(".add-course-form").is(":hidden")){
-            toggleC();
-        }
-        editingFlag = 1;
-        var courseId  = course.id;
-        $.ajax({
-            url : '/fetchCourseInfo',
-            type: 'GET',
-            async: false,
-            data : {
-                'courseId' : courseId
-            },
-            dataType: 'json',
-            success : function(data){
-
-                function studentExists(id) {
-                  return data.students.some(function(el) {
-                    return el.id === id;
-                  });
-                }
-                function instructorExists(id) {
-                  return data.instructors.some(function(el) {
-                    return el.id === id;
-                  });
-                }
-
-                $(".add-course-form").attr("action", actionEditCourse);
-                $("#CourseName").val(data.courseName);
-                $("#CourseDesc").val(data.courseDesc);
-                $('#StudentList').multiSelect('deselect_all');
-                $('#InstructorList').multiSelect('deselect_all');
-                $(".form-wrap").scrollTop(0);
-                $(".add-course-form").fadeOut("fast", function() {
-                       $('.add-course-form').fadeIn( "fast" );
-                });
-                $('.CourseNumberDiv').empty().append('<input id="courseId" name="courseId" type="hidden" value="'+ courseId +'">')
-                for(var i=0; i<data.allStudents.length; i++){
-                    if(studentExists(data.allStudents[i].id)){
-                       $('#StudentList').multiSelect('select', data.allStudents[i].id.toString());
-                    }
-                }
-                for(var i=0; i<data.allInstructors.length; i++){
-                    if(data.allInstructors[i].id !=userid && instructorExists(data.allInstructors[i].id)){
-                       $('#InstructorList').multiSelect('select', data.allInstructors[i].id.toString());
-                    }
-                }
-                $('#StudentList').multiSelect("refresh");
-                $('#InstructorList').multiSelect("refresh");
-            },
-            error : function(request, error)
-            {
-                alert("Request: "+JSON.stringify(request))
-            }
-        });
-}
 
 $(document).ready(function() {
 
@@ -803,7 +899,7 @@ $(document).ready(function() {
                                     var i = 0;
                                     for(i = 0;i<data.length;i++){
                                        var lab = data[i];
-                                       content+= dummyData["cardbody1"]+lab.labId+dummyData["cardbody2"]+lab.labName + dummyData["cardbody3"] + lab.labDesc + dummyData["cardbody4"];
+                                       content+= dummyData["cardbody1"]+lab.labId+dummyData["cardbody2"]+lab.labName + dummyData["cardbody3"] + lab.labDesc + dummyData["cardbody4"]+lab.labId+dummyData["cardbody5"];
                                     }
                                     content+="</ul>"
                                     gridWrapper1.innerHTML = content;
