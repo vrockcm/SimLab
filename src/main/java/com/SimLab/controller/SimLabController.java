@@ -204,7 +204,7 @@ public class SimLabController {
 
     @ResponseBody
     @GetMapping(path = "/fetchLabInfo", produces = "application/json; charset=UTF-8")
-    public Lab fetchLabInfo(@RequestParam String labId ){
+    public Lab fetchLabInfo(@RequestParam String labId){
         Lab lab = labService.findByLabId(Integer.parseInt(labId));
         lab.setCourses(null);
         var toReturn = lab;
@@ -258,7 +258,6 @@ public class SimLabController {
                                 @RequestParam String Instructions) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            System.out.println(Instructions);
             List<InstructionInfo> myObjects = null;
             myObjects = mapper.readValue(Instructions, mapper.getTypeFactory().constructCollectionType(List.class, InstructionInfo.class));
             labService.createLab(courseId, labName, labDescription, Solutions, Containers, Tools, myObjects);

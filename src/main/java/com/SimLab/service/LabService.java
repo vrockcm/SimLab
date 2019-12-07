@@ -126,17 +126,17 @@ public class LabService {
         List<Container> allContainers = getAllContainer();
         List<Tool> allTools = getAllTools();
         for(Solution s: allSolutions){
-            if(Solutions != null && Solutions.contains("[\"" +s.getName() + "\"]")){
+            if(Solutions != null && Solutions.contains(s.getName())){
                 solutionSet.add(s);
             }
         }
         for(Container c: allContainers){
-            if(Containers != null && Containers.contains("[\"" +c.getName() + "\"]")){
+            if(Containers != null && Containers.contains(c.getName())){
                 containerSet.add(c);
             }
         }
         for(Tool t: allTools){
-            if(Tools != null && Tools.contains("[\"" +t.getName() + "\"]")){
+            if(Tools != null && Tools.contains(t.getName())){
                 toolSet.add(t);
             }
         }

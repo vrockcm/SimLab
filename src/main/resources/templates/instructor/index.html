@@ -105,7 +105,7 @@
 							<div class="col-sm text-center mx-auto">
 								<label for="Solutions">Solutions</label></br>
 								<select class="selectpicker" id="Solutions" name="Solutions" data-live-search="true" multiple title="Choose Solutions">
-									<option  th:value="${solution.name}" th:each="solution : ${solutions}"
+									<option th:each="solution : ${solutions}"
 											th:text="${solution.name}"></option>
 <!--									<option value="HCl" name="materialNames">HCl</option>-->
 <!--									<option value="Poop" name="materialNames">Poop</option>-->
@@ -114,7 +114,7 @@
 							<div class="col-sm text-center mx-auto">
 								<label for="Containers">Containers</label></br>
 								<select class="selectpicker" id="Containers" name="Containers" data-live-search="true" multiple title="Choose Containers">
-									<option th:value="${container.name}" th:each="container : ${containers}"
+									<option th:each="container : ${containers}"
 											th:text="${container.name}"></option>
 <!--										<option value="Beaker" name="materialNames">Beaker</option>-->
 <!--										<option value="Flask" name="materialNames">Flask</option>-->
@@ -123,7 +123,7 @@
 							<div class="col-sm text-center mx-auto">
 								<label for="Tools">Tools</label></br>
 								<select class="selectpicker" id="Tools" name="Tools" data-live-search="true" multiple title="Choose Tools">
-									<option th:value="${tool.name}" th:each="tool : ${tools}"
+									<option th:each="tool : ${tools}"
 											th:text="${tool.name}"></option>
 								</select>
 							</div>
