@@ -107,6 +107,7 @@ public class SimLabController {
 
     @RequestMapping(value="/instructor/index", method = RequestMethod.GET)
     public ModelAndView instructorHome(){
+
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
@@ -143,6 +144,8 @@ public class SimLabController {
         courseService.editCourse(courseName, courseDesc, students, instructors);
         return "redirect:/instructor/index";
     }
+
+
 
 
     @RequestMapping(value = "/MakeCourse", method = RequestMethod.POST)
@@ -211,6 +214,16 @@ public class SimLabController {
     }
 
     @ResponseBody
+    @GetMapping(path = "/fetchLabInfo", produces = "application/json; charset=UTF-8")
+    public Lab fetchLabInfo(@RequestParam String labId ){
+        Lab lab = labService.findByLabId(Integer.parseInt(labId));
+        lab.setCourses(null);
+        var toReturn = lab;
+        return toReturn;
+
+    }
+
+    @ResponseBody
     @GetMapping("/loadLabs")
     public String loadLabs(@RequestParam String courseName){
         Course course = courseService.findByCourseName(courseName);
@@ -256,12 +269,28 @@ public class SimLabController {
                                 @RequestParam String Instructions) {
         ObjectMapper mapper = new ObjectMapper();
         try {
+            System.out.println(Instructions);
             List<InstructionInfo> myObjects = null;
             myObjects = mapper.readValue(Instructions, mapper.getTypeFactory().constructCollectionType(List.class, InstructionInfo.class));
             labService.createLab(courseId, labName, labDescription, Solutions, Containers, Tools, myObjects);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        return "";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/EditLab", method = RequestMethod.POST)
+    public String editLab(@RequestParam String courseId,
+                          @RequestParam String labId,
+                          @RequestParam String labName,
+                          @RequestParam(required = false, defaultValue = "") String labDescription,
+                          @RequestParam(required = false, defaultValue = "") List<String> Solutions,
+                          @RequestParam(required = false, defaultValue = "") List<String> Containers,
+                          @RequestParam(required = false, defaultValue = "") List<String> Tools,
+                          @RequestParam String Instructions) {
+        deleteLab(labId, courseId);
+        createNewLab(courseId, labName, labDescription, Solutions, Containers, Tools, Instructions);
         return "";
     }
 }

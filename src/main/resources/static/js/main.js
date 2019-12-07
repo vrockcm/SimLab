@@ -388,24 +388,7 @@ var editingFlag=0;
 
 })(window);
 
-function deleteLab(x){
-    id = $(x).parents()[1].id;
-    $.ajax({
-        url : '/DeleteLab',
-        type : 'POST',
-        async: false,
-        data : {
-            'labId' : labInfo[1]
-        },
-        success : function(data) {
-            $(".menu__link--current")[0].click();
-        },
-        error : function(request,error)
-        {
-            alert("Request: "+JSON.stringify(request));
-        }
-    });
-}
+
 function deleteInstruction(card){
     $(card).parents()[0].remove();
     for(var i = 0 ; i < $('.instruction_cards').children().length ; i++){
