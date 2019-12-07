@@ -1,5 +1,4 @@
 package com.SimLab.model.dao;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -7,8 +6,6 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
