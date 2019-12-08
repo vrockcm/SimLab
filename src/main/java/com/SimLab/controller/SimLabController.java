@@ -38,8 +38,7 @@ public class SimLabController {
     @Autowired
     private CourseService courseService;
 
-    @Autowired
-    private MaterialRepository materialRepository;
+
     @Autowired
     private LabRepository labRepository;
     @Autowired
