@@ -140,7 +140,7 @@ public class SimLabController {
                              @RequestParam(value = "students", required = false) String[] students,
                              @RequestParam(value = "instructors", required = false) String[] instructors,
                              @RequestParam Integer courseId) {
-        courseService.editCourse(courseName, courseDesc, students, instructors);
+        courseService.editCourse(courseName, courseDesc, students, instructors, courseId);
         return "redirect:/instructor/index";
     }
 
@@ -278,6 +278,6 @@ public class SimLabController {
                           @RequestParam String Instructions) {
         deleteLab(labId, courseId);
         createNewLab(courseId, labName, labDescription, Solutions, Containers, Tools, Instructions);
-        return "";
+        return "";//
     }
 }
