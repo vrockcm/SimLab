@@ -88,6 +88,13 @@ public class SimLabController {
         return modelAndView;
     }
 
+    @GetMapping(value={"/workbench"})
+    public ModelAndView workbench(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("workbench");
+        return modelAndView;
+    }
+
 
     @RequestMapping(value="/student/index", method = RequestMethod.GET)
     public ModelAndView studentHome(){
@@ -250,6 +257,8 @@ public class SimLabController {
     public String createNewLab(@RequestParam String courseId,
                                 @RequestParam String labName,
                                 @RequestParam(required = false, defaultValue = "") String labDescription,
+                                @RequestParam String timeLimit,
+                                @RequestParam int published,
                                 @RequestParam(required = false, defaultValue = "") List<String> Solutions,
                                 @RequestParam(required = false, defaultValue = "") List<String> Containers,
                                 @RequestParam(required = false, defaultValue = "") List<String> Tools,
@@ -258,7 +267,7 @@ public class SimLabController {
         try {
             List<Instruction> myObjects = null;
             myObjects = mapper.readValue(Instructions, mapper.getTypeFactory().constructCollectionType(List.class, Instruction.class));
-            labService.createLab(courseId, labName, labDescription, Solutions, Containers, Tools, myObjects);
+            labService.createLab(courseId, labName, labDescription, Integer.parseInt(timeLimit), Solutions, Containers, Tools, myObjects, published);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -270,13 +279,15 @@ public class SimLabController {
     public String editLab(@RequestParam String courseId,
                           @RequestParam String labId,
                           @RequestParam String labName,
+                          @RequestParam String timeLimit,
+                          @RequestParam int published,
                           @RequestParam(required = false, defaultValue = "") String labDescription,
                           @RequestParam(required = false, defaultValue = "") List<String> Solutions,
                           @RequestParam(required = false, defaultValue = "") List<String> Containers,
                           @RequestParam(required = false, defaultValue = "") List<String> Tools,
                           @RequestParam String Instructions) {
         deleteLab(labId, courseId);
-        createNewLab(courseId, labName, labDescription, Solutions, Containers, Tools, Instructions);
+        createNewLab(courseId, labName, labDescription, timeLimit, published, Solutions, Containers, Tools, Instructions);
         return "";//
     }
 }

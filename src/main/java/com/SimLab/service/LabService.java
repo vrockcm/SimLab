@@ -40,13 +40,15 @@ public class LabService {
     public void createLab(String courseId,
                           String labName,
                           String labDescription,
+                          int timeLimit,
                           List<String> Solutions,
                           List<String> Containers,
                           List<String> Tools,
-                          List<Instruction> myObjects){
+                          List<Instruction> myObjects,
+                          int published){
         Lab lab = new Lab();
-        populateLabWithInfo(lab, labName, labDescription, Solutions, Containers, Tools, myObjects);
-
+        populateLabWithInfo(lab, labName, labDescription, timeLimit, Solutions, Containers, Tools, myObjects);
+        if(published == 1) publishLab(lab);
         saveLab(lab, Integer.parseInt(courseId));
     }
 
@@ -93,16 +95,21 @@ public class LabService {
 
     }
 
+    public void publishLab(Lab lab){
+        lab.setPublished(1);
+    }
+
     public void editLab(int labId,
                         String labName,
                         String labDescription,
+                        int timeLimit,
                         List<String> Solutions,
                         List<String> Containers,
                         List<String> Tools,
                         List<Instruction> myObjects){
         Lab lab = findByLabId(labId);
         instructionRepository.deleteAll(lab.getInstructions());
-        populateLabWithInfo(lab, labName, labDescription, Solutions, Containers, Tools, myObjects);
+        populateLabWithInfo(lab, labName, labDescription, timeLimit, Solutions, Containers, Tools, myObjects);
         labRepository.save(lab);
 
     }
@@ -110,12 +117,14 @@ public class LabService {
     private void populateLabWithInfo(Lab lab,
                                      String labName,
                                      String labDescription,
+                                     int timeLimit,
                                      List<String> Solutions,
                                      List<String> Containers,
                                      List<String> Tools,
                                      List<Instruction> myObjects){
         lab.setLabName(labName);
         lab.setLabDesc(labDescription);
+        lab.setTimeLimit(timeLimit);
 
         Set<Solution> solutionSet = new HashSet<Solution>();
         Set<Container> containerSet = new HashSet<Container>();

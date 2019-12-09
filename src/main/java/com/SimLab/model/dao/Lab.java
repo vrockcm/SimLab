@@ -19,6 +19,8 @@ public class Lab {
     private String labDesc;
     @Column(name = "Published")
     private int published;
+    @Column(name = "Time_limit")
+    private int timeLimit;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "lab_tool", joinColumns = @JoinColumn(name = "lab_id"), inverseJoinColumns = @JoinColumn(name = "tool_id"))
