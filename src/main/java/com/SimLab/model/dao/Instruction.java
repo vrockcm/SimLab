@@ -24,6 +24,8 @@ public class Instruction {
     @Column(name = "TargetVolume")
     private int targetVolume;
 
+    @Column(name = "step_number")
+    private int stepNumber;
 
 
 

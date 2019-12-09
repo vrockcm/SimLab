@@ -1,11 +1,9 @@
 package com.SimLab.service;
 
-import com.SimLab.model.InstructionInfo;
 import com.SimLab.model.dao.*;
 
 import com.SimLab.model.dao.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -19,17 +17,20 @@ public class LabService {
     ToolRepository toolRepository;
     ContainerRepository containerRepository;
     SolutionRepository solutionRepository;
+    InstructionRepository instructionRepository;
 
     @Autowired
     public LabService(LabRepository labRepository,
             ToolRepository toolRepository,
             ContainerRepository containerRepository,
             SolutionRepository solutionRepository,
-                      CourseService courseService) {
+              InstructionRepository instructionRepository,
+              CourseService courseService) {
         this.labRepository = labRepository;
         this.toolRepository = toolRepository;
         this.containerRepository = containerRepository;
         this.solutionRepository = solutionRepository;
+        this.instructionRepository = instructionRepository;
         this.courseService = courseService;
     }
 
@@ -42,44 +43,11 @@ public class LabService {
                           List<String> Solutions,
                           List<String> Containers,
                           List<String> Tools,
-                          List<InstructionInfo> myObjects){
+                          List<Instruction> myObjects){
         Lab lab = new Lab();
+        populateLabWithInfo(lab, labName, labDescription, Solutions, Containers, Tools, myObjects);
 
-        Set<Solution> solutionSet = new HashSet<Solution>();
-        Set<Container> containerSet = new HashSet<Container>();
-        Set<Tool> toolSet = new HashSet<Tool>();
-        Set<Instruction> instructionSet = new HashSet<Instruction>();
-        List<Solution> allSolutions = getAllSolutions();
-        List<Container> allContainers = getAllContainer();
-        List<Tool> allTools = getAllTools();
-        for(Solution s: allSolutions){
-            if(Solutions.contains("[\"" +s.getName() + "\"]")){
-                solutionSet.add(s);
-            }
-        }
-        for(Container c: allContainers){
-            if(Containers.contains("[\"" +c.getName() + "\"]")){
-                containerSet.add(c);
-            }
-        }
-        for(Tool t: allTools){
-            if(Tools.contains("[\"" +t.getName() + "\"]")){
-                toolSet.add(t);
-            }
-        }
-        for(InstructionInfo iInfo: myObjects){
-            Instruction i = new Instruction();
-            i.setName(iInfo.getName());
-            i.setContainer1(iInfo.getContainer1());
-            i.setContainer2(iInfo.getContainer2());
-            i.setTargetVolume(iInfo.getTargetVolume());
-            i.setTargetTemp(iInfo.getTargetTemp());
-            instructionSet.add(i);
-        }
-
-        lab.setLabName(labName);
-        lab.setLabDesc(labDescription);
-        saveLab(lab, toolSet, containerSet, solutionSet, instructionSet, Integer.parseInt(courseId));
+        saveLab(lab, Integer.parseInt(courseId));
     }
 
     public void duplicateLab(Lab lab, String courseId){
@@ -103,14 +71,10 @@ public class LabService {
             Instruction newI = new Instruction(i);
             instructions.add(newI);
         }
-        saveLab(newLab, tools, containers, solutions, instructions, Integer.parseInt(courseId));
+        saveLab(newLab, Integer.parseInt(courseId));
     }
 
-    public void saveLab(Lab lab, Set<Tool> tools, Set<Container> containers, Set<Solution> solutions, Set<Instruction> instructions, int courseId){
-        lab.setTools(tools);
-        lab.setContainers(containers);
-        lab.setSolutions(solutions);
-        lab.setInstructions(instructions);
+    public void saveLab(Lab lab,int courseId){
         labRepository.save(lab);
         courseService.addLab(courseService.findByCourseId(courseId), lab);
     }
@@ -129,6 +93,58 @@ public class LabService {
 
     }
 
+    public void editLab(int labId,
+                        String labName,
+                        String labDescription,
+                        List<String> Solutions,
+                        List<String> Containers,
+                        List<String> Tools,
+                        List<Instruction> myObjects){
+        Lab lab = findByLabId(labId);
+        instructionRepository.deleteAll(lab.getInstructions());
+        populateLabWithInfo(lab, labName, labDescription, Solutions, Containers, Tools, myObjects);
+        labRepository.save(lab);
+
+    }
+
+    private void populateLabWithInfo(Lab lab,
+                                     String labName,
+                                     String labDescription,
+                                     List<String> Solutions,
+                                     List<String> Containers,
+                                     List<String> Tools,
+                                     List<Instruction> myObjects){
+        lab.setLabName(labName);
+        lab.setLabDesc(labDescription);
+
+        Set<Solution> solutionSet = new HashSet<Solution>();
+        Set<Container> containerSet = new HashSet<Container>();
+        Set<Tool> toolSet = new HashSet<Tool>();
+        Set<Instruction> instructionSet = new HashSet<Instruction>();
+        List<Solution> allSolutions = getAllSolutions();
+        List<Container> allContainers = getAllContainer();
+        List<Tool> allTools = getAllTools();
+        for(Solution s: allSolutions){
+            if(Solutions != null && Solutions.contains(s.getName())){
+                solutionSet.add(s);
+            }
+        }
+        for(Container c: allContainers){
+            if(Containers != null && Containers.contains(c.getName())){
+                containerSet.add(c);
+            }
+        }
+        for(Tool t: allTools){
+            if(Tools != null && Tools.contains(t.getName())){
+                toolSet.add(t);
+            }
+        }
+        instructionSet.addAll(myObjects);
+        lab.setTools(toolSet);
+        lab.setContainers(containerSet);
+        lab.setSolutions(solutionSet);
+        lab.setInstructions(instructionSet);
+    }
 
 
 

@@ -7,7 +7,15 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class Solution extends Material{
+public class Solution{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name= "solution_id")
+    private int id;
+
+    @Column(name = "solution_name")
+    private String name;
 
     @Column(name = "Flamability")
     @Type(type="org.hibernate.type.ByteType")

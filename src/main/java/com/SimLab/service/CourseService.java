@@ -39,8 +39,8 @@ public class CourseService {
         return true;
     }
 
-    public boolean editCourse(String courseName, String courseDesc, String[] students, String[] instructors){
-        Course course = findByCourseName(courseName);
+    public boolean editCourse(String courseName, String courseDesc, String[] students, String[] instructors, int courseId){
+        Course course = findByCourseId(courseId);
         course.setCourseName(courseName);
         course.setCourseDesc(courseDesc);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

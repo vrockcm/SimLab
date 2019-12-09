@@ -6,7 +6,15 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class Tool extends Material{
+public class Tool{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name= "tool_id")
+    private int id;
+
+    @Column(name = "tool_name")
+    private String name;
 
     @Column(name = "Description")
     private String toolDesc;

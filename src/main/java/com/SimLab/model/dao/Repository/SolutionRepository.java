@@ -11,6 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Transactional
-public interface SolutionRepository extends MaterialBaseRepository<Solution> {
+public interface SolutionRepository extends JpaRepository<Solution, Long> {
 
 }
