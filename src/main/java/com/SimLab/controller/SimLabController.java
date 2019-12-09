@@ -1,6 +1,5 @@
 package com.SimLab.controller;
 
-import com.SimLab.model.InstructionInfo;
 import com.SimLab.service.CourseService;
 import com.SimLab.service.LabService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -257,8 +256,8 @@ public class SimLabController {
                                 @RequestParam String Instructions) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            List<InstructionInfo> myObjects = null;
-            myObjects = mapper.readValue(Instructions, mapper.getTypeFactory().constructCollectionType(List.class, InstructionInfo.class));
+            List<Instruction> myObjects = null;
+            myObjects = mapper.readValue(Instructions, mapper.getTypeFactory().constructCollectionType(List.class, Instruction.class));
             labService.createLab(courseId, labName, labDescription, Solutions, Containers, Tools, myObjects);
         } catch (JsonProcessingException e) {
             e.printStackTrace();

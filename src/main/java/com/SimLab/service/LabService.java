@@ -1,6 +1,5 @@
 package com.SimLab.service;
 
-import com.SimLab.model.InstructionInfo;
 import com.SimLab.model.dao.*;
 
 import com.SimLab.model.dao.Repository.*;
@@ -44,7 +43,7 @@ public class LabService {
                           List<String> Solutions,
                           List<String> Containers,
                           List<String> Tools,
-                          List<InstructionInfo> myObjects){
+                          List<Instruction> myObjects){
         Lab lab = new Lab();
         populateLabWithInfo(lab, labName, labDescription, Solutions, Containers, Tools, myObjects);
 
@@ -100,7 +99,7 @@ public class LabService {
                         List<String> Solutions,
                         List<String> Containers,
                         List<String> Tools,
-                        List<InstructionInfo> myObjects){
+                        List<Instruction> myObjects){
         Lab lab = findByLabId(labId);
         instructionRepository.deleteAll(lab.getInstructions());
         populateLabWithInfo(lab, labName, labDescription, Solutions, Containers, Tools, myObjects);
@@ -114,7 +113,7 @@ public class LabService {
                                      List<String> Solutions,
                                      List<String> Containers,
                                      List<String> Tools,
-                                     List<InstructionInfo> myObjects){
+                                     List<Instruction> myObjects){
         lab.setLabName(labName);
         lab.setLabDesc(labDescription);
 
@@ -140,16 +139,7 @@ public class LabService {
                 toolSet.add(t);
             }
         }
-        for(InstructionInfo iInfo: myObjects){
-            Instruction i = new Instruction();
-            i.setName(iInfo.getName());
-            i.setContainer1(iInfo.getContainer1());
-            i.setContainer2(iInfo.getContainer2());
-            i.setTargetVolume(iInfo.getTargetVolume());
-            i.setTargetTemp(iInfo.getTargetTemp());
-            i.setStepNumber(iInfo.getStepNumber());
-            instructionSet.add(i);
-        }
+        instructionSet.addAll(myObjects);
         lab.setTools(toolSet);
         lab.setContainers(containerSet);
         lab.setSolutions(solutionSet);

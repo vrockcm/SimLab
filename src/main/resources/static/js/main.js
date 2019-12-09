@@ -432,7 +432,8 @@ function LabWork(url, LabId = -1){
         else
             container = (i * 2) + 1;
         instructions.push({
-          name: $($('.card-title')[i]).text(),
+          stepNumber: $($('.step-number')[i]).text(),
+          name: $($('.instruction-title')[i]).text(),
           container1: $($('.Container1')[container]).val(),
           container2: $($('.Container2')[container]).val(),
           targetTemp : $($('.targetTemp')[i]).val(),
@@ -466,6 +467,7 @@ function LabWork(url, LabId = -1){
 function fetchLab(labEditButton){
         $("#Change-Lab-Header").text("Edit Lab");
         var labId  = $(labEditButton).attr("value");
+        $("#Make-Edit-Lab-Button").unbind('click');
         $("#Make-Edit-Lab-Button").on("click", function(){
               LabWork('/EditLab',labId);
         });
@@ -486,15 +488,15 @@ function fetchLab(labEditButton){
                 $("#LabName").val(data.labName);
                 $("#LabDesc").val(data.labDesc);
                 $(".selectpicker").selectpicker('deselectAll');
-                for(solution of data.solutions) {
-                  $('#Solutions').selectpicker('val', solution.name);
-                }
-                for(container of data.containers) {
-                  $('#Containers').selectpicker('val', container.name);
-                }
-                for(tool of data.tools) {
-                  $('#Tools').selectpicker('val', tool.name);
-                }
+                $('#Solutions').selectpicker('val', Array.from(data.solutions, x => x.name));
+                $('#Containers').selectpicker('val', Array.from(data.containers, x => x.name));
+                $('#Tools').selectpicker('val', Array.from(data.tools, x => x.name));
+                var instructions = data.instructions;
+                instructions.sort(function(a, b) {
+                    var A = a.stepNumber;
+                    var B = b.stepNumber;
+                    return (A < B) ? -1 : (A > B) ? 1 : 0;
+                });
                 for(instruction of data.instructions) {
                   cardMaker(instruction.name, 1, instruction.container1,instruction.container2,instruction.targetTemp, instruction.targetVolume);
                 }
@@ -607,25 +609,25 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
                    '<button type="button" class="close" onclick="deleteInstruction(this)" aria-label="Close"><span aria-hidden="true">×</span></button>'+
                    '<div class="card-body">'+
                    '<p class="step-number">'+(newCardNumber+1)+'</p>'+
-                   '<h4 class="card-title">'+cardHeader+'</h4>'+
+                   '<h4 class="instruction-title">'+cardHeader+'</h4>'+
                    '<input class="instructionNames" type="hidden" value="'+cardHeader+'">';
             html += '<select class="selectpicker Container1" data-width="100%" data-container="body"><optgroup class="outgroup-Sol" label="Solutions">';
                 for(x of $('#Solutions').val()){
-                    html += '<option>'+x+'</option>';
+                    html += '<option value="'+x+'">'+x+'</option>';
                 }
             html +='</outgroup><optgroup class="outgroup-Con" label="Containers">';
                 for(x of $('#Containers').val()){
-                    html += '<option>'+x+'</option>';
+                    html += '<option value="'+x+'">'+x+'</option>';
                 }
             html +='</outgroup></select></br>';
 
             html += '<select class="selectpicker Container2" data-width="100%" data-container="body"><optgroup class="outgroup-Sol" label="Solutions">';
                 for(x of $('#Solutions').val()){
-                    html += '<option>'+x+'</option>';
+                    html += '<option value="'+x+'">'+x+'</option>';
                 }
             html +='</outgroup><optgroup class="outgroup-Con" label="Containers">';
                 for(x of $('#Containers').val()){
-                    html += '<option>'+x+'</option>';
+                    html += '<option value="'+x+'">'+x+'</option>';
                 }
             html +='</outgroup></select>';
 
@@ -661,7 +663,7 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
         else if(cardHeader == "Heat" || cardHeader == "Cool"){
             if(fetchflag==1){
                 $($(card).find(".Container1")[1]).selectpicker('val', selCon1);
-                $(card).find(".targetTemp").text(targetTemp);
+                $(card).find(".targetTemp").val(targetTemp);
             }
             $($(card).find(".Container2")[1]).selectpicker('hide');
             $($(card).find(".Container2")[1]).children().remove();
@@ -670,7 +672,7 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
         else if(cardHeader == "Draw Up"){
             if(fetchflag==1){
                 $($(card).find(".Container1")[1]).selectpicker('val', selCon1);
-                $(card).find(".targetVolume").text(targetTemp);
+                $(card).find(".targetVolume").val(targetVolume);
             }
             $($(card).find(".Container2")[1]).selectpicker('hide');
             $($(card).find(".Container2")[1]).children().remove();
@@ -718,6 +720,7 @@ function toggleC() {
 
 $('.addl_btn').click(function(){
     $("#Change-Lab-Header").text("Add Lab");
+    $("#Make-Edit-Lab-Button").unbind('click');
     $("#Make-Edit-Lab-Button").on("click", function(){
       LabWork('/MakeLab');
     });
