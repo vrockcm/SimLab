@@ -88,6 +88,13 @@ public class SimLabController {
         return modelAndView;
     }
 
+    @GetMapping(value={"/workbench"})
+    public ModelAndView workbench(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("workbench");
+        return modelAndView;
+    }
+
 
     @RequestMapping(value="/student/index", method = RequestMethod.GET)
     public ModelAndView studentHome(){
