@@ -19,4 +19,6 @@ public class InstructionInfo {
     private int targetTemp;
 
     private int targetVolume;
+
+    private int stepNumber;
 }

@@ -147,6 +147,7 @@ public class LabService {
             i.setContainer2(iInfo.getContainer2());
             i.setTargetVolume(iInfo.getTargetVolume());
             i.setTargetTemp(iInfo.getTargetTemp());
+            i.setStepNumber(iInfo.getStepNumber());
             instructionSet.add(i);
         }
         lab.setTools(toolSet);
