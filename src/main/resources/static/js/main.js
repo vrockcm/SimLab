@@ -423,7 +423,7 @@ function deleteInstruction(card){
     }
 }
 
-function LabWork(url, LabId = -1){
+function LabWork(url, LabId = -1, publish = 0){
     var instructions = [];
     var container = 0;
     for(var i = 0 ; i < $('.instruction_cards').children().length ; i++){
@@ -446,6 +446,8 @@ function LabWork(url, LabId = -1){
         async: false,
         data : {
             labId : LabId,
+            published: publish,
+            timeLimit : $("#timeLimit").val(),
             courseId : $(".menu__link--current").attr("value"),
             labName : $("#LabName").val(),
             labDescription : $("#LabDesc").val(),
@@ -470,6 +472,10 @@ function fetchLab(labEditButton){
         $("#Make-Edit-Lab-Button").unbind('click');
         $("#Make-Edit-Lab-Button").on("click", function(){
               LabWork('/EditLab',labId);
+        });
+        $("#Publish").unbind('click');
+        $("#Publish").on("click", function(){
+              LabWork('/EditLab',labId,1);
         });
         if($(".add-lab-form").is(":hidden")){
             toggleL();
@@ -724,6 +730,10 @@ $('.addl_btn').click(function(){
     $("#Make-Edit-Lab-Button").on("click", function(){
       LabWork('/MakeLab');
     });
+    $("#Publish").unbind('click');
+    $("#Publish").on("click", function(){
+          LabWork('/EditLab',labId,1);
+    });
     $("#LabName").val("");
     $("#LabDesc").val("");
     $(".selectpicker").selectpicker('deselectAll');
@@ -897,17 +907,19 @@ $(document).ready(function() {
                                 classie.add(gridWrapper2, 'content--loading');
                                 setTimeout(function() {
                                     classie.remove(gridWrapper1, 'content--loading');
-                                    var content = '<ul class="products">';
-
-                                    var i = 0;
-                                    for(i = 0;i<data.length;i++){
-                                       var lab = data[i];
-                                       content+= dummyData["cardbody1"]+lab.labId+dummyData["cardbody2"]+lab.labName + dummyData["cardbody3"] + lab.labDesc + dummyData["cardbody4"]+lab.labId+dummyData["cardbody5"];
-                                    }
-                                    content+="</ul>"
-                                    gridWrapper1.innerHTML = content;
+                                    var saved = published = '<ul class="products">';
+                                    for(var i = 0;i<data.length;i++){
+                                        var lab = data[i];
+                                        if(lab.published)
+                                            published+= dummyData["cardbody1"]+lab.labId+dummyData["cardbody2"]+lab.labName + dummyData["cardbody3"] + lab.labDesc + dummyData["cardbody4"]+lab.labId+dummyData["cardbody5"];
+                                        else
+                                            saved+= dummyData["cardbody1"]+lab.labId+dummyData["cardbody2"]+lab.labName + dummyData["cardbody3"] + lab.labDesc + dummyData["cardbody4"]+lab.labId+dummyData["cardbody5"];
+                                      }
+                                    saved +="</ul>";
+                                    published +="</ul>";
+                                    gridWrapper1.innerHTML = saved;
                                     classie.remove(gridWrapper2, 'content--loading');
-                                    gridWrapper2.innerHTML = content;
+                                    gridWrapper2.innerHTML = published;
                                 }, 700);
                         },
                         error : function(request,error)

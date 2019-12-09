@@ -90,11 +90,16 @@
 				<form class="add-lab-form">
 					<h1 class="form-header" id="Change-Lab-Header">Add Lab</h1>
 				  	<div class="form-group">
-						<label for="LabName">Lab Name</label>
-						<input type="text" class="form-control" name="labName" id="LabName" placeholder="Acid-Base Lab">
-							<div class="CourseNumberDiv">
-
+						<div class="row">
+							<div class="col-sm-8">
+								<label for="LabName">Lab Name</label></br>
+								<input type="text" class="form-control" name="labName" id="LabName" placeholder="Acid-Base Lab">
 							</div>
+							<div class="col-sm-4">
+								<label for="timeLimit">Time Limit(Minutes)</label></br>
+								<input class="form-control" min="0" max="120" type="number" id="timeLimit" name="timeLimit" value="0"/>
+							</div>
+						</div>
 				  	</div>
 				    <div class="form-group">
 						<label for="LabDesc">Lab Description</label>
@@ -107,8 +112,6 @@
 								<select class="selectpicker" id="Solutions" name="Solutions" data-live-search="true" multiple title="Choose Solutions">
 									<option th:each="solution : ${solutions}"
 											th:text="${solution.name}"></option>
-<!--									<option value="HCl" name="materialNames">HCl</option>-->
-<!--									<option value="Poop" name="materialNames">Poop</option>-->
 								</select>
 							</div>
 							<div class="col-sm text-center mx-auto">
@@ -116,8 +119,6 @@
 								<select class="selectpicker" id="Containers" name="Containers" data-live-search="true" multiple title="Choose Containers">
 									<option th:each="container : ${containers}"
 											th:text="${container.name}"></option>
-<!--										<option value="Beaker" name="materialNames">Beaker</option>-->
-<!--										<option value="Flask" name="materialNames">Flask</option>-->
 								</select>
 							</div>
 							<div class="col-sm text-center mx-auto">
@@ -149,7 +150,11 @@
 					<div class="instruction_cards" id="cardigans">
 					</div>
 				  </div>
-				  <button type="button" id="Make-Edit-Lab-Button" class="btn btn-primary">Submit</button>
+					<div class="d-flex justify-content-between">
+						<button type="button" id="Make-Edit-Lab-Button" class="btn btn-primary">Save</button>
+						<button type="button" id="Test-Lab" class="btn btn-danger">Test</button>
+						<button type="button" id="Publish" class="btn btn-info">Publish</button>
+					</div>
 				</form>
 
 
