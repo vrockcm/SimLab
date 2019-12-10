@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org">
 
 <head>
 	<meta charset="UTF-8" />
@@ -16,24 +17,20 @@
 	<!-- Material Design Bootstrap -->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.10/css/mdb.min.css" rel="stylesheet">
 	<!-- JQuery -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<!-- Bootstrap tooltips -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
-<!-- Bootstrap core JavaScript -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<!-- MDB core JavaScript -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.10/js/mdb.min.js"></script>
-
-
-
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<!-- Bootstrap tooltips -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+	<!-- Bootstrap core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<!-- MDB core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.10/js/mdb.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
 	<link rel="shortcut icon" href="favicon.ico">
-	<!-- food icons -->
-	<link rel="stylesheet" type="text/css" href="css/organicfoodicons.css" />
 	<!-- demo styles -->
-	<link rel="stylesheet" type="text/css" href="css/demo.css" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/demo.css}"/>
 	<!-- menu styles -->
-	<link rel="stylesheet" type="text/css" href="css/component.css" />
-	<script src="js/modernizr-custom.js"></script>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/component.css}"/>
+	<script th:src="@{/js/modernizr-custom.js}"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
@@ -43,14 +40,15 @@
 	<div class="container-fluid">
 		<!-- Blueprint header -->
 		<header class="bp-header cf">
-			<div class="equipment">
+			<div class="dummy-logo">
+				<img th:src="@{/images/SimLab.png}" alt="logo" class="logo img-fluid">
 				<div class="courses">
 					<h3 class="AddCourses">Equipment</h3>
 				</div>
 			</div>
 			<div class="bp-header__main">
 				<div class="labs">
-					<h3 class="steps">Step-1: Mix HCL with Nacl</h3>
+					<h3 class="steps" th:text="${header}"></h3>
 				</div>
 			</div>
 		</header>
@@ -58,100 +56,73 @@
 		<nav id="ml-menu" class="menu">
 			<button class="action action--close" aria-label="Close Menu"><span class="icon icon--cross"></span></button>
 			<div class="menu__wrap">
-				<button style="margin-left: 5px" type="button" class="size btn btn-info">Glass</button>
-				<button type="button" class="size btn btn-info">Solution</button>
-				<button type="button" class="size btn btn-info">Tools</button>
-				<ul data-menu="main" class="menu__level" tabindex="-1" role="menu">
-					<li class="menu_item">
-						<div class="card">
-						  <div class="card-body">
-						    <h4 class="card-title">Beaker</h4>
-						  <div class="view beaker overlay">
-						   <!--  <img class="card-img-top" src="img/beaker_150_ml_T.png" alt="Card image cap"> -->
-						  </div>
-						  </div>
-						</div>
+				<ul class="nav nav-tabs" id="myTab" role="tablist">
+					<li class="nav-item">
+						<a class="nav-link active" id="solutions-tab" data-toggle="tab" href="#solutions" role="tab" aria-controls="solutions"
+						   aria-selected="true">Solutions</a>
 					</li>
-					<li class="menu_item">
-						<div class="card">
-						  <div class="card-body">
-						    <h4 class="card-title">Erlenmeyer Flask</h4>
-						  <div class="view flask overlay">
-						   <!--  <img class="card-img-top" src="img/flask-1.png" alt="Card image cap"> -->
-						  </div>
-						  </div>
-						</div>
+					<li class="nav-item">
+						<a class="nav-link" id="containers-tab" data-toggle="tab" href="#containers" role="tab" aria-controls="containers"
+						   aria-selected="false">Containers</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="tools-tab" data-toggle="tab" href="#tools" role="tab" aria-controls="tools"
+						   aria-selected="false">Tools</a>
 					</li>
 				</ul>
+
+				<div class="tab-content" id="myTabContent">
+					<div class="tab-pane fade show active" id="solutions" role="tabpanel" aria-labelledby="solutions-tab">
+						<ul data-menu="main" class="menu__level" tabindex="-1" role="menu">
+							<li class="menu_item" th:each="solution : ${solutions}">
+								<div class="card">
+									<div class="card-body">
+										<h4 class="card-title" th:text="${solution.name}"></h4>
+										<div th:class="'view '+${solution.name}+' overlay'">
+										</div>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="tab-pane fade" id="containers" role="tabpanel" aria-labelledby="containers-tab">
+						<ul data-menu="main" class="menu__level" tabindex="-1" role="menu">
+							<li class="menu_item" th:each="container : ${containers}">
+								<div class="card">
+									<div class="card-body">
+										<h4 class="card-title" th:text="${container.name}"></h4>
+										<div th:class="'view '+${container.name}+' overlay'">
+										</div>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="tab-pane fade" id="tools" role="tabpanel" aria-labelledby="tools-tab">
+						<ul data-menu="main" class="menu__level" tabindex="-1" role="menu">
+							<li class="menu_item" th:each="tool : ${tools}">
+								<div class="card">
+									<div class="card-body">
+										<h4 class="card-title" th:text="${tool.name}"></h4>
+										<div th:class="'view '+${tool.name}+' overlay'">
+										</div>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+
 			</div>
 		</nav>
 		<div class="workbench">
 		</div>
 	</div>
 	<!-- /view -->
-	<script src="js/classie.js"></script>
-	<script src="js/dummydata.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-	<script src="js/main.js"></script>
-	<script>
-	(function() {
-		var menuEl = document.getElementById('ml-menu'),
-			mlmenu = new MLMenu(menuEl, {
-				// breadcrumbsCtrl : true, // show breadcrumbs
-				// initialBreadcrumb : 'all', // initial breadcrumb text
-				breadcrumbsCtrl : false,
-				backCtrl : false, // show back button
-				// itemsDelayInterval : 60, // delay between each menu item sliding animation
-				onItemClick: loadDummyData // callback: item that doesn´t have a submenu gets clicked - onItemClick([event], [inner HTML of the clicked item])
-			});
+	<script th:src="@{/js/classie.js}"></script>
+	<script th:src="@{/js/dummydata.js}"></script>
+	<script th:src="@{/js/workbench.js}"></script>
 
-		// mobile menu toggle
-		var openMenuCtrl = document.querySelector('.action--open'),
-			closeMenuCtrl = document.querySelector('.action--close');
-
-		openMenuCtrl.addEventListener('click', openMenu);
-		closeMenuCtrl.addEventListener('click', closeMenu);
-
-		function openMenu() {
-			classie.add(menuEl, 'menu--open');
-			closeMenuCtrl.focus();
-		}
-
-		function closeMenu() {
-			classie.remove(menuEl, 'menu--open');
-			openMenuCtrl.focus();
-		}
-
-		// simulate grid content loading
-		var gridWrapper1 = document.querySelector('#saved');
-		var gridWrapper2 = document.querySelector('#published');
-
-		function loadDummyData(ev, itemName) {
-			ev.preventDefault();
-
-			closeMenu();
-			gridWrapper1.innerHTML = '';
-			gridWrapper2.innerHTML = '';
-			classie.add(gridWrapper1, 'content--loading');
-			classie.add(gridWrapper2, 'content--loading');
-			setTimeout(function() {
-				classie.remove(gridWrapper1, 'content--loading');
-				var content = '<ul class="products">';
-
-				var i = 0;
-				for(i = 0;i<5;i++){
-					content+= dummyData[itemName];
-
-				}
-				content+="</ul>"
-				gridWrapper1.innerHTML = content;
-				classie.remove(gridWrapper2, 'content--loading');
-				gridWrapper2.innerHTML = content;
-			}, 700);
-
-		}
-	})();
-	</script>
 </body>
 
 </html>

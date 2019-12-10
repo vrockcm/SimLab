@@ -423,8 +423,8 @@ function deleteInstruction(card){
     }
 }
 
-function LoadWorkbench(instructor){
-     window.location.href = "/workbench?labId="+ 2;
+function LoadWorkbench(labId){
+     window.location.href = "/workbench?labId="+labId;
 }
 
 function LabWork(url, LabId = -1, publish = 0){
@@ -481,6 +481,7 @@ function fetchLab(labEditButton){
         $("#Publish").on("click", function(){
               LabWork('/EditLab',labId,1);
         });
+        $("#Test-Lab").attr("onclick","LoadWorkbench("+labId+")");
         if($(".add-lab-form").is(":hidden")){
             toggleL();
         }
@@ -827,33 +828,6 @@ $(document).ready(function() {
                event.preventDefault();
     });
 
-
-    $('#material-tabs').each(function() {
-            var $active, $content, $links = $(this).find('a');
-
-            $active = $($links[0]);
-            $active.addClass('active');
-
-            $content = $($active[0].hash);
-
-            $links.not($active).each(function() {
-                    $(this.hash).hide();
-            });
-
-            $(this).on('click', 'a', function(e) {
-
-                    $active.removeClass('active');
-                    $content.hide();
-
-                    $active = $(this);
-                    $content = $(this.hash);
-
-                    $active.addClass('active');
-                    $content.show();
-
-                    e.preventDefault();
-            });
-		});
         function initialize() {
         		var menuEl = document.getElementById('ml-menu'),
         			mlmenu = new MLMenu(menuEl, {

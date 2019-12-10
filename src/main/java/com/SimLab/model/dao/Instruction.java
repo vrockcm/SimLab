@@ -37,5 +37,19 @@ public class Instruction {
         targetTemp = inst.getTargetTemp();
         targetVolume = inst.getTargetVolume();
     }
+
+    @Override
+    public String toString(){
+        String str = "";
+        if(getName().matches("Mix|Transfer"))
+            str = "Step "+getStepNumber()+": "+getName()+" "+getContainer1()+" into "+ getContainer2();
+        else if(getName().matches("Weigh|Swirl|Rinse"))
+            str = "Step "+getStepNumber()+": "+getName()+" "+getContainer1();
+        else if(getName().matches("Heat|Cool"))
+            str = "Step "+getStepNumber()+": "+getName()+" "+getContainer1()+" to "+ getTargetTemp()+ " °C";
+        else
+            str = "Step "+getStepNumber()+": "+getName()+" "+ getTargetVolume()+ " of "+ getContainer1();
+        return str;
+    }
     public Instruction(){}
 }
