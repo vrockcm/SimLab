@@ -423,6 +423,10 @@ function deleteInstruction(card){
     }
 }
 
+function LoadWorkbench(instructor){
+     window.location.href = "/workbench?labId="+ 2;
+}
+
 function LabWork(url, LabId = -1, publish = 0){
     var instructions = [];
     var container = 0;
@@ -719,7 +723,7 @@ function toggleC() {
             }else{
                 $(".tabs-visb").fadeOut("fast", function() {
                        $('.add-course-form').fadeIn( "fast" );
-                });
+                    });
             }
         }
     }
