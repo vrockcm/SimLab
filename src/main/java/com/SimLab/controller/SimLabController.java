@@ -88,10 +88,12 @@ public class SimLabController {
         return modelAndView;
     }
 
-    @GetMapping(value={"/workbench"})
-    public ModelAndView workbench(){
+    @GetMapping(value="/workbench")
+    public ModelAndView workbench(@RequestParam String labId){
         ModelAndView modelAndView = new ModelAndView();
+        Lab lab = labService.findByLabId(Integer.parseInt(labId));
         modelAndView.setViewName("workbench");
+        modelAndView.addObject("lab", lab);
         return modelAndView;
     }
 
