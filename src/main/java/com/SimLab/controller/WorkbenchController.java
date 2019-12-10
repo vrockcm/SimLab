@@ -43,8 +43,10 @@ public class WorkbenchController {
 
         workbenchBkend = new WorkbenchBkend(instructions);
 
+
         return modelAndView;
     }
+
 
     @RequestMapping(value = "/interact", method = RequestMethod.POST)
     public String interact(){
