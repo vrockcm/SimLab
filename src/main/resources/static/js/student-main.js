@@ -3,12 +3,14 @@
  * http://www.codrops.com
  *
  * Licensed under the MIT license.
- * http://www.opensource.org/licenses/mit-license.php
+ * http://www.opensource.org/licenses
+ it-license.php
  *
  * Copyright 2015, Codrops
  * http://www.codrops.com
  */
 
+var editingFlag,editingLabFlag=0;
 ;(function(window) {
 
 	'use strict';
@@ -387,31 +389,124 @@
 })(window);
 
 
-$(document).ready(function() {
-    //This gets the email from the front end and passes calls the loadCourses function with this email.
-    loadCourses();
-    initialize();
-                function loadCourses(){
-                    $.ajax({
-                        url : '/loadCourses',
-                        type : 'GET',
-                        async: false,
-                        data : {
-                            'userid' : userid
-                        },
-                        dataType:'json',
-                        success : function(data) {
-                            for (var x = 0; x<data.length; x++){
-                               $(".menu__level").append('<li class="menu__item" role="menuitem"><a class="menu__link" aria-owns="submenu-1" href="#" value="'+data[x].courseId+'">'+ data[x].courseName + '</a></li>');
-                            }
-                        },
-                        error : function(request,error)
-                        {
-                            alert("Request: "+JSON.stringify(request));
-                        }
-                    });
-                }
+$('#Solutions').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+    var value = $("#Solutions>option").map(function() { return $(this).val(); })[clickedIndex];
+    if(isSelected == false){
+        $('.outgroup-Sol').find(`[value=${value}]`).remove();
+        $('.Container1, .Container2').selectpicker('refresh');
+    }
+    else{
+        $('.outgroup-Sol').append(new Option(value, value));
+        $('.Container1, .Container2').selectpicker('refresh');
+    }
+});
 
+$('#Containers').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+    var value = $("#Containers>option").map(function() { return $(this).val(); })[clickedIndex];
+    if(isSelected == false){
+        $('.outgroup-Con').find(`[value=${value}]`).remove();
+        $('.Container1, .Container2').selectpicker('refresh');
+    }
+    else{
+        $('.outgroup-Con').append(new Option(value, value));
+        $('.Container1, .Container2').selectpicker('refresh');
+    }
+});
+
+
+
+function LoadWorkbench(instructor){
+     window.location.href = "/workbench?labId="+ 2;
+}
+
+
+function toggleL() {
+	    if($(".add-lab-form").is(":visible")){
+	        $('.add-lab-form').fadeOut( "fast" , function() {
+                $(".tabs-visb").fadeIn( "fast");
+            });
+	    }
+	    else{
+            if($(".add-course-form").is(":visible")){
+                $(".add-course-form").fadeOut( "fast", function() {
+                    $('.add-lab-form').fadeIn( "fast" );
+                });
+                $(".tabs-visb").fadeOut("fast");
+            }else{
+                $(".tabs-visb").fadeOut("fast", function() {
+                       $('.add-lab-form').fadeIn( "fast" );
+                });
+            }
+	    }
+	}
+function toggleC() {
+        if($(".add-course-form").is(":visible")){
+            $('.add-course-form ').fadeOut( "fast" , function() {
+                $(".tabs-visb").fadeIn( "fast");
+            });
+        }
+        else{
+            if($(".add-lab-form").is(":visible")){
+                $(".add-lab-form").fadeOut( "fast", function() {
+                    $('.add-course-form').fadeIn( "fast" );
+                });
+                $(".tabs-visb").fadeOut("fast");
+            }else{
+                $(".tabs-visb").fadeOut("fast", function() {
+                       $('.add-course-form').fadeIn( "fast" );
+                    });
+            }
+        }
+    }
+
+
+$(document).ready(function() {
+
+    var students,instructors;
+    //This gets the email from the front end and passes calls the loadCourses function with this email.
+    initialize();
+    $( ".addl_btn" ).prop( "disabled", true );
+
+    $(".dropdown-item").on('click', function(event){
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        cardMaker(this.value);
+    })
+
+    $(".instruction_cards").mousewheel(function(event, delta) {
+               this.scrollLeft -= (delta * 50);
+               this.scrollRight -= (delta * 50);
+               this.style.transition = '1s';
+               event.preventDefault();
+    });
+
+
+    $('#material-tabs').each(function() {
+            var $active, $content, $links = $(this).find('a');
+
+            $active = $($links[0]);
+            $active.addClass('active');
+
+            $content = $($active[0].hash);
+
+            $links.not($active).each(function() {
+                    $(this.hash).hide();
+            });
+
+            $(this).on('click', 'a', function(e) {
+
+                    $active.removeClass('active');
+                    $content.hide();
+
+                    $active = $(this);
+                    $content = $(this.hash);
+
+                    $active.addClass('active');
+                    $content.show();
+
+                    e.preventDefault();
+            });
+		});
         function initialize() {
         		var menuEl = document.getElementById('ml-menu'),
         			mlmenu = new MLMenu(menuEl, {
@@ -441,41 +536,50 @@ $(document).ready(function() {
         		}
 
         		// simulate grid content loading
-        		var gridWrapper1 = document.querySelector('.display-labs');
+        		var gridWrapper1 = document.querySelector('#saved');
 
-                function loadLabs(ev,itemName){
-                    $.ajax({
-                        url : '/loadLabs',
-                        type : 'GET',
-                        async: false,
-                        data : {
-                            'courseName' : itemName
-                        },
-                        dataType:'json',
-                        success : function(data) {
-                                ev.preventDefault();
-                                closeMenu();
-                                gridWrapper1.innerHTML = '';
-                                classie.add(gridWrapper1, 'content--loading');
-                                setTimeout(function() {
-                                    classie.remove(gridWrapper1, 'content--loading');
-                                    var content = '<ul class="products">';
+                        function loadLabs(ev,itemName){
+                            if($(".add-course-form").is(":visible")){
+                                toggleC();
+                            }
+                            else if($(".add-lab-form").is(":visible")){
+                                toggleL();
+                            }
+                            $.ajax({
+                                url : '/loadLabs',
+                                type : 'GET',
+                                async: false,
+                                data : {
+                                    'courseName' : itemName
+                                },
+                                dataType:'json',
+                                success : function(data) {
+                                        $( ".addl_btn" ).prop( "disabled", false );
+                                        ev.preventDefault();
+                                        closeMenu();
+                                        gridWrapper1.innerHTML = '';
+                                        classie.add(gridWrapper1, 'content--loading');
 
-                                    var i = 0;
-                                    for(i = 0;i<data.length;i++){
-                                       var lab = data[i];
-                                       content+= dummyData["cardbody1"]+lab.labName + dummyData["cardbody2"] + lab.labDesc + dummyData["cardbody3"];
-                                    }
-                                    content+="</ul>"
-                                    gridWrapper1.innerHTML = content;
-                                }, 700);
-                        },
-                        error : function(request,error)
-                        {
-                            alert("Request: "+JSON.stringify(request));
+                                        setTimeout(function() {
+                                            classie.remove(gridWrapper1, 'content--loading');
+                                            var saved = '<ul class="products">';
+                                            for(var i = 0;i<data.length;i++){
+                                                var lab = data[i];
+                                                if(lab.published)
+                                                    saved+= dummyDatastudent["cardbody1"]+lab.labId+dummyDatastudent["cardbody2"]+lab.labName + dummyDatastudent["cardbody3"] + lab.labDesc + dummyDatastudent["cardbody4"]+lab.labId+dummyDatastudent["cardbody5"];
+
+                                              }
+                                            saved +="</ul>";
+                                            gridWrapper1.innerHTML = saved;
+
+                                        }, 700);
+                                },
+                                error : function(request,error)
+                                {
+                                    alert("Request: "+JSON.stringify(request));
+                                }
+                            });
                         }
-                    });
-                }
         }
 });
 
