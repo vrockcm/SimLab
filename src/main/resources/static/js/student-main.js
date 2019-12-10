@@ -445,7 +445,7 @@ $(document).ready(function() {
 
                 function loadLabs(ev,itemName){
                     $.ajax({
-                        url : '/loadLabs',
+                        url : '/loadLabs',F
                         type : 'GET',
                         async: false,
                         data : {

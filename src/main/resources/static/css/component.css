@@ -56,7 +56,6 @@
 .menu__level {
 	position: absolute;
 	left: 0;
-	visibility: hidden;
 	overflow: hidden;
 	overflow-y: scroll;
 	width: calc(100% + 50px);

@@ -528,14 +528,14 @@ user-select: none;
 -ms-user-select: none;
 }
 
-.beaker{
-	background-image: url('../img/beaker_150_ml_T.png');
+.Beaker{
+	background-image: url('../images/beaker_150_ml_T.png');
 	background-size: contain;
 	background-repeat: no-repeat;
 }
 
-.flask{
-	background-image: url('../img/flask-1.png');
+.Flask{
+	background-image: url('../images/flask-1.png');
 	background-size: contain;
 	background-repeat: no-repeat;
 }
