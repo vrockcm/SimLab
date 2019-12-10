@@ -118,6 +118,9 @@ public class SimLabController {
         modelAndView.addObject("Email", user.getEmail());
         modelAndView.addObject("UserId", user.getId());
         modelAndView.addObject("Name", user.getName());
+
+        List<Course> courses = new ArrayList<>(user.getCourses());
+        modelAndView.addObject("courses", courses);
         modelAndView.setViewName("/student/index");
 
         return modelAndView;
