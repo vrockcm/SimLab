@@ -3,6 +3,7 @@ package com.SimLab.controller;
 
 import com.SimLab.model.dao.Instruction;
 import com.SimLab.model.dao.Lab;
+import com.SimLab.model.workbench.WorkbenchBkend;
 import com.SimLab.service.LabService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,9 +14,13 @@ import java.util.Set;
 
 @Controller
 public class WorkbenchController {
+
     @Autowired
     private LabService labService;
-    
+
+
+    private WorkbenchBkend workbenchBkend;
+
     @GetMapping(value="/workbench")
     public ModelAndView workbench(@RequestParam String labId){
         ModelAndView modelAndView = new ModelAndView();
@@ -34,6 +39,9 @@ public class WorkbenchController {
         modelAndView.addObject("containers", lab.getContainers());
         modelAndView.addObject("tools", lab.getTools());
         modelAndView.addObject("header", i.toString());
+
+        workbenchBkend = new WorkbenchBkend(instructions);
+
         return modelAndView;
     }
 
