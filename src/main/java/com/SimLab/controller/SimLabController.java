@@ -88,26 +88,6 @@ public class SimLabController {
         return modelAndView;
     }
 
-    @GetMapping(value="/workbench")
-    public ModelAndView workbench(@RequestParam String labId){
-        ModelAndView modelAndView = new ModelAndView();
-        Lab lab = labService.findByLabId(Integer.parseInt(labId));
-        Set<Instruction> instructions = lab.getInstructions();
-        Instruction i = null;
-        for(Instruction inst : instructions){
-            if(inst.getStepNumber()==1){
-                i = inst;
-                break;
-            }
-        }
-        modelAndView.setViewName("workbench");
-        modelAndView.addObject("lab", lab);
-        modelAndView.addObject("solutions", lab.getSolutions());
-        modelAndView.addObject("containers", lab.getContainers());
-        modelAndView.addObject("tools", lab.getTools());
-        modelAndView.addObject("header", i.toString());
-        return modelAndView;
-    }
 
 
     @RequestMapping(value="/student/index", method = RequestMethod.GET)

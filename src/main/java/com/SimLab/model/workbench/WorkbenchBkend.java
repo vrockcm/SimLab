@@ -16,7 +16,9 @@ public class WorkbenchBkend {
 
     List<BkendTool> tools;
 
-    public WorkbenchBkend(List<Instruction> instructions){
+
+
+    public WorkbenchBkend(Set<Instruction> instructions){
 
     }
 

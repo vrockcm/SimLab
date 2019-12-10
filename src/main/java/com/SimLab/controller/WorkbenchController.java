@@ -1,18 +1,49 @@
 package com.SimLab.controller;
 
 
+import com.SimLab.model.dao.Instruction;
+import com.SimLab.model.dao.Lab;
+import com.SimLab.model.workbench.WorkbenchBkend;
+import com.SimLab.service.LabService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Set;
 
 @Controller
 public class WorkbenchController {
 
-    @RequestMapping(value = "/SetupWorkbench", method = RequestMethod.POST)
-    public void setupWorkbench(){
+    @Autowired
+    private LabService labService;
 
+
+    private WorkbenchBkend workbenchBkend;
+
+    @GetMapping(value="/workbench")
+    public ModelAndView workbench(@RequestParam String labId){
+        ModelAndView modelAndView = new ModelAndView();
+        Lab lab = labService.findByLabId(Integer.parseInt(labId));
+        Set<Instruction> instructions = lab.getInstructions();
+        Instruction i = null;
+        for(Instruction inst : instructions){
+            if(inst.getStepNumber()==1){
+                i = inst;
+                break;
+            }
+        }
+        modelAndView.setViewName("workbench");
+        modelAndView.addObject("lab", lab);
+        modelAndView.addObject("solutions", lab.getSolutions());
+        modelAndView.addObject("containers", lab.getContainers());
+        modelAndView.addObject("tools", lab.getTools());
+        modelAndView.addObject("header", i.toString());
+
+
+        workbenchBkend = new WorkbenchBkend(instructions);
+
+        return modelAndView;
     }
 
     @RequestMapping(value = "/interact", method = RequestMethod.POST)
