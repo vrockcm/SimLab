@@ -14,7 +14,6 @@ import java.util.Set;
 
 @Controller
 public class WorkbenchController {
-
     @Autowired
     private LabService labService;
 
@@ -39,12 +38,11 @@ public class WorkbenchController {
         modelAndView.addObject("containers", lab.getContainers());
         modelAndView.addObject("tools", lab.getTools());
         modelAndView.addObject("header", i.toString());
-
-
         workbenchBkend = new WorkbenchBkend(instructions);
 
         return modelAndView;
     }
+
 
     @RequestMapping(value = "/interact", method = RequestMethod.POST)
     public String interact(){

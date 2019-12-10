@@ -88,8 +88,6 @@ public class SimLabController {
         return modelAndView;
     }
 
-
-
     @RequestMapping(value="/student/index", method = RequestMethod.GET)
     public ModelAndView studentHome(){
         ModelAndView modelAndView = new ModelAndView();
