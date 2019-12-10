@@ -495,3 +495,112 @@ if (interaction.pointerIsDown && !interaction.interacting() && event.currentTarg
   interaction.start({ name: 'drag' },event.interactable,clone);
 }
 });
+
+//Ajax functions for different user interactions
+
+//Moving material into workbench
+function moveToWorkBench(materialName){
+   $.ajax({
+        url : '/moveToWorkBench',
+        type : 'POST',
+        async: false,
+        data : {
+            'materialName' : materialName
+        },
+        dataType:'json',
+        success : function(data) {
+
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
+
+//Moving material back into inventory
+function moveToWorkBench(materialName){
+   $.ajax({
+        url : '/moveToInventory',
+        type : 'POST',
+        async: false,
+        data : {
+            'materialName' : materialName
+        },
+        dataType:'json',
+        success : function(data) {
+
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
+
+//Pouring from beaker to beaker
+// This can also be time instead of amount
+function pour (beaker1, beaker2, amount){
+   $.ajax({
+        url : '/pour',
+        type : 'POST',
+        async: false,
+        data : {
+            'beaker1' : beaker1,
+            'beaker2' : beaker2,
+            'amount': amount
+        },
+        dataType:'json',
+        success : function(data) {
+
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
+
+//Mix beaker
+function pour (beaker1, time){
+   $.ajax({
+        url : '/mix',
+        type : 'POST',
+        async: false,
+        data : {
+            'beaker1' : beaker1,
+            'time' : time
+        },
+        dataType:'json',
+        success : function(data) {
+
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
+
+//Heat beaker
+function pour (beaker1, time){
+   $.ajax({
+        url : '/heat',
+        type : 'POST',
+        async: false,
+        data : {
+            'beaker1' : beaker1,
+            'temp' : temp
+        },
+        dataType:'json',
+        success : function(data) {
+
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
+
+
