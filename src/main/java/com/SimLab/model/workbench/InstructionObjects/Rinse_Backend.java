@@ -1,6 +1,6 @@
 package com.SimLab.model.workbench.InstructionObjects;
 
-public class Rinse_Backend implements Instruction {
+public class Rinse_Backend implements InstructionBkend {
     public String material;
 
     @Override
