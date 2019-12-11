@@ -5,14 +5,12 @@ import com.SimLab.model.workbench.InstructionObjects.InstructionBkend;
 import com.SimLab.model.workbench.InstructionObjects.Mix__Backend;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
-import com.SimLab.model.workbench.MaterialObjects.BkendSolvents;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 @Data
 public class WorkbenchBkend {
@@ -35,6 +33,7 @@ public class WorkbenchBkend {
         this.lab = lab;
         containers = new ArrayList<BkendContainer>();
         tools = new ArrayList<BkendTool>();
+        interactions = new ArrayList<Interaction>();
 
     }
 
@@ -80,15 +79,17 @@ public class WorkbenchBkend {
         for(Instruction i: instructions){
             instObjs.add(getInstructionObject(i));
         }
+        int interactIndex = 0;
         for(InstructionBkend iObj: instObjs){
-
+            int step = iObj.verify(interactions, interactIndex);
+            interactIndex = step;
         }
     }
 
     public InstructionBkend getInstructionObject(Instruction currentInst){
         InstructionBkend toReturn = null;
         if(currentInst.getName().equals(MIX)){
-            Mix__Backend mix = new Mix__Backend(containers, currentInst.getContainer1(), currentInst.getContainer2(), 40, currentInst.getStepNumber());
+            Mix__Backend mix = new Mix__Backend(currentInst.getContainer1(), currentInst.getContainer2(), 40, currentInst.getStepNumber());
             toReturn = mix;
         }
         return toReturn;
@@ -108,7 +109,7 @@ public class WorkbenchBkend {
         BkendContainer cont1 = getContainer(container1);
         BkendContainer cont2 = getContainer(container2);
         BkendTool tool1 = getTool(tool);
-        Interaction interaction = new Interaction(cont1, cont2, tool1);
+        Interaction interaction = new Interaction(interactName, cont1, cont2, tool1);
 
         if(interactName.equals(MIX)){
             BkendContainer resultant = mixInteract(cont1, cont2, pourAmount);

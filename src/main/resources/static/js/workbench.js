@@ -512,10 +512,13 @@ interact('.trash').dropzone({
       $($(dropzoneElement).find(".trash-can")).removeClass('pop-up');
   },
   ondrop:function (event) {
+     var matName = $($(dropzoneElement).find(".drag-material")).find(".mat-name").text();
      var draggableElement = event.relatedTarget
      var dropzoneElement = event.target
      $($(dropzoneElement).find(".trash-can")).removeClass('pop-up');
      $(draggableElement).hide('fast', function(){ $(draggableElement).remove(); });
+
+     removeFromWorkbench(matName);
   }
 })
 
@@ -539,6 +542,7 @@ interact('.card').draggable({
         }
         else{
             var mat = $(dropzoneElement).find(".drag-material");
+            var matName = $(mat).find(".mat-name").text();
             $(mat).css("pointer-events","auto");
             $($(dropzoneElement).find(".mat-name")).show();
             $(event.relatedTarget).append(mat);
@@ -547,6 +551,7 @@ interact('.card').draggable({
             $(mat).height(250);
             interact(dropzoneElement).unset();
             $(dropzoneElement).remove();
+            moveToWorkBench(matName);
         }
     }
 }).on('move', function (event) {
@@ -575,9 +580,8 @@ function moveToWorkBench(materialName){
         data : {
             'materialName' : materialName
         },
-        dataType:'json',
         success : function(data) {
-
+            var dummy = data;
         },
         error : function(request,error)
         {
@@ -587,7 +591,7 @@ function moveToWorkBench(materialName){
 }
 
 //Moving material back into inventory
-function moveToWorkBench(materialName){
+function removeFromWorkbench(materialName){
    $.ajax({
         url : '/moveToInventory',
         type : 'POST',
@@ -595,7 +599,6 @@ function moveToWorkBench(materialName){
         data : {
             'materialName' : materialName
         },
-        dataType:'json',
         success : function(data) {
 
         },
