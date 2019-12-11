@@ -4,11 +4,13 @@ import com.SimLab.model.dao.*;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@Data
 public class WorkbenchBkend {
 
     private final String DIFF_CONTAINER = "Beaker";
@@ -57,19 +59,28 @@ public class WorkbenchBkend {
     }
 
     public void removeMaterial(String matName){
-
-        for (Container c : lab.getContainers()) {
-            if(c.getName().equals(matName)){
-                removeContainer(c);
+        for(BkendContainer container: containers){
+            if(container.getName().equals(matName)){
+                removeContainer(container);
+                break;
             }
         }
-
-        for (Tool t : lab.getTools()) {
-            if(t.getName().equals(matName)){
-                removeTool(t);
+        for(BkendTool tool: tools){
+            if(tool.getName().equals(matName)){
+                removeTool(tool);
+                break;
             }
         }
+    }
 
+    public void nextStep(){
+        int stepNo = currentInst.getStepNumber();
+        for(Instruction i: lab.getInstructions()){
+            if(i.getStepNumber() == stepNo+1){
+                currentInst = i;
+                break;
+            }
+        }
     }
 
 
@@ -96,14 +107,12 @@ public class WorkbenchBkend {
 
     }
 
-    private void removeContainer(Container c){
+    private void removeContainer(BkendContainer c){
         containers.remove(c);
-
     }
 
 
-    private void removeTool(Tool t){
-
+    private void removeTool(BkendTool t){
         tools.remove(t);
 
     }
