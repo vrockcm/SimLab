@@ -262,11 +262,54 @@ a:hover {
 	margin: 0 -15px 0 285px;
 }
 
+.dashed-outline{
+    outline: 3px dashed black;
+}
+
+
+.top-right{
+    transform: translate(100px, -200px);
+}
+
+.pour{
+    transition: transform 1s;
+    transform: rotate(-60deg);
+}
+
+.drag-material{
+    pointer-events: none;
+}
+
+.trash{
+    position: fixed;
+    width: 120px;
+    height: 120px;
+    bottom: 20px;
+    right: 10px;
+}
+
+.trash-can{
+    width: 62px;
+    transform-origin: bottom right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transition: transform 0.5s;
+}
+
+
+.pop-up{
+    transform: scale(2);
+}
+
 .workbench{
-	position: relative;
-	min-height: calc(100% - 80px);
-	background: floralwhite;
-	margin: 10px -15px 0 285px;
+    position: fixed;
+    width: -moz-available;          /* WebKit-based browsers will ignore this. */
+    width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+    width: fill-available;
+    min-height: calc(100% - 80px);
+    background: floralwhite;
+    margin: 10px -15px 0 285px;
 }
 
 .size{
@@ -523,30 +566,35 @@ user-select: none;
 	background-image: url('../images/beaker.png');
 	background-size: contain;
 	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .Flask{
 	background-image: url('../images/flask.png');
 	background-size: contain;
 	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .Pipette{
 	background-image: url('../images/pipette.png');
 	background-size: contain;
 	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .Scale{
 	background-image: url('../images/scale.png');
 	background-size: contain;
 	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .Tube{
 	background-image: url('../images/tube.png');
 	background-size: contain;
 	background-repeat: no-repeat;
+	background-position: center;
 }
 
 
@@ -554,54 +602,63 @@ user-select: none;
 	background-image: url('../images/H2O.png');
 	background-size: contain;
 	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .HCl{
 	background-image: url('../images/HCl.png');
 	background-size: contain;
 	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .NaOH{
 	background-image: url('../images/NaOH.png');
 	background-size: contain;
 	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .NaCl{
 	background-image: url('../images/NaCL.png');
 	background-size: contain;
 	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .CH{
 	background-image: url('../images/CH.png');
 	background-size: contain;
 	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .HOH{
 	background-image: url('../images/HOH.png');
 	background-size: contain;
 	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .CHI{
 	background-image: url('../images/CHI.png');
 	background-size: contain;
 	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .CaO{
 	background-image: url('../images/CaO.png');
 	background-size: contain;
 	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .COCL{
 	background-image: url('../images/COCL.png');
 	background-size: contain;
 	background-repeat: no-repeat;
+	background-position: center;
 }
 
 
@@ -684,4 +741,8 @@ user-select: none;
 
 label{
     color: white;
+}
+
+.mat-name{
+    text-align:center;
 }
