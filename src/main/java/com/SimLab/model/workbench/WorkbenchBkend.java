@@ -50,7 +50,19 @@ public class WorkbenchBkend {
         return "";
     }
 
-    public void removeMaterial(){
+    public void removeMaterial(String matName){
+
+        for (Container c : lab.getContainers()) {
+            if(c.getName().equals(matName)){
+                removeContainer(c);
+            }
+        }
+
+        for (Tool t : lab.getTools()) {
+            if(t.getName().equals(matName)){
+                removeTool(t);
+            }
+        }
 
     }
 
@@ -78,15 +90,15 @@ public class WorkbenchBkend {
 
     }
 
-    private void removeContainer(){
+    private void removeContainer(Container c){
+        containers.remove(c);
 
     }
 
-    private void removeSolution(){
 
-    }
+    private void removeTool(Tool t){
 
-    private void removeTool(){
+        tools.remove(t);
 
     }
 
