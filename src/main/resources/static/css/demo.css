@@ -407,16 +407,7 @@ table{
     position: absolute;
 }
 
-.clone{
-	padding: 3px;
-	outline: 0 !important;
-    box-shadow: none;
-    border: none;
-    width: 40px;
-    position: absolute;
-    right: 25px;
-    background: none;
-}
+
 
 .clone:hover{
     box-shadow: none;

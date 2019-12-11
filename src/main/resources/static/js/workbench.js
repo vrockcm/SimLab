@@ -485,15 +485,15 @@ var interaction = event.interaction;
 if (interaction.pointerIsDown && !interaction.interacting() && event.currentTarget.getAttribute('clonable') != 'false') {
   var original = event.currentTarget;
   var clone = event.currentTarget.cloneNode(true);
-//  var x = clone.offsetLeft;
-//  var y = clone.offsetTop;
+  var x = clone.offsetLeft;
+  var y = clone.offsetTop;
   clone.setAttribute('clonable','false');
-//  clone.style.position = "absolute";
-//  clone.style.left = original.offsetLeft+"px";
-//  clone.style.top = original.offsetTop+"px";
+  clone.style.position = "absolute";
+  clone.style.left = original.offsetLeft+"px";
+  clone.style.top = original.offsetTop+"px";
 
-   clone.style.width = "200px";
-   clone.style.length = "200px";
+  clone.style.width = "200px";
+  clone.style.length = "200px";
   document.body.appendChild(clone);
 
   interaction.start({ name: 'drag' },event.interactable,clone);
