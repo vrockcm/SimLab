@@ -1,5 +1,9 @@
 package com.SimLab.model.workbench.InstructionObjects;
 
+import com.SimLab.model.workbench.Interaction;
+
+import java.util.List;
+
 public interface InstructionBkend {
-    public boolean verify();
+    public int verify(List<Interaction> interactions, int startIndex);
 }

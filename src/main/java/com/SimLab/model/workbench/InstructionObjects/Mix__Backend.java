@@ -1,26 +1,26 @@
 package com.SimLab.model.workbench.InstructionObjects;
 
-import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
+import com.SimLab.model.workbench.Interaction;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolvents;
+import lombok.Data;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
+@Data
 public class Mix__Backend implements InstructionBkend {
 
-    private List<BkendContainer> contlist;
+    boolean verified;
     private int expectedVol;
     private List<String> namesToCheck;
     int stepNo;
 
-    public Mix__Backend(List<BkendContainer> containers, String solution1, String solution2, int expectedVol, int stepNo){
-        contlist = containers;
+    public Mix__Backend(String solution1, String solution2, int expectedVol, int stepNo){
         this.expectedVol = expectedVol;
         this.stepNo = stepNo;
+        verified = false;
 
         namesToCheck = new ArrayList<String>();
         if(solution1.length() >=7 && solution1.substring(0,7).equals("Solvent")){
@@ -40,24 +40,26 @@ public class Mix__Backend implements InstructionBkend {
     }
 
     @Override
-    public boolean verify() {
-        boolean verified = true;
-        for(BkendContainer cont : contlist){
-            List<String> solutionsInCont = cont.getSolutions().stream().map(BkendSolution::getSolutionName).collect(Collectors.toList());
-            if(solutionsInCont.size() == namesToCheck.size()) {
-                for (String s: solutionsInCont){
-                    if(!namesToCheck.contains(s)){
-                        verified = false;
-                        break;
+    public int verify(List<Interaction> interactions, int startIndex) {
+        int returnIndex = 0;
+        for(int i=0;i<interactions.size();i++){
+            Interaction interaction = interactions.get(i);
+            List<BkendSolution> resultSolutions = interaction.getResultant().getSolutions();
+            boolean verify = true;
+            if(resultSolutions.size() == namesToCheck.size()){
+                for(String name: resultSolutions.stream().map(BkendSolution::getSolutionName).collect(Collectors.toList())) {
+                    if (!namesToCheck.contains(name)){
+                        verify = false;
                     }
                 }
-                if(verified && cont.getCumulativeVolume() == expectedVol){
-                    cont.setAssociatedStep(stepNo);
-                    BkendSolvents.addSolvent(cont.getSolutions());
-                    return true;
-                }
+            }else{
+                verify = false;
+            }
+            if(interaction.getResultant().getCumulativeVolume() == expectedVol && verify){
+                verified = true;
+                returnIndex = i;
             }
         }
-        return false;
+        return returnIndex;
     }
 }
