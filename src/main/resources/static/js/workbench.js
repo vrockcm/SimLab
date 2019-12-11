@@ -438,7 +438,7 @@ interact('.workbench').dropzone({
   }
 }).on('tap', function (event) {
       $(".drag-material").removeClass('dashed-outline');
-      $(".drag-material").find(".view").removeClass('transi pour');
+      $(".drag-material").find(".view").removeClass('pour');
       $($(".drag-material").find(".mat-name")).removeClass("top-right");
       interactionMode = 0;
 });
@@ -465,7 +465,8 @@ interact('.drag-material').draggable({
     inertia: true,
     onstart: function (event) {
         $(".drag-material").removeClass('dashed-outline');
-        $(".drag-material").find(".view").removeClass('transi pour');
+        $(event.relatedTarget).removeClass('dashed-outline');
+        $(".drag-material").find(".view").removeClass('pour');
         $($(".drag-material").find(".mat-name")).removeClass("top-right");
     },
     onmove: dragMoveListener,
@@ -484,7 +485,7 @@ interact('.drag-material').dropzone({
      var draggableElement = event.relatedTarget
      var dropzoneElement = event.target
      $(".drag-material").removeClass('dashed-outline');
-     $(draggableElement).find(".view").addClass('transi pour');
+     $(draggableElement).find(".view").addClass('pour');
      $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 - 30)});
      $($(draggableElement).find(".mat-name")).addClass("top-right");
      interactionMode = 1;
@@ -494,6 +495,29 @@ interact('.drag-material').dropzone({
       $(event.currentTarget).addClass('dashed-outline');
       event.stopImmediatePropagation();
 });
+
+interact('.trash').dropzone({
+  // only accept elements matching this CSS selector
+  // Require a 75% element overlap for a drop to be possible
+  overlap: 0.25,
+  accept: '.drag-material',
+  ondragenter: function (event) {
+      var draggableElement = event.relatedTarget
+      var dropzoneElement = event.target
+      $($(dropzoneElement).find(".trash-can")).addClass('pop-up');
+  },
+  ondragleave: function (event) {
+      var draggableElement = event.relatedTarget
+      var dropzoneElement = event.target
+      $($(dropzoneElement).find(".trash-can")).removeClass('pop-up');
+  },
+  ondrop:function (event) {
+     var draggableElement = event.relatedTarget
+     var dropzoneElement = event.target
+     $($(dropzoneElement).find(".trash-can")).removeClass('pop-up');
+     $(draggableElement).hide('fast', function(){ $(draggableElement).remove(); });
+  }
+})
 
 
 

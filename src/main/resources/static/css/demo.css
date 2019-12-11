@@ -266,15 +266,13 @@ a:hover {
     outline: 3px dashed black;
 }
 
-.transi{
-    transition: transform 1s;
-}
 
 .top-right{
     transform: translate(100px, -200px);
 }
 
 .pour{
+    transition: transform 1s;
     transform: rotate(-60deg);
 }
 
@@ -282,6 +280,27 @@ a:hover {
     pointer-events: none;
 }
 
+.trash{
+    position: fixed;
+    width: 120px;
+    height: 120px;
+    bottom: 20px;
+    right: 10px;
+}
+
+.trash-can{
+    width: 62px;
+    transform-origin: bottom right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transition: transform 0.5s;
+}
+
+
+.pop-up{
+    transform: scale(2);
+}
 
 .workbench{
     position: fixed;
