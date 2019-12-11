@@ -1,13 +1,15 @@
 package com.SimLab.model.workbench;
 
-public class TempControl_Backend implements Instruction{
+import com.SimLab.model.dao.Instruction;
+
+public class TempControl_Backend extends Instruction implements InstructionInterf{
 
     public String material;
     public int targetTemp;
     public String vessel;
 
     @Override
-    public String verify() {
-        return null;
+    public boolean verify() {
+        return false;
     }
 }

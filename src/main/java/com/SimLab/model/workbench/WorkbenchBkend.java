@@ -4,11 +4,12 @@ import com.SimLab.model.dao.*;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
+@Data
 public class WorkbenchBkend {
 
     private final String DIFF_CONTAINER = "Beaker";
@@ -21,6 +22,7 @@ public class WorkbenchBkend {
     private int toolId = 1;
 
     Lab lab;
+
 
 
 
@@ -113,5 +115,6 @@ public class WorkbenchBkend {
         }
         return nameToReturn;
     }
+
 
 }

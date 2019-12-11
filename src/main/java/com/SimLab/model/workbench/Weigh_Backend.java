@@ -1,11 +1,13 @@
 package com.SimLab.model.workbench;
 
-public class Weigh_Backend implements Instruction{
+import com.SimLab.model.dao.Instruction;
+
+public class Weigh_Backend extends Instruction implements InstructionInterf{
     public String material;
 
 
     @Override
-    public String verify() {
-        return null;
+    public boolean verify() {
+        return false;
     }
 }
