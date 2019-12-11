@@ -9,25 +9,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class BkendContainer {
+public class BkendContainer implements Cloneable{
 
     private String name;
 
     private List<BkendSolution> solutions;
 
-    private double capacity;
+    private int capacity;
 
     private int associatedStep;
+
+    //for cloning
+    public BkendContainer(BkendContainer c){
+        name = c.getName();
+
+    }
 
     public BkendContainer(String name, BkendSolution solution, int capacity){
         solutions = new ArrayList<BkendSolution>();
         this.name = name;
-        solutions.add(solution);
-        this.capacity = capacity;
-    }
-    public BkendContainer(String name, int capacity){
-        solutions = new ArrayList<BkendSolution>();
-        this.name = name;
+        if(solution != null) solutions.add(solution);
         this.capacity = capacity;
     }
 
@@ -70,6 +71,23 @@ public class BkendContainer {
         bd = bd.round(new MathContext(2));
         double rounded = bd.doubleValue();
         return rounded;
+    }
+
+    @Override
+    public Object clone() {
+        BkendContainer container;
+        try {
+            container = (BkendContainer) super.clone();
+        } catch (CloneNotSupportedException e) {
+            container = new BkendContainer(this.getName(),null,this.getCapacity());
+        }
+        List<BkendSolution> original = this.getSolutions();
+        List<BkendSolution> clone = new ArrayList<BkendSolution>();
+        for(BkendSolution s: original){
+            clone.add((BkendSolution)s.clone());
+        }
+        container.setSolutions(clone);
+        return container;
     }
 
 

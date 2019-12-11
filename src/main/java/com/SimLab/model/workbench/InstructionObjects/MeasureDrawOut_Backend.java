@@ -1,13 +1,12 @@
 package com.SimLab.model.workbench.InstructionObjects;
 
-import com.SimLab.model.dao.Tool;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
 
 import java.util.List;
 
-public class MeasureDrawOut_Backend implements Instruction {
+public class MeasureDrawOut_Backend implements InstructionBkend {
 //    public String material;
     public BkendTool measuringTool;
     public BkendSolution mysol;
@@ -25,17 +24,17 @@ public class MeasureDrawOut_Backend implements Instruction {
 
     @Override
     public boolean verify() {
-        for(BkendContainer c: contlist){
-            if(c.getName().equals(mycont.getName())){
-                for(BkendSolution s: c.getSolutions()){
-                    if((s.getSolution().getName().equals(mysol.getSolution().getName()))
-                    && mysol.getSolution().getVolume() == targetvol){
-                        return true;
-                    }
-                }
-            }
-
-        }
+//        for(BkendContainer c: contlist){
+//            if(c.getName().equals(mycont.getName())){
+//                for(BkendSolution s: c.getSolutions()){
+//                    if((s.getSolution().getName().equals(mysol.getSolution().getName()))
+//                    && mysol.getSolution().getVolume() == targetvol){
+//                        return true;
+//                    }
+//                }
+//            }
+//
+//        }
 
         return false;
     }

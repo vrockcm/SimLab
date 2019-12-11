@@ -4,7 +4,7 @@ import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
 
-public class Weigh_Backend implements Instruction{
+public class Weigh_Backend implements InstructionBkend {
     public String material;
     public BkendContainer mycont;
     public BkendSolution mysol;

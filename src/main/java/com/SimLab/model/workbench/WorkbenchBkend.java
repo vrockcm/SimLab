@@ -1,12 +1,16 @@
 package com.SimLab.model.workbench;
 
 import com.SimLab.model.dao.*;
+import com.SimLab.model.workbench.InstructionObjects.InstructionBkend;
+import com.SimLab.model.workbench.InstructionObjects.Mix__Backend;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
+import com.SimLab.model.workbench.MaterialObjects.BkendSolvents;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +18,7 @@ import java.util.Set;
 public class WorkbenchBkend {
 
     private final String DIFF_CONTAINER = "Beaker";
+    private final String MIX = "Mix";
     private final int DIFF_CAPACITY = 50;
 
     List<BkendContainer> containers;
@@ -23,20 +28,14 @@ public class WorkbenchBkend {
     private int toolId = 1;
 
     Lab lab;
-    Instruction currentInst;
 
-
+    List<Interaction> interactions;
 
     public WorkbenchBkend(Lab lab){
         this.lab = lab;
         containers = new ArrayList<BkendContainer>();
         tools = new ArrayList<BkendTool>();
-        for(Instruction i: lab.getInstructions()){
-            if(i.getStepNumber() == 1){
-                currentInst = i;
-                break;
-            }
-        }
+
     }
 
     public String addMaterial(String matName){
@@ -74,18 +73,52 @@ public class WorkbenchBkend {
         }
     }
 
-    public void nextStep(){
-        int stepNo = currentInst.getStepNumber();
-        for(Instruction i: lab.getInstructions()){
-            if(i.getStepNumber() == stepNo+1){
-                currentInst = i;
-                break;
-            }
+    public void verifyLab(){
+        List<Instruction> instructions = new ArrayList(lab.getInstructions());
+        instructions.sort(Comparator.comparing(e -> e.getStepNumber()));
+        List<InstructionBkend> instObjs = new ArrayList<InstructionBkend>();
+        for(Instruction i: instructions){
+            instObjs.add(getInstructionObject(i));
+        }
+        for(InstructionBkend iObj: instObjs){
+
         }
     }
-    public void mixInteract(String container1, String container2, int pourAmount){
+
+    public InstructionBkend getInstructionObject(Instruction currentInst){
+        InstructionBkend toReturn = null;
+        if(currentInst.getName().equals(MIX)){
+            Mix__Backend mix = new Mix__Backend(containers, currentInst.getContainer1(), currentInst.getContainer2(), 40, currentInst.getStepNumber());
+            toReturn = mix;
+        }
+        return toReturn;
+    }
+    //TODELETE
+    public void test(String string){
+        BkendContainer c = getContainer(string);
+        c.setAssociatedStep(5);
+    }
+
+    public List<BkendSolution> getSolutionsInContainer(String name){
+        BkendContainer cont = getContainer(name);
+        return cont.getSolutions();
+    }
+
+    public void interact(String interactName, String container1, String container2, String tool, int pourAmount, int activationDuration){
         BkendContainer cont1 = getContainer(container1);
         BkendContainer cont2 = getContainer(container2);
+        BkendTool tool1 = getTool(tool);
+        Interaction interaction = new Interaction(cont1, cont2, tool1);
+
+        if(interactName.equals(MIX)){
+            BkendContainer resultant = mixInteract(cont1, cont2, pourAmount);
+            interaction.addResultant(resultant);
+        }
+
+        interactions.add(interaction);
+    }
+
+    public BkendContainer mixInteract(BkendContainer cont1, BkendContainer cont2, int pourAmount){
 
         double totalCont1Vol = cont1.getCumulativeVolume();
         for(BkendSolution sol: cont1.getSolutions()){
@@ -98,8 +131,15 @@ public class WorkbenchBkend {
         }
         coalesceContainer(cont1);
         coalesceContainer(cont2);
+        return cont2;
+    }
+
+    public void temperatureControlInteract(String container, String tool){
 
     }
+
+
+    //############### HELPERS ##############################
 
     //add duplicate solutions together and remove empty ones
     private void coalesceContainer(BkendContainer container){
@@ -121,7 +161,7 @@ public class WorkbenchBkend {
 
     private String addContainer(Container c){
         String contName = generateName(c.getName(), true);
-        BkendContainer bkendContainer = new BkendContainer(contName, c.getCapacity());
+        BkendContainer bkendContainer = new BkendContainer(contName, null, c.getCapacity());
         containers.add(bkendContainer);
         return contName;
     }
@@ -136,7 +176,7 @@ public class WorkbenchBkend {
 
     private String addTool(Tool t){
         String toolName = generateName(t.getName(), false);
-        BkendTool bkendTool = new BkendTool(toolName);
+        BkendTool bkendTool = new BkendTool(t, toolName);
         tools.add(bkendTool);
         return toolName;
 
