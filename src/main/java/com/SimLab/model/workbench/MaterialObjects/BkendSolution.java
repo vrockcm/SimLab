@@ -4,8 +4,11 @@ package com.SimLab.model.workbench.MaterialObjects;
 import com.SimLab.model.dao.Solution;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
-public class BkendSolution {
+public class BkendSolution implements Cloneable {
 
 
     private int flamability;
@@ -33,6 +36,17 @@ public class BkendSolution {
         radioactivity = solution.getRadioactivity();
         temperature = solution.getTemperature();
         volume = solution.getVolume();
+    }
+
+    @Override
+    public Object clone() {
+        BkendSolution sol;
+        try {
+            sol = (BkendSolution) super.clone();
+        } catch (CloneNotSupportedException e) {
+            sol = new BkendSolution(this);
+        }
+       return sol;
     }
 
 
