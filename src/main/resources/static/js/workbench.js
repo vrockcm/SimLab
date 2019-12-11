@@ -430,16 +430,16 @@ interact('.workbench').dropzone({
     // feedback the possibility of a drop
     dropzoneElement.classList.add('drop-target')
     draggableElement.classList.add('can-drop')
-    draggableElement.textContent = 'Dragged in'
+//    draggableElement.textContent = 'Dragged in'
   },
   ondragleave: function (event) {
     // remove the drop feedback style
     event.target.classList.remove('drop-target')
     event.relatedTarget.classList.remove('can-drop')
-    event.relatedTarget.textContent = 'Dragged out'
+//    event.relatedTarget.textContent = 'Dragged out'
   },
   ondrop: function (event) {
-    event.relatedTarget.textContent = 'Dropped'
+//    event.relatedTarget.textContent = 'Dropped'
   },
   ondropdeactivate: function (event) {
     // remove active dropzone feedback
@@ -491,7 +491,11 @@ if (interaction.pointerIsDown && !interaction.interacting() && event.currentTarg
   clone.style.position = "absolute";
   clone.style.left = original.offsetLeft+"px";
   clone.style.top = original.offsetTop+"px";
+
+  clone.style.width = "200px";
+  clone.style.length = "200px";
   document.body.appendChild(clone);
+
   interaction.start({ name: 'drag' },event.interactable,clone);
 }
 });
