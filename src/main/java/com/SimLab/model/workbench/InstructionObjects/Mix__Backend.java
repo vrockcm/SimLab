@@ -1,4 +1,4 @@
-package com.SimLab.model.workbench;
+package com.SimLab.model.workbench.InstructionObjects;
 
 public class Mix__Backend implements Instruction{
     public String material1;

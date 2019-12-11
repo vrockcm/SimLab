@@ -42,6 +42,7 @@ public class WorkbenchController {
 
         workbenchBkend = new WorkbenchBkend(lab);
 
+
         return modelAndView;
     }
 
