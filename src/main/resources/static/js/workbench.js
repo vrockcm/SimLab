@@ -417,43 +417,49 @@ $(document).ready(function() {
 });
 // enable draggables to be dropped into this
 interact('.workbench').dropzone({
-  // only accept elements matching this CSS selector
-  // Require a 75% element overlap for a drop to be possible
-  overlap: 0.75,
-
-  // listen for drop related events:
-
-  ondropactivate: function (event) {
-    // add active dropzone feedback
-    event.target.classList.add('drop-active')
-  },
-  ondragenter: function (event) {
-    var draggableElement = event.relatedTarget
-    var dropzoneElement = event.target
-
-    // feedback the possibility of a drop
-    dropzoneElement.classList.add('drop-target')
-    draggableElement.classList.add('can-drop')
-//    draggableElement.textContent = 'Dragged in'
-  },
-  ondragleave: function (event) {
-    // remove the drop feedback style
-    event.target.classList.remove('drop-target')
-    event.relatedTarget.classList.remove('can-drop')
-//    event.relatedTarget.textContent = 'Dragged out'
-  },
-  ondrop: function (event) {
-//    event.relatedTarget.textContent = 'Dropped'
-  },
-  ondropdeactivate: function (event) {
-    // remove active dropzone feedback
-    event.target.classList.remove('drop-active')
-    event.target.classList.remove('drop-target')
-  }
+//  // only accept elements matching this CSS selector
+//  // Require a 75% element overlap for a drop to be possible
+//  overlap: 0.75,
+//
+//  // listen for drop related events:
+//
+//  ondropactivate: function (event) {
+//    // add active dropzone feedback
+//    event.target.classList.add('drop-active')
+//  },
+//  ondragenter: function (event) {
+//    var draggableElement = event.relatedTarget
+//    var dropzoneElement = event.target
+//
+//    // feedback the possibility of a drop
+//    dropzoneElement.classList.add('drop-target')
+//    draggableElement.classList.add('can-drop')
+////    draggableElement.textContent = 'Dragged in'
+//  },
+//  ondragleave: function (event) {
+//    // remove the drop feedback style
+//    event.target.classList.remove('drop-target')
+//    event.relatedTarget.classList.remove('can-drop')
+////    event.relatedTarget.textContent = 'Dragged out'
+//  },
+//  ondrop: function (event) {
+////    event.relatedTarget.textContent = 'Dropped'
+//  },
+//  ondropdeactivate: function (event) {
+//    // remove active dropzone feedback
+//    event.target.classList.remove('drop-active')
+//    event.target.classList.remove('drop-target')
+//  }
 })
 
 
 interact('.card').draggable({
+    modifiers: [
+        interact.modifiers.restrict({
+            restrictRect: 'parent',
+            endOnly: true
+        })
+    ],
     inertia: true,
     onmove: function (event) {
       var target = event.target;
@@ -467,7 +473,10 @@ interact('.card').draggable({
       target.setAttribute('data-y', y);
     },
     onend: function(event) {
-        console.log(event);
+        var dropzoneElement = event.target;
+        if (!($(event.relatedTarget).hasClass("workbench"))){
+            $(dropzoneElement).remove();
+        }
     }
 }).on('move', function (event) {
 var interaction = event.interaction;
