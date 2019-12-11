@@ -1,4 +1,4 @@
-package com.SimLab.model.workbench;
+package com.SimLab.model.workbench.InstructionObjects;
 
 public class TempControl_Backend implements Instruction{
 

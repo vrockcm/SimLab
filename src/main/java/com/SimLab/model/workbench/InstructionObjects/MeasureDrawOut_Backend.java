@@ -1,4 +1,4 @@
-package com.SimLab.model.workbench;
+package com.SimLab.model.workbench.InstructionObjects;
 
 import com.SimLab.model.dao.Tool;
 

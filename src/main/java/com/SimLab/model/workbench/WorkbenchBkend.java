@@ -21,13 +21,19 @@ public class WorkbenchBkend {
     private int toolId = 1;
 
     Lab lab;
-
+    Instruction currentInst;
 
 
     public WorkbenchBkend(Lab lab){
         this.lab = lab;
         containers = new ArrayList<BkendContainer>();
         tools = new ArrayList<BkendTool>();
+        for(Instruction i: lab.getInstructions()){
+            if(i.getStepNumber() == 1){
+                currentInst = i;
+                break;
+            }
+        }
     }
 
     public String addMaterial(String matName){
