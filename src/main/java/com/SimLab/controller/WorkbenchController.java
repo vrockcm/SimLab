@@ -41,6 +41,15 @@ public class WorkbenchController {
         modelAndView.addObject("tools", lab.getTools());
         modelAndView.addObject("instructions", instruct);
         workbenchBkend = new WorkbenchBkend(lab);
+
+        workbenchBkend.addMaterial("Beaker");
+        workbenchBkend.addMaterial("HCl");
+        workbenchBkend.addMaterial("NaCl");
+        workbenchBkend.interact("Mix","Beaker2", "Beaker1",null, 30, 0);
+        workbenchBkend.interact("Mix", "Beaker1", "Beaker3",null, 10,0);
+        workbenchBkend.verifyLab();
+
+
         return modelAndView;
     }
 

@@ -32,4 +32,9 @@ public class Weigh_Backend implements InstructionBkend {
         }
         return 0;
     }
+
+    @Override
+    public boolean getVerified() {
+        return false;
+    }
 }

@@ -72,7 +72,8 @@ public class WorkbenchBkend {
         }
     }
 
-    public void verifyLab(){
+    public List<Boolean> verifyLab(){
+        List<Boolean> stepVerified = new ArrayList<Boolean>();
         List<Instruction> instructions = new ArrayList(lab.getInstructions());
         instructions.sort(Comparator.comparing(e -> e.getStepNumber()));
         List<InstructionBkend> instObjs = new ArrayList<InstructionBkend>();
@@ -81,9 +82,19 @@ public class WorkbenchBkend {
         }
         int interactIndex = 0;
         for(InstructionBkend iObj: instObjs){
-            int step = iObj.verify(interactions, interactIndex);
-            interactIndex = step;
+            if(iObj != null) {
+                int step = iObj.verify(interactions, interactIndex);
+                interactIndex = step;
+            }
         }
+        for(InstructionBkend iObj: instObjs){
+            if(iObj != null){
+                stepVerified.add(iObj.getVerified());
+            }else{
+                stepVerified.add(false);
+            }
+        }
+        return stepVerified;
     }
 
     public InstructionBkend getInstructionObject(Instruction currentInst){

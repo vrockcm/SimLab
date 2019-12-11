@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Data
 public class Mix__Backend implements InstructionBkend {
 
-    boolean verified;
+    private boolean verified;
     private int expectedVol;
     private List<String> namesToCheck;
     int stepNo;
@@ -42,7 +42,7 @@ public class Mix__Backend implements InstructionBkend {
     @Override
     public int verify(List<Interaction> interactions, int startIndex) {
         int returnIndex = 0;
-        for(int i=0;i<interactions.size();i++){
+        for(int i=startIndex;i<interactions.size();i++){
             Interaction interaction = interactions.get(i);
             List<BkendSolution> resultSolutions = interaction.getResultant().getSolutions();
             boolean verify = true;
@@ -61,5 +61,10 @@ public class Mix__Backend implements InstructionBkend {
             }
         }
         return returnIndex;
+    }
+
+    @Override
+    public boolean getVerified() {
+        return verified;
     }
 }
