@@ -82,6 +82,40 @@ public class WorkbenchBkend {
             }
         }
     }
+    public void mixInteract(String container1, String container2, int pourAmount){
+        BkendContainer cont1 = getContainer(container1);
+        BkendContainer cont2 = getContainer(container2);
+
+        double totalCont1Vol = cont1.getCumulativeVolume();
+        for(BkendSolution sol: cont1.getSolutions()){
+            double percentage = sol.getVolume()/totalCont1Vol;
+            double amtPerSol = pourAmount*percentage;
+            sol.setVolume(sol.getVolume()-amtPerSol);
+            BkendSolution transfer = new BkendSolution(sol);
+            transfer.setVolume(amtPerSol);
+            cont2.getSolutions().add(transfer);
+        }
+        coalesceContainer(cont1);
+        coalesceContainer(cont2);
+
+    }
+
+    //add duplicate solutions together and remove empty ones
+    private void coalesceContainer(BkendContainer container){
+        for(int i=0;i<container.getSolutions().size();i++){
+            BkendSolution sol = container.getSolutions().get(i);
+            for(int j=i+1;j<container.getSolutions().size();j++){
+                BkendSolution sol2 = container.getSolutions().get(j);
+                if(sol2.getSolutionName().equals(sol.getSolutionName())){
+                    sol.setVolume(sol.getVolume()+sol2.getVolume());
+                    container.getSolutions().remove(sol2);
+                }
+            }
+            if(sol.getVolume() <= 0){
+                container.getSolutions().remove(sol);
+            }
+        }
+    }
 
 
     private String addContainer(Container c){
@@ -114,8 +148,8 @@ public class WorkbenchBkend {
 
     private void removeTool(BkendTool t){
         tools.remove(t);
-
     }
+
 
     private String generateName(String name, boolean container){
         String nameToReturn = name;
@@ -127,6 +161,19 @@ public class WorkbenchBkend {
             toolId++;
         }
         return nameToReturn;
+    }
+
+    private BkendContainer getContainer(String name){
+        for(BkendContainer container: containers){
+            if(container.getName().equals(name)) return container;
+        }
+        return null;
+    }
+    private BkendTool getTool(String name){
+        for(BkendTool tool: tools){
+            if(tool.getName().equals(name)) return tool;
+        }
+        return null;
     }
 
 }
