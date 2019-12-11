@@ -40,9 +40,7 @@ public class WorkbenchController {
         modelAndView.addObject("containers", lab.getContainers());
         modelAndView.addObject("tools", lab.getTools());
         modelAndView.addObject("instructions", instruct);
-
         workbenchBkend = new WorkbenchBkend(lab);
-      
         return modelAndView;
     }
 

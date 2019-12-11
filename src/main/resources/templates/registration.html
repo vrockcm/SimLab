@@ -34,7 +34,14 @@
                 <input type="password" id="password" name="password" class="form-control" /> <br />
                 <label th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
                         class="validation-message"></label>
-
+                <div class="row">
+                    <div class="col-6">
+                        <input type="radio" name="role" value="instructor" checked> Male<br>
+                    </div>
+                    <div class="col-6">
+                        <input type="radio" name="role" value="male" checked> Male<br>
+                    </div>
+                </div>
                 <button class='Login_button one' name="Submit" value="Login" type="Submit" >
                     <div class='insider'></div>
                     Sign Up
