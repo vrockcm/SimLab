@@ -570,7 +570,7 @@ interact('.card').draggable({
             $(mat).height(250);
             interact(dropzoneElement).unset();
             $(dropzoneElement).remove();
-            moveToWorkBench(matName);
+            moveToWorkBench(dropzoneElement,matName);
         }
     }
 }).on('move', function (event) {
@@ -591,7 +591,7 @@ if (interaction.pointerIsDown && !interaction.interacting() && event.currentTarg
 //Ajax functions for different user interactions
 
 //Moving material into workbench
-function moveToWorkBench(materialName){
+function moveToWorkBench(ele,materialName){
    $.ajax({
         url : '/moveToWorkBench',
         type : 'POST',
@@ -600,7 +600,7 @@ function moveToWorkBench(materialName){
             'materialName' : materialName
         },
         success : function(data) {
-            var dummy = data;
+            $(ele).val(data);
         },
         error : function(request,error)
         {
