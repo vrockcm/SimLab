@@ -529,16 +529,90 @@ user-select: none;
 }
 
 .Beaker{
-	background-image: url('../images/beaker_150_ml_T.png');
+	background-image: url('../images/beaker.png');
 	background-size: contain;
 	background-repeat: no-repeat;
 }
 
 .Flask{
-	background-image: url('../images/flask-1.png');
+	background-image: url('../images/flask.png');
 	background-size: contain;
 	background-repeat: no-repeat;
 }
+
+.Pipette{
+	background-image: url('../images/pipette.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.Scale{
+	background-image: url('../images/scale.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.Tube{
+	background-image: url('../images/tube.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+
+.H2O{
+	background-image: url('../images/H2O.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.HCl{
+	background-image: url('../images/HCl.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.NaOH{
+	background-image: url('../images/NaOH.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.NaCl{
+	background-image: url('../images/NaCL.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.CH{
+	background-image: url('../images/CH.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.HOH{
+	background-image: url('../images/HOH.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.CHI{
+	background-image: url('../images/CHI.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.CaO{
+	background-image: url('../images/CaO.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.COCL{
+	background-image: url('../images/COCL.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
 
 .list-group-item{
     background-color: transparent;
