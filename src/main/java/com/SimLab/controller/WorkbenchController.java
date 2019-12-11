@@ -10,6 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -25,24 +28,18 @@ public class WorkbenchController {
     public ModelAndView workbench(@RequestParam String labId){
         ModelAndView modelAndView = new ModelAndView();
         Lab lab = labService.findByLabId(Integer.parseInt(labId));
-        Set<Instruction> instructions = lab.getInstructions();
-        Instruction i = null;
+        List<String> instruct = new ArrayList<>();
+        List<Instruction> instructions = new ArrayList(lab.getInstructions());
+        instructions.sort(Comparator.comparing(e -> e.getStepNumber()));
         for(Instruction inst : instructions){
-            if(inst.getStepNumber()==1){
-                i = inst;
-                break;
-            }
+            instruct.add(inst.toString());
         }
         modelAndView.setViewName("workbench");
         modelAndView.addObject("lab", lab);
         modelAndView.addObject("solutions", lab.getSolutions());
         modelAndView.addObject("containers", lab.getContainers());
         modelAndView.addObject("tools", lab.getTools());
-        modelAndView.addObject("header", i.toString());
-
-        workbenchBkend = new WorkbenchBkend(lab);
-
-
+        modelAndView.addObject("instructions", instruct);
         return modelAndView;
     }
 

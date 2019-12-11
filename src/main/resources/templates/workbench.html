@@ -15,16 +15,8 @@
 	<!-- Bootstrap core CSS -->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 	<!-- Material Design Bootstrap -->
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.10/css/mdb.min.css" rel="stylesheet">
-	<!-- JQuery -->
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<!-- Bootstrap tooltips -->
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
-	<!-- Bootstrap core JavaScript -->
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
-	<!-- MDB core JavaScript -->
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.10/js/mdb.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+	<link type="text/css" rel="stylesheet" th:href="@{/css/materialize.css}"  media="screen,projection"/>
+
 	<link rel="shortcut icon" href="favicon.ico">
 	<!-- demo styles -->
 	<link rel="stylesheet" type="text/css" th:href="@{/css/demo.css}"/>
@@ -43,12 +35,16 @@
 			<div class="dummy-logo">
 				<img th:src="@{/images/SimLab.png}" alt="logo" class="logo img-fluid">
 				<div class="courses">
-					<h3 class="AddCourses">Equipment</h3>
+					<h5 class="AddCourses">Equipment</h5>
 				</div>
 			</div>
 			<div class="bp-header__main">
-				<div class="labs">
-					<h3 class="steps" th:text="${header}"></h3>
+				<div>
+					<div class="input-field col s12">
+						<select class="steps">
+							<option disabled="true" th:each="instruction : ${instructions}" th:text="${instruction}"></option>
+						</select>
+					</div>
 				</div>
 			</div>
 		</header>
@@ -58,15 +54,15 @@
 			<div class="menu__wrap">
 				<ul class="nav nav-tabs" id="myTab" role="tablist">
 					<li class="nav-item">
-						<a class="nav-link active" id="solutions-tab" data-toggle="tab" href="#solutions" role="tab" aria-controls="solutions"
+						<a class="nav-link waves-effect waves-light active" id="solutions-tab" data-toggle="tab" href="#solutions" role="tab" aria-controls="solutions"
 						   aria-selected="true">Solutions</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" id="containers-tab" data-toggle="tab" href="#containers" role="tab" aria-controls="containers"
+						<a class="nav-link waves-effect waves-light " id="containers-tab" data-toggle="tab" href="#containers" role="tab" aria-controls="containers"
 						   aria-selected="false">Containers</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" id="tools-tab" data-toggle="tab" href="#tools" role="tab" aria-controls="tools"
+						<a class="nav-link waves-effect waves-light " id="tools-tab" data-toggle="tab" href="#tools" role="tab" aria-controls="tools"
 						   aria-selected="false">Tools</a>
 					</li>
 				</ul>
@@ -77,7 +73,7 @@
 							<li class="menu_item" th:each="solution : ${solutions}">
 								<div class="card">
 									<div class="card-body">
-										<h4 class="card-title" th:text="${solution.name}"></h4>
+										<h4 class="black-text" th:text="${solution.name}"></h4>
 										<div th:class="'view '+${solution.name}+' overlay'">
 										</div>
 									</div>
@@ -90,7 +86,7 @@
 							<li class="menu_item" th:each="container : ${containers}">
 								<div class="card">
 									<div class="card-body">
-										<h4 class="card-title" th:text="${container.name}"></h4>
+										<h4 class="black-text" th:text="${container.name}"></h4>
 										<div th:class="'view '+${container.name}+' overlay'">
 										</div>
 									</div>
@@ -103,7 +99,7 @@
 							<li class="menu_item" th:each="tool : ${tools}">
 								<div class="card">
 									<div class="card-body">
-										<h4 class="card-title" th:text="${tool.name}"></h4>
+										<h4 class="black-text" th:text="${tool.name}"></h4>
 										<div th:class="'view '+${tool.name}+' overlay'">
 										</div>
 									</div>
@@ -118,11 +114,23 @@
 		<div class="workbench">
 		</div>
 	</div>
-	<!-- /view -->
+	<!-- JQuery -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<!-- Bootstrap tooltips -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+	<!-- Bootstrap core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<!-- MDB core JavaScript -->
+	<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+	<!--Import materialize.css-->
+
+	<script th:src="@{/js/materialize.js}"></script>
+
+
 	<script th:src="@{/js/classie.js}"></script>
 	<script th:src="@{/js/dummydata.js}"></script>
 	<script th:src="@{/js/workbench.js}"></script>
-
+	<!--JavaScript at end of body for optimized loading-->
 </body>
 
 </html>
