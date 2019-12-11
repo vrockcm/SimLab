@@ -1,6 +1,9 @@
 package com.SimLab.model.workbench.InstructionObjects;
 
 import com.SimLab.model.dao.Container;
+import com.SimLab.model.workbench.Interaction;
+
+import java.util.List;
 
 public class Swirl_Backend implements InstructionBkend {
 
@@ -9,7 +12,7 @@ public class Swirl_Backend implements InstructionBkend {
 
 
     @Override
-    public boolean verify() {
-        return false;
+    public int verify(List<Interaction> interactions, int startIndex) {
+        return 0;
     }
 }

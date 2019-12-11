@@ -1,5 +1,6 @@
 package com.SimLab.model.workbench.InstructionObjects;
 
+import com.SimLab.model.workbench.Interaction;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
@@ -23,7 +24,7 @@ public class MeasureDrawOut_Backend implements InstructionBkend {
     }
 
     @Override
-    public boolean verify() {
+    public int verify(List<Interaction> interactions, int startIndex) {
 //        for(BkendContainer c: contlist){
 //            if(c.getName().equals(mycont.getName())){
 //                for(BkendSolution s: c.getSolutions()){
@@ -36,6 +37,6 @@ public class MeasureDrawOut_Backend implements InstructionBkend {
 //
 //        }
 
-        return false;
+        return 0;
     }
 }

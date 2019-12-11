@@ -1,5 +1,9 @@
 package com.SimLab.model.workbench.InstructionObjects;
 
+import com.SimLab.model.workbench.Interaction;
+
+import java.util.List;
+
 public class TempControl_Backend implements InstructionBkend {
 
     public String material;
@@ -7,7 +11,7 @@ public class TempControl_Backend implements InstructionBkend {
     public String vessel;
 
     @Override
-    public boolean verify() {
-        return false;
+    public int verify(List<Interaction> interactions, int startIndex) {
+        return 0;
     }
 }

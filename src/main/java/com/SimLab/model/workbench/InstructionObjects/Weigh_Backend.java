@@ -1,8 +1,11 @@
 package com.SimLab.model.workbench.InstructionObjects;
 
+import com.SimLab.model.workbench.Interaction;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
+
+import java.util.List;
 
 public class Weigh_Backend implements InstructionBkend {
     public String material;
@@ -21,12 +24,12 @@ public class Weigh_Backend implements InstructionBkend {
 
 
     @Override
-    public boolean verify() {
+    public int verify(List<Interaction> interactions, int startIndex) {
         if (mytool.getTool().getName().equals("Scale")){
             if(Integer.parseInt(mytool.getTool().getAttribute1()) == mytargetweight){
-                return true;
+                return 0;
             }
         }
-        return false;
+        return 0;
     }
 }

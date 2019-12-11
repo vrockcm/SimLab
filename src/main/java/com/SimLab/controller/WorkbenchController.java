@@ -46,7 +46,6 @@ public class WorkbenchController {
         workbenchBkend.addMaterial("HCl");
         workbenchBkend.addMaterial("NaCl");
         workbenchBkend.interact("Mix","Beaker2", "Beaker1",null, 30, 0);
-        workbenchBkend.test("Beaker1");
         workbenchBkend.interact("Mix", "Beaker1", "Beaker3",null, 10,0);
 
         return modelAndView;
@@ -62,15 +61,15 @@ public class WorkbenchController {
     @ResponseBody
     @RequestMapping(value = "/moveToWorkBench", method = RequestMethod.POST)
     public String moveToWorkBench(@RequestParam String materialName){
-
-        return "";
+        String name = workbenchBkend.addMaterial(materialName);
+        return name;
     }
 
     //Routing for moveToInventory ajax call.
     @ResponseBody
     @RequestMapping(value = "/moveToInventory", method = RequestMethod.POST)
     public String moveToInventory(@RequestParam String materialName){
-
+        workbenchBkend.removeMaterial(materialName);
         return "";
     }
 
