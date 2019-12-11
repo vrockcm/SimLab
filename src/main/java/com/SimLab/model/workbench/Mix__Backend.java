@@ -6,7 +6,7 @@ import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
 
 import java.util.List;
 
-public class Mix__Backend extends Instruction implements InstructionInterf{
+public class Mix__Backend implements InstructionInterf{
     public String material1;
     public String material2;
 

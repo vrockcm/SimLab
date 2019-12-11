@@ -2,7 +2,7 @@ package com.SimLab.model.workbench;
 
 import com.SimLab.model.dao.Instruction;
 
-public class TempControl_Backend extends Instruction implements InstructionInterf{
+public class TempControl_Backend implements InstructionInterf{
 
     public String material;
     public int targetTemp;
