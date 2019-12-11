@@ -7,7 +7,7 @@ public class TempControl_Backend implements Instruction{
     public String vessel;
 
     @Override
-    public String verify() {
-        return null;
+    public boolean verify() {
+        return false;
     }
 }

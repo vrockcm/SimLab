@@ -7,7 +7,7 @@ public class MeasureDrawOut_Backend implements Instruction {
     public Tool measuringTool;
 
     @Override
-    public String verify() {
-        return null;
+    public boolean verify() {
+        return false;
     }
 }

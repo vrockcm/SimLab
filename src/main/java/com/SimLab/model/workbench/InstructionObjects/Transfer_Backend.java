@@ -10,7 +10,7 @@ public class Transfer_Backend implements Instruction {
     public Container container;
 
     @Override
-    public String verify() {
-        return null;
+    public boolean verify() {
+        return false;
     }
 }
