@@ -380,6 +380,10 @@
 
 $(document).ready(function() {
 
+
+    $(".steps option:first").removeAttr("disabled");
+    $(".steps").val($(".steps option:first").val());
+    $('.steps').formSelect();
     //This gets the email from the front end and passes calls the loadCourses function with this email.
     initialize();
 
@@ -430,16 +434,16 @@ interact('.workbench').dropzone({
     // feedback the possibility of a drop
     dropzoneElement.classList.add('drop-target')
     draggableElement.classList.add('can-drop')
-    draggableElement.textContent = 'Dragged in'
+//    draggableElement.textContent = 'Dragged in'
   },
   ondragleave: function (event) {
     // remove the drop feedback style
     event.target.classList.remove('drop-target')
     event.relatedTarget.classList.remove('can-drop')
-    event.relatedTarget.textContent = 'Dragged out'
+//    event.relatedTarget.textContent = 'Dragged out'
   },
   ondrop: function (event) {
-    event.relatedTarget.textContent = 'Dropped'
+//    event.relatedTarget.textContent = 'Dropped'
   },
   ondropdeactivate: function (event) {
     // remove active dropzone feedback
@@ -448,21 +452,6 @@ interact('.workbench').dropzone({
   }
 })
 
-function dragMoveListener (event) {
-  var target = event.target
-  // keep the dragged position in the data-x/data-y attributes
-  var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
-  var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
-
-  // translate the element
-  target.style.webkitTransform =
-    target.style.transform =
-      'translate(' + x + 'px, ' + y + 'px)'
-
-  // update the posiion attributes
-  target.setAttribute('data-x', x)
-  target.setAttribute('data-y', y)
-}
 
 interact('.card').draggable({
     inertia: true,
@@ -484,13 +473,12 @@ interact('.card').draggable({
 var interaction = event.interaction;
 if (interaction.pointerIsDown && !interaction.interacting() && event.currentTarget.getAttribute('clonable') != 'false') {
   var original = event.currentTarget;
-  var clone = event.currentTarget.cloneNode(true);
-  var x = clone.offsetLeft;
-  var y = clone.offsetTop;
+  var clone = original.cloneNode(true);
   clone.setAttribute('clonable','false');
   clone.style.position = "absolute";
-  clone.style.left = original.offsetLeft+"px";
-  clone.style.top = original.offsetTop+"px";
+  $(clone).offset({ top: $(original).offset().top, left:  $(original).offset().left});
+  $(clone).width($(original).width());
+  $(clone).height($(original).height());
   document.body.appendChild(clone);
   interaction.start({ name: 'drag' },event.interactable,clone);
 }

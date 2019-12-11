@@ -26,6 +26,7 @@ public class WorkbenchBkend {
     Instruction currentInst;
 
 
+
     public WorkbenchBkend(Lab lab){
         this.lab = lab;
         containers = new ArrayList<BkendContainer>();
@@ -171,7 +172,7 @@ public class WorkbenchBkend {
     }
     private BkendTool getTool(String name){
         for(BkendTool tool: tools){
-            if(tool.getName().equals(name)) return tool;
+            if(tool.getTool().getName().equals(name)) return tool;
         }
         return null;
     }

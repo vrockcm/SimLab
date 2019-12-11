@@ -9,7 +9,7 @@ public class Swirl_Backend implements Instruction {
 
 
     @Override
-    public String verify() {
-        return null;
+    public boolean verify() {
+        return false;
     }
 }
