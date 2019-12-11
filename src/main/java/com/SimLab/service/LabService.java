@@ -73,6 +73,10 @@ public class LabService {
             Instruction newI = new Instruction(i);
             instructions.add(newI);
         }
+        newLab.setSolutions(solutions);
+        newLab.setContainers(containers);
+        newLab.setTools(tools);
+        newLab.setInstructions(instructions);
         saveLab(newLab, Integer.parseInt(courseId));
     }
 
