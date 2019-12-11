@@ -9,6 +9,7 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 @Data
 public class WorkbenchBkend {
 
@@ -22,7 +23,7 @@ public class WorkbenchBkend {
     private int toolId = 1;
 
     Lab lab;
-
+    Instruction currentInst;
 
 
 
@@ -30,6 +31,12 @@ public class WorkbenchBkend {
         this.lab = lab;
         containers = new ArrayList<BkendContainer>();
         tools = new ArrayList<BkendTool>();
+        for(Instruction i: lab.getInstructions()){
+            if(i.getStepNumber() == 1){
+                currentInst = i;
+                break;
+            }
+        }
     }
 
     public String addMaterial(String matName){
@@ -53,19 +60,28 @@ public class WorkbenchBkend {
     }
 
     public void removeMaterial(String matName){
-
-        for (Container c : lab.getContainers()) {
-            if(c.getName().equals(matName)){
-                removeContainer(c);
+        for(BkendContainer container: containers){
+            if(container.getName().equals(matName)){
+                removeContainer(container);
+                break;
             }
         }
-
-        for (Tool t : lab.getTools()) {
-            if(t.getName().equals(matName)){
-                removeTool(t);
+        for(BkendTool tool: tools){
+            if(tool.getName().equals(matName)){
+                removeTool(tool);
+                break;
             }
         }
+    }
 
+    public void nextStep(){
+        int stepNo = currentInst.getStepNumber();
+        for(Instruction i: lab.getInstructions()){
+            if(i.getStepNumber() == stepNo+1){
+                currentInst = i;
+                break;
+            }
+        }
     }
 
 
@@ -92,14 +108,12 @@ public class WorkbenchBkend {
 
     }
 
-    private void removeContainer(Container c){
+    private void removeContainer(BkendContainer c){
         containers.remove(c);
-
     }
 
 
-    private void removeTool(Tool t){
-
+    private void removeTool(BkendTool t){
         tools.remove(t);
 
     }
