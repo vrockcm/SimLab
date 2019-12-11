@@ -416,43 +416,89 @@ $(document).ready(function() {
         }
 });
 // enable draggables to be dropped into this
+
 interact('.workbench').dropzone({
-//  // only accept elements matching this CSS selector
-//  // Require a 75% element overlap for a drop to be possible
-//  overlap: 0.75,
-//
-//  // listen for drop related events:
-//
-//  ondropactivate: function (event) {
-//    // add active dropzone feedback
-//    event.target.classList.add('drop-active')
-//  },
-//  ondragenter: function (event) {
-//    var draggableElement = event.relatedTarget
-//    var dropzoneElement = event.target
-//
-//    // feedback the possibility of a drop
-//    dropzoneElement.classList.add('drop-target')
-//    draggableElement.classList.add('can-drop')
-////    draggableElement.textContent = 'Dragged in'
-//  },
-//  ondragleave: function (event) {
-//    // remove the drop feedback style
-//    event.target.classList.remove('drop-target')
-//    event.relatedTarget.classList.remove('can-drop')
-////    event.relatedTarget.textContent = 'Dragged out'
-//  },
-//  ondrop: function (event) {
-////    event.relatedTarget.textContent = 'Dropped'
-//  },
-//  ondropdeactivate: function (event) {
-//    // remove active dropzone feedback
-//    event.target.classList.remove('drop-active')
-//    event.target.classList.remove('drop-target')
-//  }
+  // only accept elements matching this CSS selector
+  // Require a 75% element overlap for a drop to be possible
+  overlap: 0.50,
+  ondragenter: function (event) {
+    var draggableElement = event.relatedTarget
+    var dropzoneElement = event.target
+
+    // feedback the possibility of a drop
+    if ($(draggableElement).hasClass("card")){
+        draggableElement.classList.add('green')
+    }
+  },
+  ondragleave: function (event) {
+    // remove the drop feedback style
+    if ($(event.relatedTarget).hasClass("card")){
+        event.relatedTarget.classList.remove('green')
+    }
+  }
+}).on('tap', function (event) {
+      $(".drag-material").removeClass('dashed-outline');
+      $(".drag-material").find(".view").removeClass('transi pour');
+      $($(".drag-material").find(".mat-name")).removeClass("top-right");
+      interactionMode = 0;
+});
+
+function dragMoveListener (event) {
+    var target = event.target;
+    var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+    var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+    target.style.webkitTransform =
+    target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+
+    target.setAttribute('data-x', x);
+    target.setAttribute('data-y', y);
+}
+
+interact('.drag-material').draggable({
+    modifiers: [
+        interact.modifiers.restrictRect({
+            restriction: 'parent',
+            endOnly: true
+        })
+    ],
+    inertia: true,
+    onstart: function (event) {
+        $(".drag-material").removeClass('dashed-outline');
+        $(".drag-material").find(".view").removeClass('transi pour');
+        $($(".drag-material").find(".mat-name")).removeClass("top-right");
+    },
+    onmove: dragMoveListener,
+    onend: function(event) {
+        var dropzoneElement = event.target;
+    },
 })
 
 
+
+interact('.drag-material').dropzone({
+  // only accept elements matching this CSS selector
+  // Require a 75% element overlap for a drop to be possible
+  overlap: 0.50,
+  ondrop:function (event) {
+     var draggableElement = event.relatedTarget
+     var dropzoneElement = event.target
+     $(".drag-material").removeClass('dashed-outline');
+     $(draggableElement).find(".view").addClass('transi pour');
+     $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 - 30)});
+     $($(draggableElement).find(".mat-name")).addClass("top-right");
+     interactionMode = 1;
+  }
+}).on('tap', function (event) {
+      $(".drag-material").removeClass('dashed-outline');
+      $(event.currentTarget).addClass('dashed-outline');
+      event.stopImmediatePropagation();
+});
+
+
+
+
+interact.dynamicDrop(true);
 interact('.card').draggable({
     modifiers: [
         interact.modifiers.restrict({
@@ -461,20 +507,21 @@ interact('.card').draggable({
         })
     ],
     inertia: true,
-    onmove: function (event) {
-      var target = event.target;
-      var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-      var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-      target.style.webkitTransform =
-      target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
-
-      target.setAttribute('data-x', x);
-      target.setAttribute('data-y', y);
-    },
+    onmove: dragMoveListener,
     onend: function(event) {
         var dropzoneElement = event.target;
         if (!($(event.relatedTarget).hasClass("workbench"))){
+            $(dropzoneElement).hide('fast', function(){ $(dropzoneElement).remove(); });
+        }
+        else{
+            var mat = $(dropzoneElement).find(".drag-material");
+            $(mat).css("pointer-events","auto");
+            $($(dropzoneElement).find(".mat-name")).show();
+            $(event.relatedTarget).append(mat);
+            $(mat).offset({ top: $(dropzoneElement).offset().top, left:  $(dropzoneElement).offset().left});
+            $(mat).width(200);
+            $(mat).height(250);
+            interact(dropzoneElement).unset();
             $(dropzoneElement).remove();
         }
     }

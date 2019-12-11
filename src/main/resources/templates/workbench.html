@@ -74,7 +74,10 @@
 								<div class="card">
 									<div class="card-body">
 										<h4 class="black-text" th:text="${solution.name}"></h4>
-										<div th:class="'view '+${solution.name}+' overlay'">
+										<div class="drag-material">
+											<div th:class="'view '+${solution.name}+' overlay'">
+											</div>
+											<h5 class="mat-name" style="display: none;" th:text="${solution.name}"></h5>
 										</div>
 									</div>
 								</div>
@@ -87,7 +90,10 @@
 								<div class="card">
 									<div class="card-body">
 										<h4 class="black-text" th:text="${container.name}"></h4>
-										<div th:class="'view '+${container.name}+' overlay'">
+										<div class="drag-material">
+											<div th:class="'view '+${container.name}+' overlay'">
+											</div>
+											<h5 class="mat-name" style="display: none;" th:text="${container.name}"></h5>
 										</div>
 									</div>
 								</div>
@@ -100,7 +106,10 @@
 								<div class="card">
 									<div class="card-body">
 										<h4 class="black-text" th:text="${tool.name}"></h4>
-										<div th:class="'view '+${tool.name}+' overlay'">
+										<div class="drag-material">
+											<div th:class="'view '+${tool.name}+' overlay'">
+											</div>
+											<h5 class="mat-name" style="display: none;" th:text="${tool.name}"></h5>
 										</div>
 									</div>
 								</div>
