@@ -440,7 +440,6 @@ interact('.workbench').dropzone({
       $(".drag-material").removeClass('dashed-outline');
       $(".drag-material").find(".view").removeClass('pour');
       $($(".drag-material").find(".mat-name")).removeClass("top-right");
-      interactionMode = 0;
 });
 
 function dragMoveListener (event) {
@@ -464,8 +463,9 @@ interact('.drag-material').draggable({
     ],
     inertia: true,
     onstart: function (event) {
+        $(".drag-material").popover('dispose');
         $(".drag-material").removeClass('dashed-outline');
-        $(event.relatedTarget).removeClass('dashed-outline');
+        $(event.relatedTarget).addClass('dashed-outline');
         $(".drag-material").find(".view").removeClass('pour');
         $($(".drag-material").find(".mat-name")).removeClass("top-right");
     },
@@ -488,7 +488,26 @@ interact('.drag-material').dropzone({
      $(draggableElement).find(".view").addClass('pour');
      $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 - 30)});
      $($(draggableElement).find(".mat-name")).addClass("top-right");
-     interactionMode = 1;
+
+     $(dropzoneElement).popover({
+     container: 'body',
+     html: true,
+     placement: 'bottom',
+     sanitize: false,
+     content:
+     `<div id="PopoverContent">
+       <div class="input-group">
+         <input type="text" class="form-control" placeholder="Quantity(mL)">
+         <div class="input-group-append" id="button-addon1">
+           <button class="btn btn-outline-primary" type="button" data-toggle="popover" data-placement="bottom"
+               data-html="true" data-title="Search">
+                <i class="fas fa-search"></i>
+           </button>
+         </div>
+       </div>
+     </div>`
+     });
+    $(dropzoneElement).popover('show')
   }
 }).on('tap', function (event) {
       $(".drag-material").removeClass('dashed-outline');
