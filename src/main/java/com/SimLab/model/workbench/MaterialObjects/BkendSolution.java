@@ -2,7 +2,9 @@ package com.SimLab.model.workbench.MaterialObjects;
 
 
 import com.SimLab.model.dao.Solution;
+import lombok.Data;
 
+@Data
 public class BkendSolution {
 
 
