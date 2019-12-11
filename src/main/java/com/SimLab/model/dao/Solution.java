@@ -19,7 +19,7 @@ public class Solution{
 
     @Column(name = "Flamability")
     @Type(type="org.hibernate.type.ByteType")
-    private byte flambility;
+    private byte flamability;
 
     @Column(name = "pH")
     private int pH;
@@ -31,7 +31,7 @@ public class Solution{
     private int temperature;
 
     @Column(name = "HeatOfCombustion")
-    private int headOfCombustion;
+    private int heatOfCombustion;
 
     @Column(name = "Radioactivity")
     private int radioactivity;

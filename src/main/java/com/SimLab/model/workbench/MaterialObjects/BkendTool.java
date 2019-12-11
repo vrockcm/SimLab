@@ -1,14 +1,16 @@
 package com.SimLab.model.workbench.MaterialObjects;
 
 
+import com.SimLab.model.dao.Tool;
 import lombok.Data;
 
 @Data
 public class BkendTool {
 
-    private String name;
+//    private String name;
+    private Tool tool;
 
-    public BkendTool(String name){
-        this.name = name;
+    public BkendTool(Tool tool){
+        this.tool = tool;
     }
 }
