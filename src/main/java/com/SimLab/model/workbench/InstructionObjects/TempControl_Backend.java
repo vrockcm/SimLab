@@ -14,4 +14,9 @@ public class TempControl_Backend implements InstructionBkend {
     public int verify(List<Interaction> interactions, int startIndex) {
         return 0;
     }
+
+    @Override
+    public boolean getVerified() {
+        return false;
+    }
 }

@@ -6,14 +6,28 @@ import com.SimLab.model.workbench.InstructionObjects.Mix__Backend;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
+import com.SimLab.service.LabResultService;
+import com.SimLab.service.UserService;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 @Data
+@Component
 public class WorkbenchBkend {
+
+
+    @Autowired
+    private LabResultService labResultService;
+
+    @Autowired
+    private UserService userService;
 
     private final String DIFF_CONTAINER = "Beaker";
     private final String MIX = "Mix";
@@ -37,7 +51,7 @@ public class WorkbenchBkend {
 
     }
 
-    public String addMaterial(String matName){
+    public BkendContainer addMaterial(String matName){
         for (Solution s : lab.getSolutions()) {
             if(s.getName().equals(matName)){
                 return addSolution(s);
@@ -49,12 +63,19 @@ public class WorkbenchBkend {
             }
         }
 
+        return null;
+    }
+
+    public BkendTool addTool(String matName){
         for (Tool t : lab.getTools()) {
             if(t.getName().equals(matName)){
-                return addTool(t);
+                String toolName = generateName(t.getName(), false);
+                BkendTool bkendTool = new BkendTool(t, toolName);
+                tools.add(bkendTool);
+                return bkendTool;
             }
         }
-        return "";
+        return null;
     }
 
     public void removeMaterial(String matName){
@@ -72,7 +93,8 @@ public class WorkbenchBkend {
         }
     }
 
-    public void verifyLab(){
+    public List<Boolean> verifyLab(){
+        List<Boolean> stepVerified = new ArrayList<Boolean>();
         List<Instruction> instructions = new ArrayList(lab.getInstructions());
         instructions.sort(Comparator.comparing(e -> e.getStepNumber()));
         List<InstructionBkend> instObjs = new ArrayList<InstructionBkend>();
@@ -81,29 +103,36 @@ public class WorkbenchBkend {
         }
         int interactIndex = 0;
         for(InstructionBkend iObj: instObjs){
-            int step = iObj.verify(interactions, interactIndex);
-            interactIndex = step;
+            if(iObj != null) {
+                int step = iObj.verify(interactions, interactIndex);
+                interactIndex = step;
+            }
         }
+        for(InstructionBkend iObj: instObjs){
+            if(iObj != null){
+                stepVerified.add(iObj.getVerified());
+            }else{
+                stepVerified.add(false);
+            }
+        }
+
+        return stepVerified;
     }
 
-    public InstructionBkend getInstructionObject(Instruction currentInst){
+    private InstructionBkend getInstructionObject(Instruction currentInst){
         InstructionBkend toReturn = null;
         if(currentInst.getName().equals(MIX)){
-            Mix__Backend mix = new Mix__Backend(currentInst.getContainer1(), currentInst.getContainer2(), 40, currentInst.getStepNumber());
+            Mix__Backend mix = new Mix__Backend(currentInst.getContainer1(), currentInst.getContainer2(),  currentInst.getTargetVolume(), currentInst.getStepNumber());
             toReturn = mix;
         }
         return toReturn;
-    }
-    //TODELETE
-    public void test(String string){
-        BkendContainer c = getContainer(string);
-        c.setAssociatedStep(5);
     }
 
     public List<BkendSolution> getSolutionsInContainer(String name){
         BkendContainer cont = getContainer(name);
         return cont.getSolutions();
     }
+
 
     public void interact(String interactName, String container1, String container2, String tool, int pourAmount, int activationDuration){
         BkendContainer cont1 = getContainer(container1);
@@ -140,6 +169,7 @@ public class WorkbenchBkend {
     }
 
 
+
     //############### HELPERS ##############################
 
     //add duplicate solutions together and remove empty ones
@@ -160,28 +190,23 @@ public class WorkbenchBkend {
     }
 
 
-    private String addContainer(Container c){
+    private BkendContainer addContainer(Container c){
         String contName = generateName(c.getName(), true);
         BkendContainer bkendContainer = new BkendContainer(contName, null, c.getCapacity());
         containers.add(bkendContainer);
-        return contName;
+        bkendContainer.update();
+        return bkendContainer;
     }
 
-    private String addSolution(Solution s){
+    private BkendContainer addSolution(Solution s){
         BkendSolution bkendSolution = new BkendSolution(s);
         String contName = generateName(DIFF_CONTAINER, true);
         BkendContainer bkendContainer = new BkendContainer(contName, bkendSolution, DIFF_CAPACITY);
         containers.add(bkendContainer);
-        return contName;
+        bkendContainer.update();
+        return bkendContainer;
     }
 
-    private String addTool(Tool t){
-        String toolName = generateName(t.getName(), false);
-        BkendTool bkendTool = new BkendTool(t, toolName);
-        tools.add(bkendTool);
-        return toolName;
-
-    }
 
     private void removeContainer(BkendContainer c){
         containers.remove(c);
@@ -205,9 +230,12 @@ public class WorkbenchBkend {
         return nameToReturn;
     }
 
-    private BkendContainer getContainer(String name){
+    public BkendContainer getContainer(String name){
         for(BkendContainer container: containers){
-            if(container.getName().equals(name)) return container;
+            if(container.getName().equals(name)){
+                container.update();
+                return container;
+            }
         }
         return null;
     }

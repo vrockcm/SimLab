@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class BkendSolvents {
+public class BkendResultant {
 
     public static List<List<BkendSolution>> solvents = new ArrayList<List<BkendSolution>>();
 
