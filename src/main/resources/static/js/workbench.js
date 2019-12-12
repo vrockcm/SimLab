@@ -384,24 +384,29 @@ $(document).ready(function() {
     countDownDate.setMinutes(countDownDate.getMinutes()+timeLimit);
 
     // Update the count down every 1 second
-    var x = setInterval(function() {
-        var now = new Date().getTime();
-        var distance = countDownDate - now;
+    if(timeLimit != 0){
+        var x = setInterval(function() {
+                var now = new Date().getTime();
+                var distance = countDownDate - now;
 
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        $(".timer-text").text("Time Remaining: "+hours + "h "
-        + minutes + "m " + seconds + "s ");
+                $(".timer-text").text("Time Remaining: "+hours + "h "
+                + minutes + "m " + seconds + "s ");
 
-        // If the count down is finished, write some text
-        if (distance < 0) {
-        clearInterval(x);
-        alert("DONE");
-        }
-    }, 1000);
+                // If the count down is finished, write some text
+                if (distance < 0) {
+                    clearInterval(x);
+                    finishLab();
+                }
+            }, 1000);
+    }
+    else
+        $(".timer-text").text("Time Remaining: No Limit");
+
 
     $(".steps option:first").removeAttr("disabled");
     $(".steps").val($(".steps option:first").val());
@@ -573,6 +578,7 @@ interact('.drag-material').dropzone({
      function clearTimers() {
          clearTimeout(timeout);
          clearInterval(interval);
+         pour(draggableElement, dropzoneElement,number)
      }
 
 
@@ -658,7 +664,12 @@ interact('.card').draggable({
             $(mat).height(250);
             interact(dropzoneElement).unset();
             $(dropzoneElement).remove();
-            moveToWorkBench(mat,matName);
+            if($(mat).attr("value") == "tool"){
+                moveToolToWorkBench(mat,matName);
+            }
+            else{
+                moveToWorkBench(mat,matName);
+            }
         }
     }
 }).on('move', function (event) {
@@ -740,13 +751,14 @@ function pour (beaker1, beaker2, amount){
         type : 'POST',
         async: false,
         data : {
-            'beaker1' : beaker1,
-            'beaker2' : beaker2,
+            'beaker1' : $(beaker1).data("key").name,
+            'beaker2' : $(beaker2).data("key").name,
             'amount': amount
         },
         dataType:'json',
         success : function(data) {
-
+            $(beaker1).data("key",data[0]);
+            $(beaker2).data("key",data[1]);
         },
         error : function(request,error)
         {

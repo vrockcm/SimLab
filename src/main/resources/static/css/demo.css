@@ -792,11 +792,18 @@ label{
 
 #SolutionsList{
     display: grid;
-    height: 170px;
+    height: 160px;
     overflow: auto;
 }
 
 #timer{
     position: relative;
     top: 15px;
+}
+
+.submit-buttons{
+    position: relative;
+    margin-top: 10px;
+    margin-left: 15px;
+    float: right;
 }

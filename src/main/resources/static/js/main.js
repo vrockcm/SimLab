@@ -473,6 +473,8 @@ function LabWork(url, LabId = -1, publish = 0){
 function fetchLab(labEditButton){
         $("#Change-Lab-Header").text("Edit Lab");
         var labId  = $(labEditButton).attr("value");
+        $("#Test-Lab").show();
+        $("#Publish").show();
         $("#Make-Edit-Lab-Button").unbind('click');
         $("#Make-Edit-Lab-Button").on("click", function(){
               LabWork('/EditLab',labId);
@@ -745,14 +747,8 @@ function toggleC() {
 
 $('.addl_btn').click(function(){
     $("#Change-Lab-Header").text("Add Lab");
-    $("#Make-Edit-Lab-Button").unbind('click');
-    $("#Make-Edit-Lab-Button").on("click", function(){
-      LabWork('/MakeLab');
-    });
-    $("#Publish").unbind('click');
-    $("#Publish").on("click", function(){
-          LabWork('/EditLab',labId,1);
-    });
+    $("#Test-Lab").hide();
+    $("#Publish").hide();
     $("#LabName").val("");
     $("#LabDesc").val("");
     $(".selectpicker").selectpicker('deselectAll');

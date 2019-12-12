@@ -6,14 +6,28 @@ import com.SimLab.model.workbench.InstructionObjects.Mix__Backend;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
+import com.SimLab.service.LabResultService;
+import com.SimLab.service.UserService;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 @Data
+@Component
 public class WorkbenchBkend {
+
+
+    @Autowired
+    private LabResultService labResultService;
+
+    @Autowired
+    private UserService userService;
 
     private final String DIFF_CONTAINER = "Beaker";
     private final String MIX = "Mix";
@@ -101,6 +115,7 @@ public class WorkbenchBkend {
                 stepVerified.add(false);
             }
         }
+
         return stepVerified;
     }
 
