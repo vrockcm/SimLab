@@ -570,7 +570,7 @@ interact('.card').draggable({
             $(mat).height(250);
             interact(dropzoneElement).unset();
             $(dropzoneElement).remove();
-            moveToWorkBench(dropzoneElement,matName);
+            moveToWorkBench(mat,matName);
         }
     }
 }).on('move', function (event) {
@@ -600,7 +600,7 @@ function moveToWorkBench(ele,materialName){
             'materialName' : materialName
         },
         success : function(data) {
-            $(ele).val(data);
+            $(ele).val = data;
         },
         error : function(request,error)
         {

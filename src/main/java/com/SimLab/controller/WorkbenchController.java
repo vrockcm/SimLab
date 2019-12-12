@@ -3,6 +3,7 @@ package com.SimLab.controller;
 
 import com.SimLab.model.dao.Instruction;
 import com.SimLab.model.dao.Lab;
+import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.WorkbenchBkend;
 import com.SimLab.service.LabService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +46,14 @@ public class WorkbenchController {
         workbenchBkend.addMaterial("Beaker");
         workbenchBkend.addMaterial("HCl");
         workbenchBkend.addMaterial("NaCl");
+        workbenchBkend.addMaterial("H2O");
         workbenchBkend.interact("Mix","Beaker2", "Beaker1",null, 30, 0);
         workbenchBkend.interact("Mix", "Beaker1", "Beaker3",null, 10,0);
-        workbenchBkend.verifyLab();
+        workbenchBkend.interact("Mix", "Beaker3", "Beaker4", null, 25,0);
+        for(BkendContainer c: workbenchBkend.getContainers()){
+            c.update();
+        }
+        List<Boolean> test = workbenchBkend.verifyLab();
 
 
         return modelAndView;
@@ -62,9 +68,9 @@ public class WorkbenchController {
     //Routing for moveToWorkBench ajax call.
     @ResponseBody
     @RequestMapping(value = "/moveToWorkBench", method = RequestMethod.POST)
-    public String moveToWorkBench(@RequestParam String materialName){
-        String name = workbenchBkend.addMaterial(materialName);
-        return name;
+    public BkendContainer moveToWorkBench(@RequestParam String materialName){
+        BkendContainer container = workbenchBkend.addMaterial(materialName);
+        return container;
     }
 
     //Routing for moveToInventory ajax call.

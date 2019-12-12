@@ -37,7 +37,7 @@ public class WorkbenchBkend {
 
     }
 
-    public String addMaterial(String matName){
+    public BkendContainer addMaterial(String matName){
         for (Solution s : lab.getSolutions()) {
             if(s.getName().equals(matName)){
                 return addSolution(s);
@@ -49,12 +49,19 @@ public class WorkbenchBkend {
             }
         }
 
+        return null;
+    }
+
+    private String addTool(String matName){
         for (Tool t : lab.getTools()) {
             if(t.getName().equals(matName)){
-                return addTool(t);
+                String toolName = generateName(t.getName(), false);
+                BkendTool bkendTool = new BkendTool(t, toolName);
+                tools.add(bkendTool);
+                return toolName;
             }
         }
-        return "";
+        return null;
     }
 
     public void removeMaterial(String matName){
@@ -97,7 +104,7 @@ public class WorkbenchBkend {
         return stepVerified;
     }
 
-    public InstructionBkend getInstructionObject(Instruction currentInst){
+    private InstructionBkend getInstructionObject(Instruction currentInst){
         InstructionBkend toReturn = null;
         if(currentInst.getName().equals(MIX)){
             Mix__Backend mix = new Mix__Backend(currentInst.getContainer1(), currentInst.getContainer2(), 40, currentInst.getStepNumber());
@@ -105,16 +112,12 @@ public class WorkbenchBkend {
         }
         return toReturn;
     }
-    //TODELETE
-    public void test(String string){
-        BkendContainer c = getContainer(string);
-        c.setAssociatedStep(5);
-    }
 
     public List<BkendSolution> getSolutionsInContainer(String name){
         BkendContainer cont = getContainer(name);
         return cont.getSolutions();
     }
+
 
     public void interact(String interactName, String container1, String container2, String tool, int pourAmount, int activationDuration){
         BkendContainer cont1 = getContainer(container1);
@@ -151,6 +154,7 @@ public class WorkbenchBkend {
     }
 
 
+
     //############### HELPERS ##############################
 
     //add duplicate solutions together and remove empty ones
@@ -171,28 +175,23 @@ public class WorkbenchBkend {
     }
 
 
-    private String addContainer(Container c){
+    private BkendContainer addContainer(Container c){
         String contName = generateName(c.getName(), true);
         BkendContainer bkendContainer = new BkendContainer(contName, null, c.getCapacity());
         containers.add(bkendContainer);
-        return contName;
+        bkendContainer.update();
+        return bkendContainer;
     }
 
-    private String addSolution(Solution s){
+    private BkendContainer addSolution(Solution s){
         BkendSolution bkendSolution = new BkendSolution(s);
         String contName = generateName(DIFF_CONTAINER, true);
         BkendContainer bkendContainer = new BkendContainer(contName, bkendSolution, DIFF_CAPACITY);
         containers.add(bkendContainer);
-        return contName;
+        bkendContainer.update();
+        return bkendContainer;
     }
 
-    private String addTool(Tool t){
-        String toolName = generateName(t.getName(), false);
-        BkendTool bkendTool = new BkendTool(t, toolName);
-        tools.add(bkendTool);
-        return toolName;
-
-    }
 
     private void removeContainer(BkendContainer c){
         containers.remove(c);
@@ -216,7 +215,7 @@ public class WorkbenchBkend {
         return nameToReturn;
     }
 
-    private BkendContainer getContainer(String name){
+    public BkendContainer getContainer(String name){
         for(BkendContainer container: containers){
             if(container.getName().equals(name)) return container;
         }
