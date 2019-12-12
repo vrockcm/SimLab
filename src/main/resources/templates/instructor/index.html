@@ -227,17 +227,6 @@
 		$(document).ready(function() {
 			$('#StudentList').multiSelect({ selectableOptgroup: true });
 			$('#InstructorList').multiSelect({ selectableOptgroup: true });
-			var el = document.getElementById('cardigans');
-			var sortable = Sortable.create(el, {
-				 animation: 150,
-				 ghostClass: "ghost",
-				 onSort: function (evt) {
-				 	console.log("Hello");
-					$(".step-number").each(function (index, element) {
-						$(element).text(index+1);
-					});
-			     },
-			});
 		});
 	</script>
 	<script th:src="@{/js/jquery.multi-select.js}"></script>

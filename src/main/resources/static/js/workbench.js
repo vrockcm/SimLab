@@ -379,7 +379,29 @@
 })(window);
 
 $(document).ready(function() {
+    // Set the date we're counting down to
+    var countDownDate = new Date();
+    countDownDate.setMinutes(countDownDate.getMinutes()+timeLimit);
 
+    // Update the count down every 1 second
+    var x = setInterval(function() {
+        var now = new Date().getTime();
+        var distance = countDownDate - now;
+
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        $(".timer-text").text("Time Remaining: "+hours + "h "
+        + minutes + "m " + seconds + "s ");
+
+        // If the count down is finished, write some text
+        if (distance < 0) {
+        clearInterval(x);
+        alert("DONE");
+        }
+    }, 1000);
 
     $(".steps option:first").removeAttr("disabled");
     $(".steps").val($(".steps option:first").val());
@@ -417,6 +439,22 @@ $(document).ready(function() {
 });
 // enable draggables to be dropped into this
 
+function openNav(x) {
+  document.getElementById("mySidenav").style.right = "0px";
+  $("#SolutionName").text($(x).data("key").name);
+  $("#SolutionTemp").text($(x).data("key").cumTemp+" °C");
+  $("#SolutionCap").text($(x).data("key").capacity+"mL");
+  $("#SolutionVol").text($(x).data("key").cumVolume+"mL");
+  $("#SolutionpH").text($(x).data("key").cumPH);
+  $("#SolutionsList").empty();
+  for (b of $(x).data("key").solutions)
+    $("#SolutionsList").append("<tr><td>"+b.solutionName+"</td></tr>")
+}
+
+function closeNav() {
+  document.getElementById("mySidenav").style.right = "-250px";
+}
+
 interact('.workbench').dropzone({
   // only accept elements matching this CSS selector
   // Require a 75% element overlap for a drop to be possible
@@ -437,10 +475,13 @@ interact('.workbench').dropzone({
     }
   }
 }).on('tap', function (event) {
-      $(".drag-material").removeClass('dashed-outline');
-      $(".drag-material").find(".view").removeClass('pour');
-      $($(".drag-material").find(".mat-name")).removeClass("top-right");
-      interactionMode = 0;
+    if($(event.target).hasClass("workbench")){
+          closeNav();
+          $(".drag-material").popover('dispose');
+          $(".drag-material").removeClass('dashed-outline');
+          $(".drag-material").find(".view").removeClass('pour');
+          $($(".drag-material").find(".mat-name")).removeClass("top-right");
+    }
 });
 
 function dragMoveListener (event) {
@@ -464,8 +505,9 @@ interact('.drag-material').draggable({
     ],
     inertia: true,
     onstart: function (event) {
+        $(".drag-material").popover('dispose');
         $(".drag-material").removeClass('dashed-outline');
-        $(event.relatedTarget).removeClass('dashed-outline');
+        $(event.target).addClass('dashed-outline');
         $(".drag-material").find(".view").removeClass('pour');
         $($(".drag-material").find(".mat-name")).removeClass("top-right");
     },
@@ -484,16 +526,77 @@ interact('.drag-material').dropzone({
   ondrop:function (event) {
      var draggableElement = event.relatedTarget
      var dropzoneElement = event.target
+     closeNav();
      $(".drag-material").removeClass('dashed-outline');
      $(draggableElement).find(".view").addClass('pour');
      $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 - 30)});
      $($(draggableElement).find(".mat-name")).addClass("top-right");
-     interactionMode = 1;
+
+     $(dropzoneElement).popover({
+     container: 'body',
+     html: true,
+     placement: 'bottom',
+     sanitize: false,
+     content:
+     `<div id="PopoverContent">
+       <div class="input-group">
+            <div class="w-100" style="clear: both">
+                <h6 style="float: left">Quantity</h6>
+                <h6 id="quant" style="float: right">0mL</h6>
+            </div>
+          <div class="progress">
+            <div class="determinate"></div>
+          </div>
+         <a class="waves-effect waves-light btn hold-pour">Hold to Pour</a>
+         </div>
+       </div>
+     </div>`
+     });
+     $(dropzoneElement).popover('show');
+     $(".determinate").width('0%');
+
+     var number = 0;
+     var timeout,interval = 0;
+
+     $(".hold-pour").mousedown(function() {
+         menu_toggle(draggableElement,dropzoneElement);
+         timeout = setTimeout(function() {
+           interval = setInterval(function() {
+             menu_toggle(draggableElement,dropzoneElement);
+           }, 100);
+         }, 300);
+      })
+
+     $(".hold-pour").on('mouseup', clearTimers);
+     $(".hold-pour").on('mouseleave', clearTimers);
+
+     function clearTimers() {
+         clearTimeout(timeout);
+         clearInterval(interval);
+     }
+
+
+     function menu_toggle(a,b) {
+         var quan1 = $(a).data("key").cumVolume;
+         var quan2 = $(b).data("key").cumVolume;
+         var quan2cap = $(b).data("key").capacity;
+        var x = Math.floor((Math.random() * 4) + 1);
+        if((number+x)<=quan1 && (quan2+x)<=quan2cap){
+            number += x;
+            var f = $(".determinate").width() / $('.determinate').parent().width() * 100;
+            $(".determinate").width((f+x)+"%");
+            $("#quant").text(number+"mL");
+            quan1 = quan1-x;
+            quan2 = quan2+x;
+        }
+     }
   }
 }).on('tap', function (event) {
       $(".drag-material").removeClass('dashed-outline');
       $(event.currentTarget).addClass('dashed-outline');
       event.stopImmediatePropagation();
+}).on('doubletap', function (event) {
+        openNav(event.currentTarget);
 });
 
 interact('.trash').dropzone({
@@ -511,7 +614,10 @@ interact('.trash').dropzone({
       var dropzoneElement = event.target
       $($(dropzoneElement).find(".trash-can")).removeClass('pop-up');
   },
-  ondrop:function (event) {
+  ondrop: function (event) {
+     var draggableElement = event.relatedTarget
+     var dropzoneElement = event.target
+     interact(dropzoneElement).unset();
      var matName = $($(dropzoneElement).find(".drag-material")).find(".mat-name").text();
      var draggableElement = event.relatedTarget
      var dropzoneElement = event.target
@@ -544,6 +650,7 @@ interact('.card').draggable({
             var mat = $(dropzoneElement).find(".drag-material");
             var matName = $(mat).find(".mat-name").text();
             $(mat).css("pointer-events","auto");
+            $(mat).css("position","absolute");
             $($(dropzoneElement).find(".mat-name")).show();
             $(event.relatedTarget).append(mat);
             $(mat).offset({ top: $(dropzoneElement).offset().top, left:  $(dropzoneElement).offset().left});
@@ -551,7 +658,7 @@ interact('.card').draggable({
             $(mat).height(250);
             interact(dropzoneElement).unset();
             $(dropzoneElement).remove();
-            moveToWorkBench(matName);
+            moveToWorkBench(mat,matName);
         }
     }
 }).on('move', function (event) {
@@ -572,16 +679,15 @@ if (interaction.pointerIsDown && !interaction.interacting() && event.currentTarg
 //Ajax functions for different user interactions
 
 //Moving material into workbench
-function moveToWorkBench(materialName){
+function moveToWorkBench(ele,materialName){
    $.ajax({
         url : '/moveToWorkBench',
         type : 'POST',
-        async: false,
         data : {
             'materialName' : materialName
         },
         success : function(data) {
-            var dummy = data;
+            $(ele).data("key",data);
         },
         error : function(request,error)
         {

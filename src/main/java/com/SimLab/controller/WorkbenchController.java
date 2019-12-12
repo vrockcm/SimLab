@@ -3,8 +3,10 @@ package com.SimLab.controller;
 
 import com.SimLab.model.dao.Instruction;
 import com.SimLab.model.dao.Lab;
+import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.WorkbenchBkend;
 import com.SimLab.service.LabService;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -40,9 +42,7 @@ public class WorkbenchController {
         modelAndView.addObject("containers", lab.getContainers());
         modelAndView.addObject("tools", lab.getTools());
         modelAndView.addObject("instructions", instruct);
-
         workbenchBkend = new WorkbenchBkend(lab);
-      
         return modelAndView;
     }
 
@@ -55,9 +55,10 @@ public class WorkbenchController {
     //Routing for moveToWorkBench ajax call.
     @ResponseBody
     @RequestMapping(value = "/moveToWorkBench", method = RequestMethod.POST)
-    public String moveToWorkBench(@RequestParam String materialName){
-        String name = workbenchBkend.addMaterial(materialName);
-        return name;
+    public BkendContainer moveToWorkBench(@RequestParam String materialName){
+        BkendContainer container = workbenchBkend.addMaterial(materialName);
+        var c = container;
+        return c;
     }
 
     //Routing for moveToInventory ajax call.

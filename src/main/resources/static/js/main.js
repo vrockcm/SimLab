@@ -498,6 +498,7 @@ function fetchLab(labEditButton){
                 $("#cardigans").empty();
                 $("#LabName").val(data.labName);
                 $("#LabDesc").val(data.labDesc);
+                $("#timeLimit").val(data.timeLimit);
                 $(".selectpicker").selectpicker('deselectAll');
                 $('#Solutions').selectpicker('val', Array.from(data.solutions, x => x.name));
                 $('#Containers').selectpicker('val', Array.from(data.containers, x => x.name));
@@ -630,8 +631,14 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
                 for(x of $('#Containers').val()){
                     html += '<option value="'+x+'">'+x+'</option>';
                 }
+            html +='</outgroup><optgroup class="outgroup-Res" label="Resultants">';
+               for(var i = 0 ; i<newCardNumber; i++){
+                   var instruction = $('.instruction_cards').children()[i];
+                   var title = $($(instruction).find(".instruction-title")).text();
+                   var str = "Resultant("+ title +" "+ (i+1)+")";
+                   html += '<option value="Resultant'+ i +'">'+str+'</option>';
+               }
             html +='</outgroup></select></br>';
-
             html += '<select class="selectpicker Container2" data-width="100%" data-container="body"><optgroup class="outgroup-Sol" label="Solutions">';
                 for(x of $('#Solutions').val()){
                     html += '<option value="'+x+'">'+x+'</option>';
@@ -640,6 +647,13 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
                 for(x of $('#Containers').val()){
                     html += '<option value="'+x+'">'+x+'</option>';
                 }
+            html +='</outgroup><optgroup class="outgroup-Res" label="Resultants">';
+               for(var i = 0 ; i<newCardNumber; i++){
+                   var instruction = $('.instruction_cards').children()[i];
+                   var title = $($(instruction).find(".instruction-title")).text();
+                   var str = "Resultant("+ title +" "+ (i+1)+")";
+                   html += '<option value="Resultant'+ i +'">'+str+'</option>';
+               }
             html +='</outgroup></select>';
 
             html +=  '<div class="input-group mb-2 targetTempDiv">'+
@@ -658,9 +672,9 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
             if(fetchflag==1){
                 $($(card).find(".Container1")[1]).selectpicker('val', selCon1);
                 $($(card).find(".Container2")[1]).selectpicker('val', selCon2);
+                $(card).find(".targetVolume").val(targetVolume);
             }
             $(card).find(".targetTempDiv").hide();
-            $(card).find(".targetVolumeDiv").hide();
         }
         else if(cardHeader == "Weigh" || cardHeader == "Swirl" || cardHeader == "Rinse"){
             if(fetchflag==1){
@@ -813,6 +827,28 @@ $(document).ready(function() {
     var students,instructors;
     //This gets the email from the front end and passes calls the loadCourses function with this email.
     initialize();
+    var el = document.getElementById('cardigans');
+    var sortable = Sortable.create(el, {
+         animation: 150,
+         ghostClass: "ghost",
+         onSort: function (evt) {
+            $(".step-number").each(function (index, element) {
+                $(element).text(index+1);
+            });
+            $('.outgroup-Res').empty();
+            var newCardNumber = $('.instruction_cards').children().length;
+            for(var i = 1 ; i<newCardNumber; i++){
+               var PreviousInstruction = $('.instruction_cards').children()[i-1];
+               var instruction = $('.instruction_cards').children()[i];
+               var title = $($(PreviousInstruction).find(".instruction-title")).text();
+               var str = "Resultant("+ title +" "+ i+")";
+               $($(instruction).find(".outgroup-Res")).append($($($(PreviousInstruction).find(".outgroup-Res"))[0]).clone().children());
+               $($(instruction).find(".outgroup-Res")).append('<option value="Resultant'+i+'">'+str+'</option>');
+            }
+            $(".selectpicker").selectpicker('refresh');
+         },
+    });
+
     $( ".addl_btn" ).prop( "disabled", true );
 
     $(".dropdown-item").on('click', function(event){

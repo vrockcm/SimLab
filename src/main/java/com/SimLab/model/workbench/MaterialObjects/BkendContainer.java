@@ -19,6 +19,12 @@ public class BkendContainer implements Cloneable{
 
     private int associatedStep;
 
+    private double cumVolume;
+    private double cumTemp;
+    private double cumPH;
+    private double cumFlam;
+
+
     //for cloning
     public BkendContainer(BkendContainer c){
         name = c.getName();
@@ -32,11 +38,19 @@ public class BkendContainer implements Cloneable{
         this.capacity = capacity;
     }
 
+    public void update(){
+        getCumulativeVolume();
+        getCumulativeTemperature();
+        getCumulativePh();
+        getCumulativeFlamability();
+    }
+
     public double getCumulativeVolume(){
-        int vol = 0;
+        double vol = 0;
         for(BkendSolution sol: solutions){
             vol+=sol.getVolume();
         }
+        cumVolume = vol;
         return vol;
     }
     public double getCumulativeTemperature(){
@@ -50,6 +64,7 @@ public class BkendContainer implements Cloneable{
         BigDecimal bd = new BigDecimal(totalTemp);
         bd = bd.round(new MathContext(3));
         double rounded = bd.doubleValue();
+        cumTemp = rounded;
         return rounded;
     }
     public int getCumulativeFlamability(){
@@ -57,6 +72,7 @@ public class BkendContainer implements Cloneable{
         for(BkendSolution sol: solutions){
             if(sol.getFlamability()>flam) flam = sol.getFlamability();
         }
+        cumFlam = flam;
         return flam;
     }
     public double getCumulativePh(){
@@ -70,6 +86,7 @@ public class BkendContainer implements Cloneable{
         BigDecimal bd = new BigDecimal(totalPh);
         bd = bd.round(new MathContext(2));
         double rounded = bd.doubleValue();
+        cumPH = rounded;
         return rounded;
     }
 
