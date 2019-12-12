@@ -6,7 +6,9 @@ import com.SimLab.model.workbench.MaterialObjects.BkendResultant;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
@@ -57,17 +59,20 @@ public class Mix__Backend implements InstructionBkend {
     }
 
     private void handleResultants(){
-        List<String> newNames = new ArrayList<String>();
+        Set<String> newNames = new HashSet<String>();
         for(String s: namesToCheck){
             if(s.length() >=9 && s.substring(0,9).equals("Resultant")){
                 int step = Integer.parseInt(s.substring(9));
-                List<BkendSolution> sols = BkendResultant.getSolventSolutions(step-1);
-                newNames.addAll(sols.stream().map(BkendSolution::getSolutionName).collect(Collectors.toList()));
+                if(BkendResultant.solvents.size() >= step) {
+                    List<BkendSolution> sols = BkendResultant.getSolventSolutions(step - 1);
+                    newNames.addAll(sols.stream().map(BkendSolution::getSolutionName).collect(Collectors.toList()));
+                }
             }else{
                 newNames.add(s);
             }
         }
-        namesToCheck = newNames;
+
+        namesToCheck = new ArrayList<String>(newNames);
     }
 
     @Override

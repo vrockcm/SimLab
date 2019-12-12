@@ -636,7 +636,7 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
                    var instruction = $('.instruction_cards').children()[i];
                    var title = $($(instruction).find(".instruction-title")).text();
                    var str = "Resultant("+ title +" "+ (i+1)+")";
-                   html += '<option value="Resultant'+ i +'">'+str+'</option>';
+                   html += '<option value="Resultant'+ (i+1) +'">'+str+'</option>';
                }
             html +='</outgroup></select></br>';
             html += '<select class="selectpicker Container2" data-width="100%" data-container="body"><optgroup class="outgroup-Sol" label="Solutions">';
@@ -652,7 +652,7 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
                    var instruction = $('.instruction_cards').children()[i];
                    var title = $($(instruction).find(".instruction-title")).text();
                    var str = "Resultant("+ title +" "+ (i+1)+")";
-                   html += '<option value="Resultant'+ i +'">'+str+'</option>';
+                   html += '<option value="Resultant'+ (i+1) +'">'+str+'</option>';
                }
             html +='</outgroup></select>';
 
