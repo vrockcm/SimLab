@@ -41,20 +41,24 @@
 			</div>
 			<div class="bp-header__main">
 				<div class="row">
-					<div class="col-8">
+					<div class="col-6">
 						<select class="steps">
 							<option disabled="true" th:each="instruction : ${instructions}" th:text="${instruction}"></option>
 						</select>
 					</div>
-					<div class="col-4"><div id="timer">
-						<label class="timer-text"></label>
-						<button class="btn waves-effect waves-light light-blue darken-2" type="button" onclick="cancelLab()">Cancel
+					<div class="col-3">
+						<div id="timer">
+							<label class="timer-text"></label>
+						</div>
+					</div>
+					<div class="col-3">
+						<button  class="submit-buttons btn waves-effect waves-light light-blue darken-2" type="button" onclick="cancelLab()">Cancel
 							<i class="material-icons right">cancel</i>
 						</button>
-						<button class="btn waves-effect waves-light light-blue darken-2" type="button" onclick="finishLab()">Submit
+						<button class="submit-buttons btn waves-effect waves-light light-blue darken-2" type="button" onclick="finishLab()">Submit
 							<i class="material-icons right">send</i>
 						</button>
-					</div></div>
+					</div>
 				</div>
 			</div>
 		</header>
@@ -116,7 +120,7 @@
 								<div class="card">
 									<div class="card-body">
 										<h4 class="black-text" th:text="${tool.name}"></h4>
-										<div class="drag-material">
+										<div class="drag-material" value="tool">
 											<div th:class="'view '+${tool.name}+' overlay'">
 											</div>
 											<h5 class="mat-name" style="display: none;" th:text="${tool.name}"></h5>

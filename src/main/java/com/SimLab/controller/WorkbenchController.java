@@ -1,18 +1,27 @@
 package com.SimLab.controller;
 
 
+import com.SimLab.model.Configs.CustomSuccessHandler;
 import com.SimLab.model.dao.Instruction;
 import com.SimLab.model.dao.Lab;
+import com.SimLab.model.dao.User;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
 import com.SimLab.model.workbench.WorkbenchBkend;
 import com.SimLab.service.LabService;
+import com.SimLab.service.UserService;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -23,6 +32,9 @@ public class WorkbenchController {
 
     @Autowired
     private LabService labService;
+    @Autowired
+    private UserService userService;
+
 
 
     private WorkbenchBkend workbenchBkend;
@@ -45,11 +57,11 @@ public class WorkbenchController {
         modelAndView.addObject("instructions", instruct);
         workbenchBkend = new WorkbenchBkend(lab);
 
-//        workbenchBkend.addMaterial("HCl");
-//        workbenchBkend.addMaterial("NaCl");
-//        workbenchBkend.addMaterial("NaCl");
-//        workbenchBkend.interact("Mix", "Beaker1", "Beaker2", null, 10, 0);
-//        workbenchBkend.interact("Mix", "Beaker2", "Beaker3", null, 11, 0);
+        workbenchBkend.addMaterial("HCl");
+        workbenchBkend.addMaterial("NaCl");
+        workbenchBkend.addMaterial("NaCl");
+        workbenchBkend.interact("Mix", "Beaker1", "Beaker2", null, 4, 0);
+        workbenchBkend.interact("Mix", "Beaker2", "Beaker3", null, 11, 0);
 
 
         for(BkendContainer c: workbenchBkend.getContainers()){
@@ -117,6 +129,24 @@ public class WorkbenchController {
     public String heat(@RequestParam String beaker1, @RequestParam String temp){
 
         return "";
+    }
+
+    //Routing for finishLab ajax call.
+    @ResponseBody
+    @RequestMapping(value = "/finishLab", method = RequestMethod.POST)
+    public String finishLab(HttpServletRequest request){
+        if(request.isUserInRole("INSTRUCTOR"))
+            return "redirect:/instructor/index/";
+        else
+            return "redirect:/student/index/";
+    }
+
+    @RequestMapping(value = "/cancelLab", method = RequestMethod.GET)
+    public ModelAndView cancelLab(HttpServletRequest request,
+                            HttpServletResponse response) throws Exception {
+
+        return new ModelAndView("/student/index");
+
     }
 
 
