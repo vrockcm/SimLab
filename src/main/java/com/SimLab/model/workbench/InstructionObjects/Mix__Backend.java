@@ -2,7 +2,7 @@ package com.SimLab.model.workbench.InstructionObjects;
 
 import com.SimLab.model.workbench.Interaction;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
-import com.SimLab.model.workbench.MaterialObjects.BkendSolvents;
+import com.SimLab.model.workbench.MaterialObjects.BkendResultant;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -23,24 +23,14 @@ public class Mix__Backend implements InstructionBkend {
         verified = false;
 
         namesToCheck = new ArrayList<String>();
-        if(solution1.length() >=7 && solution1.substring(0,7).equals("Solvent")){
-            int step = Character.getNumericValue(solution1.charAt(7));
-            List<BkendSolution> sols = BkendSolvents.getSolventSolutions(step-1);
-            namesToCheck.addAll(sols.stream().map(BkendSolution::getSolutionName).collect(Collectors.toList()));
-        }else{
-            namesToCheck.add(solution1);
-        }
-        if(solution2.length() >=7 && solution2.substring(0,7).equals("Solvent")){
-            int step = Character.getNumericValue(solution2.charAt(7));
-            List<BkendSolution> sols = BkendSolvents.getSolventSolutions(step-1);
-            namesToCheck.addAll(sols.stream().map(BkendSolution::getSolutionName).collect(Collectors.toList()));
-        }else{
-            namesToCheck.add(solution2);
-        }
+        namesToCheck.add(solution1);
+        namesToCheck.add(solution2);
+
     }
 
     @Override
     public int verify(List<Interaction> interactions, int startIndex) {
+        handleResultants();;
         int returnIndex = 0;
         for(int i=startIndex;i<interactions.size();i++){
             Interaction interaction = interactions.get(i);
@@ -55,12 +45,29 @@ public class Mix__Backend implements InstructionBkend {
             }else{
                 verify = false;
             }
-            if(interaction.getResultant().getCumulativeVolume() == expectedVol && verify){
+            double expectedVolToCheck = expectedVol + interaction.getContainer2().getCumulativeVolume();
+            if(interaction.getResultant().getCumulativeVolume() == expectedVolToCheck && verify){
                 verified = true;
-                returnIndex = i;
+                returnIndex = i+1;
+                BkendResultant.addSolvent(interaction.getResultant().getSolutions());
+                break;
             }
         }
         return returnIndex;
+    }
+
+    private void handleResultants(){
+        List<String> newNames = new ArrayList<String>();
+        for(String s: namesToCheck){
+            if(s.length() >=9 && s.substring(0,9).equals("Resultant")){
+                int step = Integer.parseInt(s.substring(9));
+                List<BkendSolution> sols = BkendResultant.getSolventSolutions(step-1);
+                newNames.addAll(sols.stream().map(BkendSolution::getSolutionName).collect(Collectors.toList()));
+            }else{
+                newNames.add(s);
+            }
+        }
+        namesToCheck = newNames;
     }
 
     @Override

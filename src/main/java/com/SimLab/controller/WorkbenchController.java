@@ -43,13 +43,13 @@ public class WorkbenchController {
         modelAndView.addObject("instructions", instruct);
         workbenchBkend = new WorkbenchBkend(lab);
 
-        workbenchBkend.addMaterial("Beaker");
         workbenchBkend.addMaterial("HCl");
         workbenchBkend.addMaterial("NaCl");
-        workbenchBkend.addMaterial("H2O");
-        workbenchBkend.interact("Mix","Beaker2", "Beaker1",null, 30, 0);
-        workbenchBkend.interact("Mix", "Beaker1", "Beaker3",null, 10,0);
-        workbenchBkend.interact("Mix", "Beaker3", "Beaker4", null, 25,0);
+        workbenchBkend.addMaterial("NaCl");
+        workbenchBkend.interact("Mix", "Beaker1", "Beaker2", null, 10, 0);
+        workbenchBkend.interact("Mix", "Beaker2", "Beaker3", null, 11, 0);
+
+
         for(BkendContainer c: workbenchBkend.getContainers()){
             c.update();
         }

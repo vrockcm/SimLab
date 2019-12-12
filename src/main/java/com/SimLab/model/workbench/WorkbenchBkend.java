@@ -107,7 +107,7 @@ public class WorkbenchBkend {
     private InstructionBkend getInstructionObject(Instruction currentInst){
         InstructionBkend toReturn = null;
         if(currentInst.getName().equals(MIX)){
-            Mix__Backend mix = new Mix__Backend(currentInst.getContainer1(), currentInst.getContainer2(), 40, currentInst.getStepNumber());
+            Mix__Backend mix = new Mix__Backend(currentInst.getContainer1(), currentInst.getContainer2(),  currentInst.getTargetVolume(), currentInst.getStepNumber());
             toReturn = mix;
         }
         return toReturn;
