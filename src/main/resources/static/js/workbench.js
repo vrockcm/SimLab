@@ -797,4 +797,40 @@ function heat (beaker1, time){
     });
 }
 
+//When lab is finished
+function finishLab(){
+   $.ajax({
+        url : '/finishLab',
+        type : 'POST',
+        async: false,
+        data : {
+        },
+        dataType:'json',
+        success : function(data) {
 
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
+
+//When lab is finished
+function cancelLab(){
+   $.ajax({
+        url : '/cancelLab',
+        type : 'GET',
+        async: false,
+        data : {
+        },
+        dataType:'json',
+        success : function(data) {
+             = "your_location"
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
