@@ -498,6 +498,7 @@ function fetchLab(labEditButton){
                 $("#cardigans").empty();
                 $("#LabName").val(data.labName);
                 $("#LabDesc").val(data.labDesc);
+                $("#timeLimit").val(data.timeLimit);
                 $(".selectpicker").selectpicker('deselectAll');
                 $('#Solutions').selectpicker('val', Array.from(data.solutions, x => x.name));
                 $('#Containers').selectpicker('val', Array.from(data.containers, x => x.name));

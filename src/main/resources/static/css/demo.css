@@ -303,10 +303,6 @@ a:hover {
 }
 
 .workbench{
-    position: fixed;
-    width: -moz-available;          /* WebKit-based browsers will ignore this. */
-    width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
-    width: fill-available;
     min-height: calc(100% - 80px);
     background: floralwhite;
     margin: 10px -15px 0 285px;
@@ -578,7 +574,7 @@ user-select: none;
 
 .Pipette{
 	background-image: url('../images/pipette.png');
-	background-size: contain;
+	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center;
 }
@@ -745,4 +741,62 @@ label{
 
 .mat-name{
     text-align:center;
+    user-select: none;
+}
+
+
+#mySidenav {
+    height: 500px;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 200px;
+    right: -250px;
+    background-color: #215a75;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+
+#mySidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+#mySidenav label {
+  margin-left: 35px;
+
+}
+
+#mySidenav span {
+  float: right;
+  color: azure;
+  font-size: 19px;
+  margin-left: 10px;
+  margin-right: 15px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+#mySidenav table {
+  color: azure;
+  margin: 20px;
+}
+
+#SolutionsList{
+    display: grid;
+    height: 170px;
+    overflow: auto;
+}
+
+#timer{
+    position: relative;
+    top: 15px;
 }
