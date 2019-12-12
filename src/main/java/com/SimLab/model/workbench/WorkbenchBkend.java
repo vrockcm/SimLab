@@ -52,13 +52,13 @@ public class WorkbenchBkend {
         return null;
     }
 
-    private String addTool(String matName){
+    public BkendTool addTool(String matName){
         for (Tool t : lab.getTools()) {
             if(t.getName().equals(matName)){
                 String toolName = generateName(t.getName(), false);
                 BkendTool bkendTool = new BkendTool(t, toolName);
                 tools.add(bkendTool);
-                return toolName;
+                return bkendTool;
             }
         }
         return null;
@@ -217,7 +217,10 @@ public class WorkbenchBkend {
 
     public BkendContainer getContainer(String name){
         for(BkendContainer container: containers){
-            if(container.getName().equals(name)) return container;
+            if(container.getName().equals(name)){
+                container.update();
+                return container;
+            }
         }
         return null;
     }

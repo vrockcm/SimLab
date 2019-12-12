@@ -624,7 +624,7 @@ interact('.trash').dropzone({
      $($(dropzoneElement).find(".trash-can")).removeClass('pop-up');
      $(draggableElement).hide('fast', function(){ $(draggableElement).remove(); });
 
-     removeFromWorkbench(matName);
+     removeFromWorkbench($(draggableElement).data("key").name);
   }
 })
 
@@ -696,6 +696,23 @@ function moveToWorkBench(ele,materialName){
     });
 }
 
+function moveToolToWorkBench(ele,materialName){
+   $.ajax({
+        url : '/moveToolToWorkBench',
+        type : 'POST',
+        data : {
+            'materialName' : materialName
+        },
+        success : function(data) {
+            $(ele).data("key",data);
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
+
 //Moving material back into inventory
 function removeFromWorkbench(materialName){
    $.ajax({
@@ -739,7 +756,7 @@ function pour (beaker1, beaker2, amount){
 }
 
 //Mix beaker
-function pour (beaker1, time){
+function mix (beaker1, time){
    $.ajax({
         url : '/mix',
         type : 'POST',
@@ -760,7 +777,7 @@ function pour (beaker1, time){
 }
 
 //Heat beaker
-function pour (beaker1, time){
+function heat (beaker1, time){
    $.ajax({
         url : '/heat',
         type : 'POST',
