@@ -536,52 +536,54 @@ $(document).ready(function() {
         		}
 
         		// simulate grid content loading
-        		var gridWrapper1 = document.querySelector('#saved');
+                        		var gridWrapper1 = document.querySelector('#saved');
+                        		var gridWrapper2 = document.querySelector('#published');
 
-                        function loadLabs(ev,itemName){
-                            if($(".add-course-form").is(":visible")){
-                                toggleC();
-                            }
-                            else if($(".add-lab-form").is(":visible")){
-                                toggleL();
-                            }
-                            $.ajax({
-                                url : '/loadLabs',
-                                type : 'GET',
-                                async: false,
-                                data : {
-                                    'courseName' : itemName
-                                },
-                                dataType:'json',
-                                success : function(data) {
-                                        $( ".addl_btn" ).prop( "disabled", false );
-                                        ev.preventDefault();
-                                        closeMenu();
-                                        gridWrapper1.innerHTML = '';
-                                        classie.add(gridWrapper1, 'content--loading');
+                                function loadLabs(ev,itemName){
+                                    if($(".add-course-form").is(":visible")){
+                                        toggleC();
+                                    }
+                                    else if($(".add-lab-form").is(":visible")){
+                                        toggleL();
+                                    }
+                                    $.ajax({
+                                        url : '/loadLabs',
+                                        type : 'GET',
+                                        async: false,
+                                        data : {
+                                            'courseName' : itemName
+                                        },
+                                        dataType:'json',
+                                        success : function(data) {
+                                                $( ".addl_btn" ).prop( "disabled", false );
+                                                ev.preventDefault();
+                                                closeMenu();
+                                                gridWrapper1.innerHTML = '';
+                                                gridWrapper2.innerHTML = '';
+                                                classie.add(gridWrapper1, 'content--loading');
+                                                classie.add(gridWrapper2, 'content--loading');
+                                                setTimeout(function() {
+                                                    classie.remove(gridWrapper1, 'content--loading');
+                                                    var incomplete = completed = '<ul class="products">';
+                                                    for(var i = 0;i<data.length;i++){
+                                                        var lab = data[i];
+                                                        if(lab.published)
+                                                            incomplete+= dummyDatastudent["cardbody1"]+lab.labId+dummyDatastudent["cardbody2"]+lab.labName + dummyDatastudent["cardbody3"] + lab.labDesc + dummyDatastudent["cardbody4"]+lab.labId+dummyDatastudent["cardbody5"];
 
-                                        setTimeout(function() {
-                                            classie.remove(gridWrapper1, 'content--loading');
-                                            var saved = '<ul class="products">';
-                                            for(var i = 0;i<data.length;i++){
-                                                var lab = data[i];
-                                                if(lab.published)
-                                                    saved+= dummyDatastudent["cardbody1"]+lab.labId+dummyDatastudent["cardbody2"]+lab.labName + dummyDatastudent["cardbody3"] + lab.labDesc + dummyDatastudent["cardbody4"]+lab.labId+dummyDatastudent["cardbody5"];
-
-                                              }
-                                            saved +="</ul>";
-                                            gridWrapper1.innerHTML = saved;
-
-                                        }, 700);
-                                },
-                                error : function(request,error)
-                                {
-                                    alert("Request: "+JSON.stringify(request));
+                                                      }
+                                                    incomplete +="</ul>";
+                                                    completed +="</ul>";
+                                                    gridWrapper1.innerHTML = incomplete;
+                                                    classie.remove(gridWrapper2, 'content--loading');
+                                                    gridWrapper2.innerHTML = completed;
+                                                }, 700);
+                                        },
+                                        error : function(request,error)
+                                        {
+                                            alert("Request: "+JSON.stringify(request));
+                                        }
+                                    });
                                 }
-                            });
-
                         }
-        }
-});
-
+                });
 
