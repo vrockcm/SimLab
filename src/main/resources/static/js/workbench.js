@@ -838,7 +838,7 @@ function cancelLab(){
         },
         dataType:'json',
         success : function(data) {
-             = "your_location"
+//             = "your_location"
         },
         error : function(request,error)
         {

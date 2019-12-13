@@ -19,7 +19,6 @@ import java.util.Comparator;
 import java.util.List;
 
 @Data
-@Component
 public class WorkbenchBkend {
 
 
