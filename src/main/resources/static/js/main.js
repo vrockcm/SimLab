@@ -749,6 +749,10 @@ $('.addl_btn').click(function(){
     $("#Change-Lab-Header").text("Add Lab");
     $("#Test-Lab").hide();
     $("#Publish").hide();
+    $("#Make-Edit-Lab-Button").unbind('click');
+    $("#Make-Edit-Lab-Button").on("click", function(){
+      LabWork('/MakeLab');
+    });
     $("#LabName").val("");
     $("#LabDesc").val("");
     $(".selectpicker").selectpicker('deselectAll');

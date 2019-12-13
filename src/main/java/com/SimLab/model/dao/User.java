@@ -44,7 +44,7 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "users")
     private Set<Course> courses;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_labResult", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "result_id"))
     private Set<LabResult> labResults;
 

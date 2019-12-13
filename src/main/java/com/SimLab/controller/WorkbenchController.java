@@ -4,10 +4,12 @@ package com.SimLab.controller;
 import com.SimLab.model.Configs.CustomSuccessHandler;
 import com.SimLab.model.dao.Instruction;
 import com.SimLab.model.dao.Lab;
+import com.SimLab.model.dao.LabResult;
 import com.SimLab.model.dao.User;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
 import com.SimLab.model.workbench.WorkbenchBkend;
+import com.SimLab.service.LabResultService;
 import com.SimLab.service.LabService;
 import com.SimLab.service.UserService;
 import lombok.var;
@@ -30,6 +32,8 @@ import java.util.Set;
 @Controller
 public class WorkbenchController {
 
+    @Autowired
+    private LabResultService labResultService;
     @Autowired
     private LabService labService;
     @Autowired
@@ -56,19 +60,6 @@ public class WorkbenchController {
         modelAndView.addObject("tools", lab.getTools());
         modelAndView.addObject("instructions", instruct);
         workbenchBkend = new WorkbenchBkend(lab);
-
-        workbenchBkend.addMaterial("HCl");
-        workbenchBkend.addMaterial("NaCl");
-        workbenchBkend.addMaterial("NaCl");
-        workbenchBkend.interact("Mix", "Beaker1", "Beaker2", null, 4, 0);
-        workbenchBkend.interact("Mix", "Beaker2", "Beaker3", null, 11, 0);
-
-
-        for(BkendContainer c: workbenchBkend.getContainers()){
-            c.update();
-        }
-        List<Boolean> test = workbenchBkend.verifyLab();
-
 
         return modelAndView;
     }
@@ -135,10 +126,27 @@ public class WorkbenchController {
     @ResponseBody
     @RequestMapping(value = "/finishLab", method = RequestMethod.POST)
     public String finishLab(HttpServletRequest request){
-        if(request.isUserInRole("INSTRUCTOR"))
-            return "redirect:/instructor/index/";
-        else
-            return "redirect:/student/index/";
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+
+        List<Boolean> results = workbenchBkend.verifyLab();
+        int index = 1;
+        for(Boolean r: results){
+            LabResult labResult = new LabResult();
+            labResult.setLabId(workbenchBkend.getLab().getLabId());
+            labResult.setStepNo(index);
+            labResult.setVerified(0);
+            if(r) labResult.setVerified(1);
+            user.getLabResults().add(labResult);
+            index++;
+        }
+        userService.softSave(user);
+
+//        if(request.isUserInRole("INSTRUCTOR"))
+//            return "redirect:/instructor/index/";
+//        else
+//            return "redirect:/student/index/";
+        return "";
     }
 
     @RequestMapping(value = "/cancelLab", method = RequestMethod.GET)
