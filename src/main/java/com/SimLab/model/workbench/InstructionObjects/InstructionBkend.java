@@ -10,4 +10,7 @@ public interface InstructionBkend {
     public int verify(List<Interaction> interactions, int startIndex);
 
     public boolean getVerified();
+
+    public String getMessage();
+
 }
