@@ -101,8 +101,7 @@ public class WorkbenchBkend {
         int interactIndex = 0;
         for(InstructionBkend iObj: instObjs){
             if(iObj != null) {
-                int step = iObj.verify(interactions, interactIndex);
-                interactIndex = step;
+                iObj.verify(interactions, interactIndex);
             }
         }
 
