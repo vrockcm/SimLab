@@ -23,6 +23,7 @@ public class BkendContainer implements Cloneable{
     private double cumTemp;
     private double cumPH;
     private double cumFlam;
+    private boolean swirled;
 
 
     //for cloning
@@ -36,6 +37,12 @@ public class BkendContainer implements Cloneable{
         this.name = name;
         if(solution != null) solutions.add(solution);
         this.capacity = capacity;
+        swirled = false;
+    }
+
+    public void addSolution(BkendSolution sol){
+        swirled = false;
+        solutions.add(sol);
     }
 
     public void update(){

@@ -24,7 +24,7 @@ public class MeasureDrawOut_Backend implements InstructionBkend {
     }
 
     @Override
-    public int verify(List<Interaction> interactions, int startIndex) {
+    public void verify(List<Interaction> interactions, int startIndex) {
 //        for(BkendContainer c: contlist){
 //            if(c.getName().equals(mycont.getName())){
 //                for(BkendSolution s: c.getSolutions()){
@@ -37,7 +37,7 @@ public class MeasureDrawOut_Backend implements InstructionBkend {
 //
 //        }
 
-        return 0;
+        return ;
     }
 
     @Override

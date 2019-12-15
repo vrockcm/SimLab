@@ -13,8 +13,8 @@ public class Transfer_Backend implements InstructionBkend {
     public Container container;
 
     @Override
-    public int verify(List<Interaction> interactions, int startIndex) {
-        return 0;
+    public void verify(List<Interaction> interactions, int startIndex) {
+        return ;
     }
 
     @Override

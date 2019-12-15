@@ -18,6 +18,7 @@ public class Pour__Backend implements InstructionBkend {
 
     private final String MSG1 = "You did not pour the correct solutions";
     private final String MSG2 = "You poured the correct solutions but your measurement was off by ";
+    private final double THRESHOLD = 3.0;
 
     private boolean verified;
     boolean msg2;
@@ -39,7 +40,7 @@ public class Pour__Backend implements InstructionBkend {
     }
 
     @Override
-    public int verify(List<Interaction> interactions, int startIndex) {
+    public void verify(List<Interaction> interactions, int startIndex) {
         handleResultants();;
         int returnIndex = 0;
 
@@ -48,15 +49,12 @@ public class Pour__Backend implements InstructionBkend {
             verifyResultant(interaction, interaction.getResultant1());
             if(!verified) verifyResultant(interaction, interaction.getResultant2());
             if(verified){
-                returnIndex = i+1;
                 break;
             }
         }
         if(!verified && !msg2){
             message = MSG1;
         }
-
-        return returnIndex;
     }
 
     private void handleResultants(){
@@ -89,7 +87,8 @@ public class Pour__Backend implements InstructionBkend {
         }
         double expectedVolToCheck = expectedVol + interaction.getContainer2().getCumulativeVolume();
         if(verified) {
-            if (resultant.getCumulativeVolume() == expectedVolToCheck) {
+            if (resultant.getCumulativeVolume() >= (expectedVolToCheck-THRESHOLD) &&
+                resultant.getCumulativeVolume() <= (expectedVolToCheck+THRESHOLD)) {
                 verified = true;
                 BkendResultant.addSolvent(resultant.getSolutions());
             } else {

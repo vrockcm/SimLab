@@ -41,4 +41,6 @@ public class Lab {
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "labs")
     private Set<Course> courses;
 
+    private boolean completed;
+
 }

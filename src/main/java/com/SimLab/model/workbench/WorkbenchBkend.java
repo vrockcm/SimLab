@@ -27,6 +27,8 @@ public class WorkbenchBkend {
 
     private final String DIFF_CONTAINER = "Beaker";
     private final String POUR = "Pour";
+    private final String SWIRL = "Swirl";
+    private final String HEAT = "Heat";
     private final int DIFF_CAPACITY = 50;
 
     List<BkendContainer> containers;
@@ -99,8 +101,7 @@ public class WorkbenchBkend {
         int interactIndex = 0;
         for(InstructionBkend iObj: instObjs){
             if(iObj != null) {
-                int step = iObj.verify(interactions, interactIndex);
-                interactIndex = step;
+                iObj.verify(interactions, interactIndex);
             }
         }
 
@@ -132,6 +133,10 @@ public class WorkbenchBkend {
             List<BkendContainer> resultants = pourInteract(cont1, cont2, pourAmount);
             interaction.addResultant1(resultants.get(0));
             interaction.addResultant2(resultants.get(1));
+        }else if(interactName.equals(SWIRL)){
+            BkendContainer resultant = swirlInteract(cont1);
+            interaction.addResultant1(resultant);
+            interaction.addResultant2(null);
         }
 
         interactions.add(interaction);
@@ -146,7 +151,7 @@ public class WorkbenchBkend {
             sol.setVolume(sol.getVolume()-amtPerSol);
             BkendSolution transfer = new BkendSolution(sol);
             transfer.setVolume(amtPerSol);
-            cont2.getSolutions().add(transfer);
+            cont2.addSolution(transfer);
         }
         coalesceContainer(cont1);
         coalesceContainer(cont2);
@@ -154,6 +159,11 @@ public class WorkbenchBkend {
         returnConts.add(cont1);
         returnConts.add(cont2);
         return returnConts;
+    }
+
+    public BkendContainer swirlInteract(BkendContainer container){
+        container.setSwirled(true);
+        return container;
     }
 
     public void temperatureControlInteract(String container, String tool){

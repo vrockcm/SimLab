@@ -568,9 +568,12 @@ $(document).ready(function() {
                                                     var incomplete = completed = '<ul class="products">';
                                                     for(var i = 0;i<data.length;i++){
                                                         var lab = data[i];
-                                                        if(lab.published)
-                                                            incomplete+= dummyDatastudent["cardbody1"]+lab.labId+dummyDatastudent["cardbody2"]+lab.labName + dummyDatastudent["cardbody3"] + lab.labDesc + dummyDatastudent["cardbody4"]+lab.labId+dummyDatastudent["cardbody5"];
-
+                                                        if(lab.published){
+                                                            if(!lab.completed)
+                                                                incomplete+= dummyDatastudent["cardbody1"]+lab.labId+dummyDatastudent["cardbody2"]+lab.labName + dummyDatastudent["cardbody3"] + lab.labDesc + dummyDatastudent["cardbody4"]+lab.labId+dummyDatastudent["cardbody5"];
+                                                            else
+                                                                completed+= dummyDatastudent["cardbody1"]+lab.labId+dummyDatastudent["cardbody2"]+lab.labName + dummyDatastudent["cardbody3"] + lab.labDesc + dummyDatastudent["cardbody4"]+lab.labId+dummyDatastudent["cardbody5"];
+                                                        }
                                                       }
                                                     incomplete +="</ul>";
                                                     completed +="</ul>";
