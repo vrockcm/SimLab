@@ -2,10 +2,8 @@ package com.SimLab.controller;
 
 
 import com.SimLab.model.Configs.CustomSuccessHandler;
-import com.SimLab.model.dao.Instruction;
-import com.SimLab.model.dao.Lab;
-import com.SimLab.model.dao.LabResult;
-import com.SimLab.model.dao.User;
+import com.SimLab.model.dao.*;
+import com.SimLab.model.workbench.InstructionObjects.InstructionBkend;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
 import com.SimLab.model.workbench.WorkbenchBkend;
@@ -28,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 public class WorkbenchController {
@@ -60,6 +59,17 @@ public class WorkbenchController {
         modelAndView.addObject("tools", lab.getTools());
         modelAndView.addObject("instructions", instruct);
         workbenchBkend = new WorkbenchBkend(lab);
+
+        workbenchBkend.addMaterial("HCl");
+        workbenchBkend.addMaterial("Beaker");
+        workbenchBkend.addMaterial("NaCl");
+        workbenchBkend.addMaterial("Beaker");
+        workbenchBkend.addMaterial("Beaker");
+        workbenchBkend.interact("Pour", "Beaker1", "Beaker2", null, 10, 0);
+        workbenchBkend.interact("Pour", "Beaker3", "Beaker4", null, 5, 0);
+        workbenchBkend.interact("Pour", "Beaker2", "Beaker4", null, 5, 0);
+        workbenchBkend.interact("Pour", "Beaker4", "Beaker5", null, 6, 0);
+
 
         return modelAndView;
     }
@@ -99,7 +109,7 @@ public class WorkbenchController {
     @ResponseBody
     @RequestMapping(value = "/pour", method = RequestMethod.POST)
     public List<BkendContainer> pour(@RequestParam String beaker1, @RequestParam String beaker2, @RequestParam String amount){
-        workbenchBkend.interact("Mix",beaker1,beaker2,null,Integer.parseInt(amount),0);
+        workbenchBkend.interact("Pour",beaker1,beaker2,null,Integer.parseInt(amount),0);
         List<BkendContainer> containers = new ArrayList<BkendContainer>();
         containers.add(workbenchBkend.getContainer(beaker1));
         containers.add(workbenchBkend.getContainer(beaker2));
@@ -128,15 +138,19 @@ public class WorkbenchController {
     public String finishLab(HttpServletRequest request){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
+        List<String> contNames = labService.getAllContainer().stream().map(Container::getName).collect(Collectors.toList());Collectors.toList();
 
-        List<Boolean> results = workbenchBkend.verifyLab();
+        List<InstructionBkend> results = workbenchBkend.verifyLab(contNames);
         int index = 1;
-        for(Boolean r: results){
+        for(InstructionBkend r: results){
             LabResult labResult = new LabResult();
             labResult.setLabId(workbenchBkend.getLab().getLabId());
             labResult.setStepNo(index);
-            labResult.setVerified(0);
-            if(r) labResult.setVerified(1);
+            labResult.setVerified(1);
+            if(!r.getVerified()) {
+                labResult.setVerified(0);
+                labResult.setMessage(r.getMessage());
+            }
             user.getLabResults().add(labResult);
             index++;
         }

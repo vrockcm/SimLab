@@ -21,4 +21,9 @@ public class Transfer_Backend implements InstructionBkend {
     public boolean getVerified() {
         return false;
     }
+
+    @Override
+    public String getMessage() {
+        return null;
+    }
 }
