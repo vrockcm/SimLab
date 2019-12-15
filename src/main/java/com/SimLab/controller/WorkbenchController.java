@@ -68,7 +68,7 @@ public class WorkbenchController {
         workbenchBkend.interact("Pour", "Beaker1", "Beaker2", null, 10, 0);
         workbenchBkend.interact("Pour", "Beaker3", "Beaker4", null, 5, 0);
         workbenchBkend.interact("Pour", "Beaker2", "Beaker4", null, 5, 0);
-        workbenchBkend.interact("Pour", "Beaker4", "Beaker5", null, 6, 0);
+        workbenchBkend.interact("Pour", "Beaker4", "Beaker5", null, 7, 0);
 
 
         return modelAndView;
