@@ -119,9 +119,9 @@ public class WorkbenchController {
     //Routing for mix ajax call.
     @ResponseBody
     @RequestMapping(value = "/mix", method = RequestMethod.POST)
-    public String mix(@RequestParam String beaker1, @RequestParam String time){
-
-        return "";
+    public BkendContainer mix(@RequestParam String beaker1){
+        workbenchBkend.interact("Swirl", beaker1, null, null, 0,0);
+        return workbenchBkend.getContainer(beaker1);
     }
 
     //Routing for heat ajax call.
@@ -138,21 +138,23 @@ public class WorkbenchController {
     public String finishLab(HttpServletRequest request){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        List<String> contNames = labService.getAllContainer().stream().map(Container::getName).collect(Collectors.toList());Collectors.toList();
+        List<String> contNames = labService.getAllContainer().stream().map(Container::getName).collect(Collectors.toList());
 
         List<InstructionBkend> results = workbenchBkend.verifyLab(contNames);
         int index = 1;
         for(InstructionBkend r: results){
-            LabResult labResult = new LabResult();
-            labResult.setLabId(workbenchBkend.getLab().getLabId());
-            labResult.setStepNo(index);
-            labResult.setVerified(1);
-            if(!r.getVerified()) {
-                labResult.setVerified(0);
-                labResult.setMessage(r.getMessage());
+            if(r!=null) {
+                LabResult labResult = new LabResult();
+                labResult.setLabId(workbenchBkend.getLab().getLabId());
+                labResult.setStepNo(index);
+                labResult.setVerified(1);
+                if (!r.getVerified()) {
+                    labResult.setVerified(0);
+                    labResult.setMessage(r.getMessage());
+                }
+                user.getLabResults().add(labResult);
+                index++;
             }
-            user.getLabResults().add(labResult);
-            index++;
         }
         userService.softSave(user);
 
