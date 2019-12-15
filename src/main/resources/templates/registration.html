@@ -34,6 +34,9 @@
                 <input type="password" id="password" name="password" class="form-control" /> <br />
                 <label th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
                         class="validation-message"></label>
+
+                <input type="checkbox" id="default_role_instructor" name="default_role_instructor" class="form-control" th:field="*{default_role_instructor}"> I am an instructor<br>
+
                 <button class='Login_button one' name="Submit" value="Login" type="Submit" >
                     <div class='insider'></div>
                     Sign Up
