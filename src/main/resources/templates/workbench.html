@@ -17,7 +17,7 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 	<!-- Material Design Bootstrap -->
 	<link type="text/css" rel="stylesheet" th:href="@{/css/materialize.css}"  media="screen,projection"/>
-
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
 	<link rel="shortcut icon" href="favicon.ico">
 	<!-- demo styles -->
 	<link rel="stylesheet" type="text/css" th:href="@{/css/demo.css}"/>
@@ -41,17 +41,17 @@
 			</div>
 			<div class="bp-header__main">
 				<div class="row">
-					<div class="col-6">
+					<div class="col-md-6 col-12">
 						<select class="steps">
 							<option disabled="true" th:each="instruction : ${instructions}" th:text="${instruction}"></option>
 						</select>
 					</div>
-					<div class="col-3">
+					<div class="col-md-3 col-6">
 						<div id="timer">
 							<label class="timer-text"></label>
 						</div>
 					</div>
-					<div class="col-3">
+					<div class="col-md-3 col-6">
 						<button  class="submit-buttons btn waves-effect waves-light light-blue darken-2" type="button" onclick="cancelLab()">Cancel
 							<i class="material-icons right">cancel</i>
 						</button>
@@ -88,7 +88,7 @@
 								<div class="card">
 									<div class="card-body">
 										<h4 class="black-text" th:text="${solution.name}"></h4>
-										<div class="drag-material">
+										<div class="parentDiv">
 											<div th:class="'view '+${solution.name}+' overlay'">
 											</div>
 											<h5 class="mat-name" style="display: none;" th:text="${solution.name}"></h5>
@@ -104,7 +104,7 @@
 								<div class="card">
 									<div class="card-body">
 										<h4 class="black-text" th:text="${container.name}"></h4>
-										<div class="drag-material">
+										<div class="parentDiv">
 											<div th:class="'view '+${container.name}+' overlay'">
 											</div>
 											<h5 class="mat-name" style="display: none;" th:text="${container.name}"></h5>
@@ -120,7 +120,7 @@
 								<div class="card">
 									<div class="card-body">
 										<h4 class="black-text" th:text="${tool.name}"></h4>
-										<div class="drag-material" value="tool">
+										<div class="parentDiv" value="tool">
 											<div th:class="'view '+${tool.name}+' overlay'">
 											</div>
 											<h5 class="mat-name" style="display: none;" th:text="${tool.name}"></h5>
@@ -146,6 +146,7 @@
 					<li><label style="margin-left: 35px;">Capacity: </label><span id="SolutionCap"></span></li>
 					<li><label style="margin-left: 35px;">Volume: </label><span id="SolutionVol"></span></li>
 					<li><label style="margin-left: 35px;">pH: </label><span id="SolutionpH"></span></li>
+					<li><label style="margin-left: 35px;">Swirled: </label><span id="SolutionSwirl"></span></li>
 					<li><table>
 						<thead>
 						<tr>

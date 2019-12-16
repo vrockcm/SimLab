@@ -110,9 +110,9 @@ public class WorkbenchController {
     //Routing for swirl ajax call.
     @ResponseBody
     @RequestMapping(value = "/mix", method = RequestMethod.POST)
-    public BkendContainer mix(@RequestParam String beaker1){
-        workbenchBkend.interact(InstructionTemplates.SWIRL, beaker1, null, null, 0,0);
-        return workbenchBkend.getContainer(beaker1);
+    public BkendContainer mix(@RequestParam String container1){
+        workbenchBkend.interact(InstructionTemplates.SWIRL, container1, null, null, 0,0);
+        return workbenchBkend.getContainer(container1);
     }
 
     //Routing for draw out ajax call.
