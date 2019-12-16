@@ -8,11 +8,11 @@ import java.util.List;
 @Data
 public class BkendResultant {
 
-    public static List<List<BkendSolution>> solvents = new ArrayList<List<BkendSolution>>();
+    public static List<BkendContainer> solvents = new ArrayList<BkendContainer>();
 
-    public static void addSolvent(List<BkendSolution> add){
+    public static void addSolvent(BkendContainer add){
         solvents.add(add);
     }
-    public static List<BkendSolution> getSolventSolutions(int i){ return solvents.get(i);}
+    public static BkendContainer getSolventSolutions(int i){ return solvents.get(i);}
 
 }

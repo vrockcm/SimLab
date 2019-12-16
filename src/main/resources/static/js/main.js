@@ -418,9 +418,20 @@ $('#Containers').on('changed.bs.select', function (e, clickedIndex, isSelected, 
 
 function deleteInstruction(card){
     $(card).parents()[0].remove();
-    for(var i = 0 ; i < $('.instruction_cards').children().length ; i++){
-        $($('.step-number')[i]).text(i+1);
+    $(".step-number").each(function (index, element) {
+        $(element).text(index+1);
+    });
+    $('.outgroup-Res').empty();
+    var newCardNumber = $('.instruction_cards').children().length;
+    for(var i = 1 ; i<newCardNumber; i++){
+       var PreviousInstruction = $('.instruction_cards').children()[i-1];
+       var instruction = $('.instruction_cards').children()[i];
+       var title = $($(PreviousInstruction).find(".instruction-title")).text();
+       var str = "Resultant("+ title +" "+ i+")";
+       $($(instruction).find(".outgroup-Res")).append($($($(PreviousInstruction).find(".outgroup-Res"))[0]).clone().children());
+       $($(instruction).find(".outgroup-Res")).append('<option value="Resultant'+i+'">'+str+'</option>');
     }
+    $(".selectpicker").selectpicker('refresh');
 }
 
 function LoadWorkbench(labId){

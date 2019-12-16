@@ -48,7 +48,7 @@ public class Instruction {
         else if(getName().matches("Heat|Cool"))
             str = "Step "+getStepNumber()+": "+getName()+" "+getContainer1()+" to "+ getTargetTemp()+ " °C";
         else
-            str = "Step "+getStepNumber()+": "+getName()+" "+ getTargetVolume()+ " of "+ getContainer1();
+            str = "Step "+getStepNumber()+": "+getName()+" "+ getTargetVolume()+ " mL of "+ getContainer1();
         return str;
     }
     public Instruction(){}

@@ -625,7 +625,7 @@ interact('.drag-material').dropzone({
       });
 
        $('#submit-draw').click(function(){
-          drawUp(draggableElement,dropzoneElement,number);
+          drawUp(dropzoneElement,draggableElement,number);
        });
      }
      else{
@@ -658,37 +658,53 @@ interact('.drag-material').dropzone({
          var number = 0;
          var timeout,interval = 0;
 
-         $(".hold-pour").mousedown(function() {
-             menu_toggle(draggableElement,dropzoneElement);
-             timeout = setTimeout(function() {
-               interval = setInterval(function() {
-                 menu_toggle(draggableElement,dropzoneElement);
-               }, 100);
-             }, 300);
-          })
 
-         $(".hold-pour").on('mouseup', clearTimers);
-         $(".hold-pour").on('mouseleave', clearTimers);
+         $('.hold-pour').on('mousedown', function() {
+            menu_toggle(draggableElement,dropzoneElement);
+            timeout = setTimeout(function() {
+               interval = setInterval(function() {
+                 console.log("called");
+                 menu_toggle();
+               }, 200);
+             }, 300);
+         }).on('mouseup', function() {
+             clearTimers();
+         }).on('mouseleave', function() {
+            clearTimeout(timeout);
+            clearInterval(interval);
+            number = 0;
+            timeout,interval = 0;
+            $(".determinate").width('0%');
+        })
 
          function clearTimers() {
              clearTimeout(timeout);
              clearInterval(interval);
              pour(draggableElement, dropzoneElement,number);
+             number = 0;
+             timeout,interval = 0;
+             $(".determinate").width('0%');
+             $(".quant").text("0mL");
          }
+         var quan1  = $(draggableElement).data("key").cumVolume;
+         var quan2 = $(dropzoneElement).data("key").cumVolume;
+         var quan2cap = $(dropzoneElement).data("key").capacity;
 
+         function menu_toggle() {
+            var x = Math.random() * 3;
+            console.log("x:"+x);
+            if((quan1-number)<=3)
+                x = (quan1-number);
+            if((quan2cap - (quan2+number))<=3)
+                x = (quan2cap - (quan2+number));
 
-         function menu_toggle(a,b) {
-             var quan1 = $(a).data("key").cumVolume;
-             var quan2 = $(b).data("key").cumVolume;
-             var quan2cap = $(b).data("key").capacity;
-            var x = Math.floor((Math.random() * 4) + 1);
-            if((number+x)<=quan1 && (quan2+x)<=quan2cap){
+            if((number+x)<=quan1 && (quan2+number+x)<=quan2cap){
+                console.log("Went in");
                 number += x;
+                console.log("number:"+number);
                 var f = $(".determinate").width() / $('.determinate').parent().width() * 100;
                 $(".determinate").width((f+x)+"%");
-                $(".quant").text(number+"mL");
-                quan1 = quan1-x;
-                quan2 = quan2+x;
+                $(".quant").text(number.toFixed(2)+"mL");
             }
          }
      }
@@ -849,7 +865,7 @@ function pour (mat1, mat2, amount){
         data : {
             'container1' : $(mat1).data("key").name,
             'container2' : $(mat2).data("key").name,
-            'amount': amount
+            'amount': amount.toFixed(2)
         },
         dataType:'json',
         success : function(data) {

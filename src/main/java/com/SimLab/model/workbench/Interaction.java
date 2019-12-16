@@ -34,10 +34,10 @@ public class Interaction {
     }
 
     public void addResultant1(BkendContainer c){
-        this.resultant1 = (BkendContainer)c.clone();
+        if(c!=null) this.resultant1 = (BkendContainer)c.clone();
     }
     public void addResultant2(BkendContainer c){
-        this.resultant2 = (BkendContainer)c.clone();
+        if(c!=null)     this.resultant2 = (BkendContainer)c.clone();
     }
 
 }

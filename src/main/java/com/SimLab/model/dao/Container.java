@@ -21,6 +21,8 @@ public class Container{
     @Column(name = "Capacity")
     private int capacity;
 
+    @Column(name = "Weight")
+    private double weight;
 
 
 

@@ -1,8 +1,7 @@
 package com.SimLab.model.workbench;
 
 import com.SimLab.model.dao.*;
-import com.SimLab.model.workbench.InstructionObjects.InstructionBkend;
-import com.SimLab.model.workbench.InstructionObjects.Pour__Backend;
+import com.SimLab.model.workbench.InstructionObjects.*;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
@@ -26,9 +25,12 @@ public class WorkbenchBkend {
     private UserService userService;
 
     private final String DIFF_CONTAINER = "Beaker";
+    //Interaction template names
     private final String POUR = "Pour";
     private final String SWIRL = "Swirl";
     private final String HEAT = "Heat";
+    private final String DRAWUP = "Draw Up";
+    private final String RELEASE = "Release";
     private final int DIFF_CAPACITY = 50;
 
     List<BkendContainer> containers;
@@ -113,6 +115,15 @@ public class WorkbenchBkend {
         if(currentInst.getName().equals(POUR)){
             Pour__Backend pour = new Pour__Backend(currentInst.getContainer1(), currentInst.getContainer2(),  currentInst.getTargetVolume(), currentInst.getStepNumber(), contNames);
             toReturn = pour;
+        }else if(currentInst.getName().equals(SWIRL)){
+            Swirl_Backend swirl = new Swirl_Backend(currentInst.getContainer1(), contNames);
+            toReturn = swirl;
+        }else if(currentInst.getName().equals(DRAWUP)){
+            DrawUp_Backend drawOut = new DrawUp_Backend(currentInst.getContainer1(), currentInst.getContainer2(), currentInst.getTargetVolume(), currentInst.getStepNumber(), contNames);
+            toReturn = drawOut;
+        }else if(currentInst.getName().equals(RELEASE)){
+            Release_Backend release = new Release_Backend(currentInst.getContainer1(), currentInst.getContainer2(), currentInst.getTargetVolume(), currentInst.getStepNumber(), contNames);
+            toReturn = release;
         }
         return toReturn;
     }
@@ -123,7 +134,7 @@ public class WorkbenchBkend {
     }
 
 
-    public void interact(String interactName, String container1, String container2, String tool, int pourAmount, int activationDuration){
+    public void interact(String interactName, String container1, String container2, String tool, double pourAmount, double activationDuration){
         BkendContainer cont1 = getContainer(container1);
         BkendContainer cont2 = getContainer(container2);
         BkendTool tool1 = getTool(tool);
@@ -137,12 +148,20 @@ public class WorkbenchBkend {
             BkendContainer resultant = swirlInteract(cont1);
             interaction.addResultant1(resultant);
             interaction.addResultant2(null);
+        }else if(interactName.equals(DRAWUP)){
+            List<BkendContainer> resultants = drawUpInteract(cont1, cont2, pourAmount);
+            interaction.addResultant1(resultants.get(0));
+            interaction.addResultant2(resultants.get(1));
+        }else if(interactName.equals(RELEASE)){
+            List<BkendContainer> resultants = releaseInteract(cont1, cont2, pourAmount);
+            interaction.addResultant1(resultants.get(0));
+            interaction.addResultant2(resultants.get(1));
         }
 
         interactions.add(interaction);
     }
 
-    public List<BkendContainer> pourInteract(BkendContainer cont1, BkendContainer cont2, int pourAmount){
+    public List<BkendContainer> pourInteract(BkendContainer cont1, BkendContainer cont2, double pourAmount){
 
         double totalCont1Vol = cont1.getCumulativeVolume();
         for(BkendSolution sol: cont1.getSolutions()){
@@ -166,6 +185,16 @@ public class WorkbenchBkend {
         return container;
     }
 
+    public List<BkendContainer> drawUpInteract(BkendContainer cont1, BkendContainer cont2, double pourAmount){
+
+        return pourInteract(cont1, cont2, pourAmount);
+    }
+
+    public List<BkendContainer> releaseInteract(BkendContainer cont1, BkendContainer cont2, double pourAmount){
+
+        return pourInteract(cont1, cont2, pourAmount);
+    }
+
     public void temperatureControlInteract(String container, String tool){
 
     }
@@ -183,10 +212,12 @@ public class WorkbenchBkend {
                 if(sol2.getSolutionName().equals(sol.getSolutionName())){
                     sol.setVolume(sol.getVolume()+sol2.getVolume());
                     container.getSolutions().remove(sol2);
+                    j--;
                 }
             }
             if(sol.getVolume() <= 0){
                 container.getSolutions().remove(sol);
+                i--;
             }
         }
     }

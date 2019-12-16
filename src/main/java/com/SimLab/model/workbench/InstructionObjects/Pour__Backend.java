@@ -63,7 +63,7 @@ public class Pour__Backend implements InstructionBkend {
             if(s.length() >=9 && s.substring(0,9).equals("Resultant")){
                 int step = Integer.parseInt(s.substring(9));
                 if(BkendResultant.solvents.size() >= step) {
-                    List<BkendSolution> sols = BkendResultant.getSolventSolutions(step - 1);
+                    List<BkendSolution> sols = BkendResultant.getSolventSolutions(step - 1).getSolutions();
                     newNames.addAll(sols.stream().map(BkendSolution::getSolutionName).collect(Collectors.toList()));
                 }
             }else{
@@ -90,7 +90,7 @@ public class Pour__Backend implements InstructionBkend {
             if (resultant.getCumulativeVolume() >= (expectedVolToCheck-THRESHOLD) &&
                 resultant.getCumulativeVolume() <= (expectedVolToCheck+THRESHOLD)) {
                 verified = true;
-                BkendResultant.addSolvent(resultant.getSolutions());
+                BkendResultant.addSolvent(resultant);
             } else {
                 verified = false;
                 msg2 = true;
