@@ -584,11 +584,13 @@ interact('.drag-material').dropzone({
          </div>`
          });
          $(draggableElement).popover('show');
-         $(".quant").text(n+"mL");
+         var quan1 = $(draggableElement).data("key").cumVolume;
+         var currentpos = 140 - quan1*7.2;
+         $(".quant").text(quan1+"mL");
          $(".scroll-zone1, .scroll-zone2").css("background-position","center, 0px "+currentpos+"px");
 
        var number = 0;
-       var currentpos = 140;
+       currentpos = 140;
        $('.scroll-zone1').bind('mousewheel', function(e){
            if(e.originalEvent.wheelDelta /120 > 0) {
                if(number<30){

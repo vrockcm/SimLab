@@ -21,13 +21,13 @@
 
                         </div>
                         <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
-                               class="validation-message"></label> <br/>
+                               class="validation-message"></label>
                         <div class="input-field col s6">
                             <input id="last_name" name="lastName" type="text" class="validate">
                             <label for="last_name">Last Name</label>
                         </div>
                         <label	th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"
-                                  class="validation-message"></label> <br/>
+                                  class="validation-message"></label>
                     </div>
                     <div class="row">
                         <div class="input-field col s12">
@@ -35,7 +35,7 @@
                             <label for="email">Email</label>
                         </div>
                         <label th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
-                               class="validation-message"></label> <br/>
+                               class="validation-message"></label>
                     </div>
                     <div class="row">
                         <div class="input-field col s12">

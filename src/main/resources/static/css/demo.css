@@ -573,6 +573,21 @@ user-select: none;
 	background-position: center;
 }
 
+.Burner{
+	background-image: url('../images/bunsen_off.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.BurnerOn{
+	background-image: url('../images/bunsen_on.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+
 .Flask{
 	background-image: url('../images/flask.png');
 	background-size: contain;

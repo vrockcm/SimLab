@@ -475,9 +475,9 @@ function fetchLab(labEditButton){
         var labId  = $(labEditButton).attr("value");
         $("#Test-Lab").show();
         $("#Publish").show();
-        $("#Make-Edit-Lab-Button").unbind('click');
-        $("#Make-Edit-Lab-Button").on("click", function(){
-              LabWork('/EditLab',labId);
+        $(".add-lab-form").unbind('submit');
+        $(".add-lab-form").submit( function(){
+          LabWork('/EditLab',labId);
         });
         $("#Publish").unbind('click');
         $("#Publish").on("click", function(){
@@ -670,7 +670,6 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
         $(".selectpicker").selectpicker('refresh');
         newCardNumber = $('.instruction_cards').children().length - 1;
         var card = $('.instruction_cards').children()[newCardNumber];
-<<<<<<< HEAD
         var container1 = $(card).find(".Container1")[1];
         var container2 = $(card).find(".Container2")[1];
         var targetTempDiv = $(card).find(".targetTempDiv");
@@ -759,8 +758,8 @@ $('.addl_btn').click(function(){
     $("#Change-Lab-Header").text("Add Lab");
     $("#Test-Lab").hide();
     $("#Publish").hide();
-    $("#Make-Edit-Lab-Button").unbind('click');
-    $("#Make-Edit-Lab-Button").on("click", function(){
+    $(".add-lab-form").unbind('submit');
+    $(".add-lab-form").submit( function(){
       LabWork('/MakeLab');
     });
     $("#LabName").val("");

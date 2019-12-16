@@ -59,18 +59,7 @@ public class WorkbenchController {
         modelAndView.addObject("tools", lab.getTools());
         modelAndView.addObject("instructions", instruct);
         workbenchBkend = new WorkbenchBkend(lab);
-
-        workbenchBkend.addMaterial("HCl");
-        workbenchBkend.addMaterial("Beaker");
-        workbenchBkend.addMaterial("NaCl");
-        workbenchBkend.addMaterial("Beaker");
-        workbenchBkend.addMaterial("Beaker");
-        workbenchBkend.interact("Pour", "Beaker1", "Beaker2", null, 10, 0);
-        workbenchBkend.interact("Pour", "Beaker3", "Beaker4", null, 5, 0);
-        workbenchBkend.interact("Pour", "Beaker2", "Beaker4", null, 5, 0);
-        workbenchBkend.interact("Pour", "Beaker4", "Beaker5", null, 7, 0);
-
-
+        
         return modelAndView;
     }
 
