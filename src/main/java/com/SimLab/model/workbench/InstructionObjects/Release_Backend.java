@@ -1,6 +1,7 @@
 package com.SimLab.model.workbench.InstructionObjects;
 
 import com.SimLab.model.dao.Solution;
+import com.SimLab.model.workbench.InstructionTemplates;
 import com.SimLab.model.workbench.Interaction;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
@@ -45,6 +46,8 @@ public class Release_Backend implements InstructionBkend {
 
         for(int i=startIndex;i<interactions.size();i++){
             Interaction interaction = interactions.get(i);
+            if(interaction.getStepNo() != 0) continue;
+            if(!interaction.getName().equals(InstructionTemplates.RELEASE)) continue;
             verifyResultant(interaction, interaction.getResultant1());
             if(!verified) verifyResultant(interaction, interaction.getResultant2());
             if(verified){
@@ -89,6 +92,7 @@ public class Release_Backend implements InstructionBkend {
             if (resultant.getCumulativeVolume() == expectedVolToCheck){
                 verified = true;
                 BkendResultant.addSolvent(resultant);
+                interaction.setStepNo(stepNo);
             } else {
                 verified = false;
                 msg2 = true;

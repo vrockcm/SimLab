@@ -16,7 +16,7 @@ public class BkendSolution implements Cloneable {
     private String solutionName;
     private int pH;
     private int radioactivity;
-    private int temperature;
+    private double temperature;
     private double volume;
 
     public BkendSolution(Solution solution){
@@ -46,7 +46,7 @@ public class BkendSolution implements Cloneable {
         } catch (CloneNotSupportedException e) {
             sol = new BkendSolution(this);
         }
-       return sol;
+        return sol;
     }
 
 

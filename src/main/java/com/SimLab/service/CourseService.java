@@ -9,7 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service("courseService")
@@ -100,6 +102,15 @@ public class CourseService {
     public void removeLab(Course course, Lab lab){
         course.getLabs().remove(lab);
         courseRepository.save(course);
+    }
+
+    public List<User> getUsersInCourse(String courseId){
+        Course course = findByCourseId(Integer.parseInt(courseId));
+        List<User> users = new ArrayList<User>(course.getUsers());
+        for(User u: users){
+            u.setCourses(null);
+        }
+        return users;
     }
 
 
