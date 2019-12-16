@@ -573,7 +573,7 @@ interact('.drag-material').dropzone({
                      <div class="col">
                         <h6>Precision Level (0.01)</h6>
                         <h6 class="quant">0mL</h6>
-                     <div>
+                     </div>
                 </div>
                 <div class="row">
                      <div class="col">
@@ -604,8 +604,7 @@ interact('.drag-material').dropzone({
                     currentpos += 3.6;
                }
            }
-           number = number.toFixed(2);
-           $(".quant").text(n+"mL");
+           $(".quant").text(number.toFixed(2)+"mL");
            $(".scroll-zone1, .scroll-zone2").css("background-position","center, 0px "+currentpos+"px");
        });
        $('.scroll-zone2').bind('mousewheel', function(e){
@@ -621,8 +620,7 @@ interact('.drag-material').dropzone({
                   currentpos += 0.072;
               }
           }
-          number = number.toFixed(2);
-          $(".quant").text(n+"mL");
+          $(".quant").text(number.toFixed(2)+"mL");
           $(".scroll-zone1, .scroll-zone2").css("background-position","center, 0px "+currentpos+"px");
       });
 
