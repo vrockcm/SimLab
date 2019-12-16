@@ -39,11 +39,11 @@ public class UserService {
     public List<User> findAllStudents(){ return userRepository.findAllUsingRole("STUDENT");}
     public int findRoleIdByUserId(int userId){ return userRepository.findRoleIdByUserID(userId); }
 
-    public void saveUser(User user) {
+    public void saveUser(User user, int role) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setActive(1);
         Role userRole;
-        if (user.isDefault_role_instructor()) {
+        if (role == 1) {
             userRole = roleRepository.findByRole("INSTRUCTOR");
         }
         else{

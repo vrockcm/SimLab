@@ -617,7 +617,7 @@ function deleteLab(x){
                 }
         });
 }
-function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", targetTemp = -1, targetVolume = -1) {
+function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", targetT = -1, targetV = -1) {
         var newCardNumber = $('.instruction_cards').children().length;
         var html = '<div class="card instruction">'+
                    '<button type="button" class="close" onclick="deleteInstruction(this)" aria-label="Close"><span aria-hidden="true">×</span></button>'+
@@ -640,7 +640,7 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
                    var str = "Resultant("+ title +" "+ (i+1)+")";
                    html += '<option value="Resultant'+ (i+1) +'">'+str+'</option>';
                }
-            html +='</outgroup></select></br>';
+            html +='</outgroup></select>';
             html += '<select class="selectpicker Container2" data-width="100%" data-container="body"><optgroup class="outgroup-Sol" label="Solutions">';
                 for(x of $('#Solutions').val()){
                     html += '<option value="'+x+'">'+x+'</option>';
@@ -658,10 +658,10 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
                }
             html +='</outgroup></select>';
 
-            html +=  '<div class="input-group mb-2 targetTempDiv">'+
+            html +=  '<div class="input-group my-2 targetTempDiv">'+
                      '<input type="number" class="form-control targetTemp">'+
                      '<div class="input-group-append"><div class="input-group-text">°C</div></div></div>';
-            html +=  '<div class="input-group mb-2 targetVolumeDiv">'+
+            html +=  '<div class="input-group my-2 targetVolumeDiv">'+
                      '<input type="number" class="form-control targetVolume">'+
                      '<div class="input-group-append"><div class="input-group-text">mL</div></div></div>';
             html += '</div></div>';
@@ -670,40 +670,49 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
         $(".selectpicker").selectpicker('refresh');
         newCardNumber = $('.instruction_cards').children().length - 1;
         var card = $('.instruction_cards').children()[newCardNumber];
+        var container1 = $(card).find(".Container1")[1];
+        var container2 = $(card).find(".Container2")[1];
+        var targetTempDiv = $(card).find(".targetTempDiv");
+        var targetVolumeDiv = $(card).find(".targetVolumeDiv");
+        var targetTemp = $(card).find(".targetTemp");
+        var targetVolume = $(card).find(".targetVolume");
+
+
         if(cardHeader == "Mix" || cardHeader == "Transfer"){
             if(fetchflag==1){
-                $($(card).find(".Container1")[1]).selectpicker('val', selCon1);
-                $($(card).find(".Container2")[1]).selectpicker('val', selCon2);
-                $(card).find(".targetVolume").val(targetVolume);
+                $(container1).selectpicker('val', selCon1);
+                $(container2).selectpicker('val', selCon2);
+                $(targetVolume).val(targetV);
             }
-            $(card).find(".targetTempDiv").hide();
+            $(targetVolumeDiv).insertAfter($(card).find(".Container1")[0]);
+            $(targetTempDiv).hide();
         }
         else if(cardHeader == "Weigh" || cardHeader == "Swirl" || cardHeader == "Rinse"){
             if(fetchflag==1){
-                $($(card).find(".Container1")[1]).selectpicker('val', selCon1);
+                $(container1).selectpicker('val', selCon1);
             }
-            $($(card).find(".Container2")[1]).selectpicker('hide');
-            $($(card).find(".Container2")[1]).children().remove();
-            $(card).find(".targetTempDiv").hide();
-            $(card).find(".targetVolumeDiv").hide();
+            $(container2).selectpicker('hide');
+            $(container2).children().remove();
+            $(targetTempDiv).hide();
+            $(targetVolumeDiv).hide();
         }
         else if(cardHeader == "Heat" || cardHeader == "Cool"){
             if(fetchflag==1){
-                $($(card).find(".Container1")[1]).selectpicker('val', selCon1);
-                $(card).find(".targetTemp").val(targetTemp);
+                $(container1).selectpicker('val', selCon1);
+                $(targetTemp).val(targetT);
             }
-            $($(card).find(".Container2")[1]).selectpicker('hide');
-            $($(card).find(".Container2")[1]).children().remove();
-            $(card).find(".targetVolumeDiv").hide();
+            $(container2).selectpicker('hide');
+            $(container2).children().remove();
+            $(targetVolumeDiv).hide();
         }
         else if(cardHeader == "Draw Up"){
             if(fetchflag==1){
-                $($(card).find(".Container1")[1]).selectpicker('val', selCon1);
-                $(card).find(".targetVolume").val(targetVolume);
+                $(container1).selectpicker('val', selCon1);
+                $(targetVolume).val(targetV);
             }
-            $($(card).find(".Container2")[1]).selectpicker('hide');
-            $($(card).find(".Container2")[1]).children().remove();
-            $(card).find(".targetTempDiv").hide();
+            $(container2).selectpicker('hide');
+            $(container2).children().remove();
+            $(targetTempDiv).hide();
         }
     }
 function toggleL() {

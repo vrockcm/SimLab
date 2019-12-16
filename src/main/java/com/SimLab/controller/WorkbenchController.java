@@ -98,11 +98,11 @@ public class WorkbenchController {
     //Routing for pour ajax call.
     @ResponseBody
     @RequestMapping(value = "/pour", method = RequestMethod.POST)
-    public List<BkendContainer> pour(@RequestParam String beaker1, @RequestParam String beaker2, @RequestParam String amount){
-        workbenchBkend.interact("Mix",beaker1,beaker2,null,Integer.parseInt(amount),0);
+    public List<BkendContainer> pour(@RequestParam String container1, @RequestParam String container2, @RequestParam String amount){
+        workbenchBkend.interact("Mix",container1,container2,null,Integer.parseInt(amount),0);
         List<BkendContainer> containers = new ArrayList<BkendContainer>();
-        containers.add(workbenchBkend.getContainer(beaker1));
-        containers.add(workbenchBkend.getContainer(beaker2));
+        containers.add(workbenchBkend.getContainer(container1));
+        containers.add(workbenchBkend.getContainer(container2));
         return containers;
     }
 

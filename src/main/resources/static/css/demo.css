@@ -266,6 +266,9 @@ a:hover {
     outline: 3px dashed black;
 }
 
+.top{
+    transform: translate(100px, -200px);
+}
 
 .top-right{
     transform: translate(100px, -200px);
@@ -274,6 +277,11 @@ a:hover {
 .pour{
     transition: transform 1s;
     transform: rotate(-60deg);
+}
+
+.dip{
+    transition: transform 1s;
+    transform: rotate(-33deg);
 }
 
 .drag-material{
@@ -806,4 +814,20 @@ label{
     margin-top: 10px;
     margin-left: 15px;
     float: right;
+}
+
+.scroll-zone1,.scroll-zone2{
+    height: 200px;
+    border-left: black;
+    border-left-style: solid;
+    border-right: black;
+    border-right-style: solid;
+    width: 100px;
+    background-image: url(../images/line.png), url(../images/meniscus.png);
+    background-position: center, 0px 140px;
+    background-size: cover;
+    background-repeat: no-repeat, no-repeat;
+}
+.popover{
+    max-width:300px;
 }
