@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -168,18 +169,26 @@ public class WorkbenchController {
         }
         userService.softSave(user);
 
-//        if(request.isUserInRole("INSTRUCTOR"))
-//            return "redirect:/instructor/index/";
-//        else
-//            return "redirect:/student/index/";
-        return "";
+        return cancelLab();
+
     }
 
-    @RequestMapping(value = "/cancelLab", method = RequestMethod.GET)
-    public ModelAndView cancelLab(HttpServletRequest request,
-                            HttpServletResponse response) throws Exception {
+    @ResponseBody
+    @GetMapping(value = "/cancelLab")
+    public String cancelLab(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        Set<Role> role = user.getRoles();
+        String name = "";
+        for(Role r: role){
+            name += r.getRole();
+        }
 
-        return new ModelAndView("/student/index");
+        if(name.equals("INSTRUCTOR"))
+            return "/instructor/index/";
+        else
+            return "/student/index/";
+
 
     }
 

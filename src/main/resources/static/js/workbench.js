@@ -954,7 +954,7 @@ function finishLab(){
         },
         dataType:'json',
         success : function(data) {
-
+            window.location.href=data;
         },
         error : function(request,error)
         {
@@ -971,9 +971,8 @@ function cancelLab(){
         async: false,
         data : {
         },
-        dataType:'json',
         success : function(data) {
-//             = "your_location"
+           window.location.href=data;
         },
         error : function(request,error)
         {
