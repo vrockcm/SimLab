@@ -134,7 +134,7 @@ public class WorkbenchBkend {
     }
 
 
-    public void interact(String interactName, String container1, String container2, String tool, int pourAmount, int activationDuration){
+    public void interact(String interactName, String container1, String container2, String tool, double pourAmount, double activationDuration){
         BkendContainer cont1 = getContainer(container1);
         BkendContainer cont2 = getContainer(container2);
         BkendTool tool1 = getTool(tool);
@@ -161,7 +161,7 @@ public class WorkbenchBkend {
         interactions.add(interaction);
     }
 
-    public List<BkendContainer> pourInteract(BkendContainer cont1, BkendContainer cont2, int pourAmount){
+    public List<BkendContainer> pourInteract(BkendContainer cont1, BkendContainer cont2, double pourAmount){
 
         double totalCont1Vol = cont1.getCumulativeVolume();
         for(BkendSolution sol: cont1.getSolutions()){
@@ -185,12 +185,12 @@ public class WorkbenchBkend {
         return container;
     }
 
-    public List<BkendContainer> drawUpInteract(BkendContainer cont1, BkendContainer cont2, int pourAmount){
+    public List<BkendContainer> drawUpInteract(BkendContainer cont1, BkendContainer cont2, double pourAmount){
 
         return pourInteract(cont1, cont2, pourAmount);
     }
 
-    public List<BkendContainer> releaseInteract(BkendContainer cont1, BkendContainer cont2, int pourAmount){
+    public List<BkendContainer> releaseInteract(BkendContainer cont1, BkendContainer cont2, double pourAmount){
 
         return pourInteract(cont1, cont2, pourAmount);
     }

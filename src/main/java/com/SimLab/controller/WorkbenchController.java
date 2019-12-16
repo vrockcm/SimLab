@@ -98,7 +98,7 @@ public class WorkbenchController {
     @ResponseBody
     @RequestMapping(value = "/pour", method = RequestMethod.POST)
     public List<BkendContainer> pour(@RequestParam String container1, @RequestParam String container2, @RequestParam String amount){
-        workbenchBkend.interact("Pour",container1,container2,null,Integer.parseInt(amount),0);
+        workbenchBkend.interact("Pour",container1,container2,null,Double.parseDouble(amount),0);
         List<BkendContainer> containers = new ArrayList<BkendContainer>();
         containers.add(workbenchBkend.getContainer(container1));
         containers.add(workbenchBkend.getContainer(container2));
@@ -118,6 +118,16 @@ public class WorkbenchController {
     @RequestMapping(value = "/drawUp", method = RequestMethod.POST)
     public List<BkendContainer> drawUp(@RequestParam String container1, @RequestParam String container2, @RequestParam int amount){
         workbenchBkend.interact("Draw up", container1, container2, null, amount,0);
+        List<BkendContainer> containers = new ArrayList<BkendContainer>();
+        containers.add(workbenchBkend.getContainer(container1));
+        containers.add(workbenchBkend.getContainer(container2));
+        return containers;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/release", method = RequestMethod.POST)
+    public List<BkendContainer> release(@RequestParam String container1, @RequestParam String container2, @RequestParam int amount){
+        workbenchBkend.interact("Release", container1, container2, null, amount,0);
         List<BkendContainer> containers = new ArrayList<BkendContainer>();
         containers.add(workbenchBkend.getContainer(container1));
         containers.add(workbenchBkend.getContainer(container2));
