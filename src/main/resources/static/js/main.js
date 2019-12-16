@@ -830,6 +830,43 @@ $('#delete-course').click(function(){
     });
 });
 
+function cardDetail(product){
+    $('.card').click(function(){
+
+      if (!$(this).hasClass("flipped")) {
+      $( ".face" ).addClass( 'off' );
+      $( this ).children( ".face" ).removeClass( 'off' );
+      $( this ).parent( ".cards" ).addClass( 'big' );
+      $( this ).addClass('flipped');
+
+      } else {
+
+      $( ".face" ).removeClass( 'off' );
+      $( ".cards" ).removeClass( 'big' );
+      $( this ).removeClass('flipped');
+    }
+    });
+
+}
+
+function publishLab(labId){
+    $.ajax({
+        url : "/publishLab",
+        type : 'POST',
+        async: false,
+        data : {
+            labId : labId,
+            courseId : $(".menu__link--current").attr("value"),
+        },
+        success : function() {
+            $(".menu__link--current")[0].click();
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
 
 
 $(document).ready(function() {
@@ -873,31 +910,6 @@ $(document).ready(function() {
                this.style.transition = '1s';
                event.preventDefault();
     });
-
-    function cardDetail(){
-
-
-    }
-
-    function publishLab(labId){
-        $.ajax({
-            url : "/publishLab",
-            type : 'POST',
-            async: false,
-            data : {
-                labId : labId,
-                courseId : $(".menu__link--current").attr("value"),
-            },
-            success : function() {
-                $(".menu__link--current")[0].click();
-            },
-            error : function(request,error)
-            {
-                alert("Request: "+JSON.stringify(request));
-            }
-        });
-    }
-
 
     function initialize() {
             var menuEl = document.getElementById('ml-menu'),
