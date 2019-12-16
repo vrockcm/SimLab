@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface InstructionBkend {
 
-    public int verify(List<Interaction> interactions, int startIndex);
+    public void verify(List<Interaction> interactions, int startIndex);
 
     public boolean getVerified();
+
+    public String getMessage();
+
 }

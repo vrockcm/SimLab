@@ -41,8 +41,8 @@ public class Instruction {
     @Override
     public String toString(){
         String str = "";
-        if(getName().matches("Mix|Transfer"))
-            str = "Step "+getStepNumber()+": "+getName()+" "+getTargetVolume()+" mL of "+getContainer1()+" into "+ getContainer2();
+        if(getName().matches("Pour|Transfer"))
+            str = "Step "+getStepNumber()+": "+getName()+" ~"+getTargetVolume()+" mL of "+getContainer1()+" into "+ getContainer2();
         else if(getName().matches("Weigh|Swirl|Rinse"))
             str = "Step "+getStepNumber()+": "+getName()+" "+getContainer1();
         else if(getName().matches("Heat|Cool"))

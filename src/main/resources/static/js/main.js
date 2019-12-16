@@ -670,6 +670,7 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
         $(".selectpicker").selectpicker('refresh');
         newCardNumber = $('.instruction_cards').children().length - 1;
         var card = $('.instruction_cards').children()[newCardNumber];
+<<<<<<< HEAD
         var container1 = $(card).find(".Container1")[1];
         var container2 = $(card).find(".Container2")[1];
         var targetTempDiv = $(card).find(".targetTempDiv");
@@ -678,7 +679,7 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
         var targetVolume = $(card).find(".targetVolume");
 
 
-        if(cardHeader == "Mix" || cardHeader == "Transfer"){
+        if(cardHeader == "Pour" || cardHeader == "Transfer"){
             if(fetchflag==1){
                 $(container1).selectpicker('val', selCon1);
                 $(container2).selectpicker('val', selCon2);

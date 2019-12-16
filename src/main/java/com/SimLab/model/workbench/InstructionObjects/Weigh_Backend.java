@@ -24,17 +24,22 @@ public class Weigh_Backend implements InstructionBkend {
 
 
     @Override
-    public int verify(List<Interaction> interactions, int startIndex) {
+    public void verify(List<Interaction> interactions, int startIndex) {
         if (mytool.getTool().getName().equals("Scale")){
             if(Integer.parseInt(mytool.getTool().getAttribute1()) == mytargetweight){
-                return 0;
+                return ;
             }
         }
-        return 0;
+        return ;
     }
 
     @Override
     public boolean getVerified() {
         return false;
+    }
+
+    @Override
+    public String getMessage() {
+        return null;
     }
 }

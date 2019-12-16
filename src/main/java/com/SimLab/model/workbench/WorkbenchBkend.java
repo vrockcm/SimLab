@@ -2,7 +2,7 @@ package com.SimLab.model.workbench;
 
 import com.SimLab.model.dao.*;
 import com.SimLab.model.workbench.InstructionObjects.InstructionBkend;
-import com.SimLab.model.workbench.InstructionObjects.Mix__Backend;
+import com.SimLab.model.workbench.InstructionObjects.Pour__Backend;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendSolution;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
@@ -10,9 +10,6 @@ import com.SimLab.service.LabResultService;
 import com.SimLab.service.UserService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,7 +26,9 @@ public class WorkbenchBkend {
     private UserService userService;
 
     private final String DIFF_CONTAINER = "Beaker";
-    private final String MIX = "Mix";
+    private final String POUR = "Pour";
+    private final String SWIRL = "Swirl";
+    private final String HEAT = "Heat";
     private final int DIFF_CAPACITY = 50;
 
     List<BkendContainer> containers;
@@ -92,37 +91,28 @@ public class WorkbenchBkend {
         }
     }
 
-    public List<Boolean> verifyLab(){
-        List<Boolean> stepVerified = new ArrayList<Boolean>();
+    public List<InstructionBkend> verifyLab(List<String> contNames){
         List<Instruction> instructions = new ArrayList(lab.getInstructions());
         instructions.sort(Comparator.comparing(e -> e.getStepNumber()));
         List<InstructionBkend> instObjs = new ArrayList<InstructionBkend>();
         for(Instruction i: instructions){
-            instObjs.add(getInstructionObject(i));
+            instObjs.add(getInstructionObject(i, contNames));
         }
         int interactIndex = 0;
         for(InstructionBkend iObj: instObjs){
             if(iObj != null) {
-                int step = iObj.verify(interactions, interactIndex);
-                interactIndex = step;
-            }
-        }
-        for(InstructionBkend iObj: instObjs){
-            if(iObj != null){
-                stepVerified.add(iObj.getVerified());
-            }else{
-                stepVerified.add(false);
+                iObj.verify(interactions, interactIndex);
             }
         }
 
-        return stepVerified;
+        return instObjs;
     }
 
-    private InstructionBkend getInstructionObject(Instruction currentInst){
+    private InstructionBkend getInstructionObject(Instruction currentInst, List<String> contNames){
         InstructionBkend toReturn = null;
-        if(currentInst.getName().equals(MIX)){
-            Mix__Backend mix = new Mix__Backend(currentInst.getContainer1(), currentInst.getContainer2(),  currentInst.getTargetVolume(), currentInst.getStepNumber());
-            toReturn = mix;
+        if(currentInst.getName().equals(POUR)){
+            Pour__Backend pour = new Pour__Backend(currentInst.getContainer1(), currentInst.getContainer2(),  currentInst.getTargetVolume(), currentInst.getStepNumber(), contNames);
+            toReturn = pour;
         }
         return toReturn;
     }
@@ -139,15 +129,20 @@ public class WorkbenchBkend {
         BkendTool tool1 = getTool(tool);
         Interaction interaction = new Interaction(interactName, cont1, cont2, tool1);
 
-        if(interactName.equals(MIX)){
-            BkendContainer resultant = mixInteract(cont1, cont2, pourAmount);
-            interaction.addResultant(resultant);
+        if(interactName.equals(POUR)){
+            List<BkendContainer> resultants = pourInteract(cont1, cont2, pourAmount);
+            interaction.addResultant1(resultants.get(0));
+            interaction.addResultant2(resultants.get(1));
+        }else if(interactName.equals(SWIRL)){
+            BkendContainer resultant = swirlInteract(cont1);
+            interaction.addResultant1(resultant);
+            interaction.addResultant2(null);
         }
 
         interactions.add(interaction);
     }
 
-    public BkendContainer mixInteract(BkendContainer cont1, BkendContainer cont2, int pourAmount){
+    public List<BkendContainer> pourInteract(BkendContainer cont1, BkendContainer cont2, int pourAmount){
 
         double totalCont1Vol = cont1.getCumulativeVolume();
         for(BkendSolution sol: cont1.getSolutions()){
@@ -156,11 +151,19 @@ public class WorkbenchBkend {
             sol.setVolume(sol.getVolume()-amtPerSol);
             BkendSolution transfer = new BkendSolution(sol);
             transfer.setVolume(amtPerSol);
-            cont2.getSolutions().add(transfer);
+            cont2.addSolution(transfer);
         }
         coalesceContainer(cont1);
         coalesceContainer(cont2);
-        return cont2;
+        List<BkendContainer> returnConts = new ArrayList<BkendContainer>();
+        returnConts.add(cont1);
+        returnConts.add(cont2);
+        return returnConts;
+    }
+
+    public BkendContainer swirlInteract(BkendContainer container){
+        container.setSwirled(true);
+        return container;
     }
 
     public void temperatureControlInteract(String container, String tool){

@@ -10,7 +10,8 @@ public class Interaction {
     BkendContainer container1;
     BkendContainer container2;
     BkendTool tool;
-    BkendContainer resultant;
+    BkendContainer resultant1;
+    BkendContainer resultant2;
     int stepNo;
 
 
@@ -28,10 +29,15 @@ public class Interaction {
         if(tool != null) {
             this.tool = (BkendTool)tool.clone();
         }
+        resultant1 = null;
+        resultant2 = null;
     }
 
-    public void addResultant(BkendContainer c){
-        this.resultant = (BkendContainer)c.clone();
+    public void addResultant1(BkendContainer c){
+        this.resultant1 = (BkendContainer)c.clone();
+    }
+    public void addResultant2(BkendContainer c){
+        this.resultant2 = (BkendContainer)c.clone();
     }
 
 }

@@ -11,12 +11,17 @@ public class TempControl_Backend implements InstructionBkend {
     public String vessel;
 
     @Override
-    public int verify(List<Interaction> interactions, int startIndex) {
-        return 0;
+    public void verify(List<Interaction> interactions, int startIndex) {
+        return ;
     }
 
     @Override
     public boolean getVerified() {
         return false;
+    }
+
+    @Override
+    public String getMessage() {
+        return null;
     }
 }

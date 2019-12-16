@@ -8,12 +8,17 @@ public class Rinse_Backend implements InstructionBkend {
     public String material;
 
     @Override
-    public int verify(List<Interaction> interactions, int startIndex) {
-        return 0;
+    public void verify(List<Interaction> interactions, int startIndex) {
+        return ;
     }
 
     @Override
     public boolean getVerified() {
         return false;
+    }
+
+    @Override
+    public String getMessage() {
+        return null;
     }
 }

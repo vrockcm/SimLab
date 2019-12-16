@@ -2,10 +2,8 @@ package com.SimLab.controller;
 
 
 import com.SimLab.model.Configs.CustomSuccessHandler;
-import com.SimLab.model.dao.Instruction;
-import com.SimLab.model.dao.Lab;
-import com.SimLab.model.dao.LabResult;
-import com.SimLab.model.dao.User;
+import com.SimLab.model.dao.*;
+import com.SimLab.model.workbench.InstructionObjects.InstructionBkend;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
 import com.SimLab.model.workbench.WorkbenchBkend;
@@ -28,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 public class WorkbenchController {
@@ -60,6 +59,17 @@ public class WorkbenchController {
         modelAndView.addObject("tools", lab.getTools());
         modelAndView.addObject("instructions", instruct);
         workbenchBkend = new WorkbenchBkend(lab);
+
+        workbenchBkend.addMaterial("HCl");
+        workbenchBkend.addMaterial("Beaker");
+        workbenchBkend.addMaterial("NaCl");
+        workbenchBkend.addMaterial("Beaker");
+        workbenchBkend.addMaterial("Beaker");
+        workbenchBkend.interact("Pour", "Beaker1", "Beaker2", null, 10, 0);
+        workbenchBkend.interact("Pour", "Beaker3", "Beaker4", null, 5, 0);
+        workbenchBkend.interact("Pour", "Beaker2", "Beaker4", null, 5, 0);
+        workbenchBkend.interact("Pour", "Beaker4", "Beaker5", null, 7, 0);
+
 
         return modelAndView;
     }
@@ -99,7 +109,7 @@ public class WorkbenchController {
     @ResponseBody
     @RequestMapping(value = "/pour", method = RequestMethod.POST)
     public List<BkendContainer> pour(@RequestParam String container1, @RequestParam String container2, @RequestParam String amount){
-        workbenchBkend.interact("Mix",container1,container2,null,Integer.parseInt(amount),0);
+        workbenchBkend.interact("Pour",container1,container2,null,Integer.parseInt(amount),0);
         List<BkendContainer> containers = new ArrayList<BkendContainer>();
         containers.add(workbenchBkend.getContainer(container1));
         containers.add(workbenchBkend.getContainer(container2));
@@ -109,9 +119,9 @@ public class WorkbenchController {
     //Routing for mix ajax call.
     @ResponseBody
     @RequestMapping(value = "/mix", method = RequestMethod.POST)
-    public String mix(@RequestParam String beaker1, @RequestParam String time){
-
-        return "";
+    public BkendContainer mix(@RequestParam String beaker1){
+        workbenchBkend.interact("Swirl", beaker1, null, null, 0,0);
+        return workbenchBkend.getContainer(beaker1);
     }
 
     //Routing for heat ajax call.
@@ -128,17 +138,23 @@ public class WorkbenchController {
     public String finishLab(HttpServletRequest request){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
+        List<String> contNames = labService.getAllContainer().stream().map(Container::getName).collect(Collectors.toList());
 
-        List<Boolean> results = workbenchBkend.verifyLab();
+        List<InstructionBkend> results = workbenchBkend.verifyLab(contNames);
         int index = 1;
-        for(Boolean r: results){
-            LabResult labResult = new LabResult();
-            labResult.setLabId(workbenchBkend.getLab().getLabId());
-            labResult.setStepNo(index);
-            labResult.setVerified(0);
-            if(r) labResult.setVerified(1);
-            user.getLabResults().add(labResult);
-            index++;
+        for(InstructionBkend r: results){
+            if(r!=null) {
+                LabResult labResult = new LabResult();
+                labResult.setLabId(workbenchBkend.getLab().getLabId());
+                labResult.setStepNo(index);
+                labResult.setVerified(1);
+                if (!r.getVerified()) {
+                    labResult.setVerified(0);
+                    labResult.setMessage(r.getMessage());
+                }
+                user.getLabResults().add(labResult);
+                index++;
+            }
         }
         userService.softSave(user);
 

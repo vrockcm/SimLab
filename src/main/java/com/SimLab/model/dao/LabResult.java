@@ -24,6 +24,9 @@ public class LabResult{
     @Column(name = "Verified")
     private int verified;
 
+    @Column(name = "Message")
+    private String message;
+
 
 
 

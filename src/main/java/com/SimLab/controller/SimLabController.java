@@ -1,6 +1,7 @@
 package com.SimLab.controller;
 
 import com.SimLab.service.CourseService;
+import com.SimLab.service.LabResultService;
 import com.SimLab.service.LabService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -36,6 +38,9 @@ public class SimLabController {
 
     @Autowired
     private CourseService courseService;
+
+    @Autowired
+    private LabResultService labResultService;
 
 
     @Autowired
@@ -215,10 +220,20 @@ public class SimLabController {
     @ResponseBody
     @GetMapping("/loadLabs")
     public String loadLabs(@RequestParam String courseName){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+
         Course course = courseService.findByCourseName(courseName);
         List<Lab> associatedLabs = new ArrayList<Lab>(course.getLabs());
+        List<LabResult> results = new ArrayList<LabResult>(labResultService.getLabResultsByUser(user));
+        List<Integer> resultLabId = results.stream().map(LabResult::getLabId).collect(Collectors.toList());
         for(Lab l: associatedLabs){
             l.setCourses(null);
+            if(resultLabId.contains(l.getLabId())){
+                l.setCompleted(true);
+            }else{
+                l.setCompleted(false);
+            }
         }
         String json = new Gson().toJson(associatedLabs);
         return json;
