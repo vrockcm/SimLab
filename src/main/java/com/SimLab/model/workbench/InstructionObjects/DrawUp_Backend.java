@@ -18,6 +18,7 @@ public class DrawUp_Backend implements InstructionBkend {
 
     private final String MSG1 = "You did not draw out the correct solutions";
     private final String MSG2 = "You drew out the correct solutions but your measurement was off by ";
+    private final double THRESHOLD = 0.000001;
 
     private boolean verified;
     boolean msg2;
@@ -33,8 +34,8 @@ public class DrawUp_Backend implements InstructionBkend {
         msg2 = false;
 
         namesToCheck = new ArrayList<String>();
-        if(!contNames.contains(solution1)) namesToCheck.add(solution1);
-        if(!contNames.contains(solution2)) namesToCheck.add(solution2);
+        if(!contNames.contains(solution1) && solution1 != null) namesToCheck.add(solution1);
+        if(!contNames.contains(solution2) && solution2 != null) namesToCheck.add(solution2);
 
     }
 
@@ -86,7 +87,8 @@ public class DrawUp_Backend implements InstructionBkend {
         }
         double expectedVolToCheck = expectedVol + interaction.getContainer2().getCumulativeVolume();
         if(verified) {
-            if (resultant.getCumulativeVolume() == expectedVolToCheck){
+            if (resultant.getCumulativeVolume() >= (expectedVolToCheck-THRESHOLD) &&
+                resultant.getCumulativeVolume() <= (expectedVolToCheck+THRESHOLD)){
                 verified = true;
                 BkendResultant.addSolvent(resultant);
             } else {

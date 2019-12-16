@@ -33,8 +33,8 @@ public class Release_Backend implements InstructionBkend {
         msg2 = false;
 
         namesToCheck = new ArrayList<String>();
-        if(!contNames.contains(solution1)) namesToCheck.add(solution1);
-        if(!contNames.contains(solution2)) namesToCheck.add(solution2);
+        if(!contNames.contains(solution1) && solution1 != null) namesToCheck.add(solution1);
+        if(!contNames.contains(solution2) && solution2 != null) namesToCheck.add(solution2);
 
     }
 

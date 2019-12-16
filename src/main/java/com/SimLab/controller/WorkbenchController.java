@@ -116,8 +116,8 @@ public class WorkbenchController {
     //Routing for draw out ajax call.
     @ResponseBody
     @RequestMapping(value = "/drawUp", method = RequestMethod.POST)
-    public List<BkendContainer> drawUp(@RequestParam String container1, @RequestParam String container2, @RequestParam int amount){
-        workbenchBkend.interact("Draw up", container1, container2, null, amount,0);
+    public List<BkendContainer> drawUp(@RequestParam String container1, @RequestParam String container2, @RequestParam double amount){
+        workbenchBkend.interact("Draw Up", container1, container2, null, amount,0);
         List<BkendContainer> containers = new ArrayList<BkendContainer>();
         containers.add(workbenchBkend.getContainer(container1));
         containers.add(workbenchBkend.getContainer(container2));

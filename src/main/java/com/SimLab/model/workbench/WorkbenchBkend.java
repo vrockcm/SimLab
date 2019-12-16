@@ -29,7 +29,7 @@ public class WorkbenchBkend {
     private final String POUR = "Pour";
     private final String SWIRL = "Swirl";
     private final String HEAT = "Heat";
-    private final String DRAWUP = "Draw up";
+    private final String DRAWUP = "Draw Up";
     private final String RELEASE = "Release";
     private final int DIFF_CAPACITY = 50;
 
@@ -212,10 +212,12 @@ public class WorkbenchBkend {
                 if(sol2.getSolutionName().equals(sol.getSolutionName())){
                     sol.setVolume(sol.getVolume()+sol2.getVolume());
                     container.getSolutions().remove(sol2);
+                    j--;
                 }
             }
             if(sol.getVolume() <= 0){
                 container.getSolutions().remove(sol);
+                i--;
             }
         }
     }

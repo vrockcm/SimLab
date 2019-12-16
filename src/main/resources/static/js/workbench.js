@@ -625,7 +625,7 @@ interact('.drag-material').dropzone({
       });
 
        $('#submit-draw').click(function(){
-          drawUp(draggableElement,dropzoneElement,number);
+          drawUp(dropzoneElement,draggableElement,number);
        });
      }
      else{
