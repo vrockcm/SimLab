@@ -1,15 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Nunito:400,700,900&display=swap');
 
-html,
-body, .container-fluid {
+html,body, .my-wrapper {
     height: 100%;
     background: #2a2b30;
     font-family: 'Nunito', sans-serif;
+    color: white;
 }
 
-form{
-  color: white;
-}
 
 #logo{
   margin-bottom: 30px;
@@ -32,9 +29,36 @@ p{
     padding: 20px 0px 20px 0px;
 }
 
-#email, #password, #FirstName, #LastName{
-    height: 3em;
-    border-radius: 40px;
+input{
+    color: white;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+    -webkit-text-fill-color: white;
+    -webkit-animation: autofill 0s forwards;
+    animation: autofill 0s forwards;
+}
+
+@keyframes autofill {
+    100% {
+        background: transparent;
+        color: inherit;
+    }
+}
+
+@-webkit-keyframes autofill {
+    100% {
+        background: transparent;
+        color: inherit;
+    }
 }
 
 .Login_button {

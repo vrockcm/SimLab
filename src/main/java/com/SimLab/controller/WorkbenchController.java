@@ -60,15 +60,6 @@ public class WorkbenchController {
         modelAndView.addObject("instructions", instruct);
         workbenchBkend = new WorkbenchBkend(lab);
 
-        workbenchBkend.addMaterial("HCl");
-        workbenchBkend.addMaterial("Beaker");
-        workbenchBkend.addMaterial("NaCl");
-        workbenchBkend.addMaterial("Beaker");
-        workbenchBkend.addMaterial("Beaker");
-        workbenchBkend.interact("Pour", "Beaker1", "Beaker2", null, 10, 0);
-        workbenchBkend.interact("Pour", "Beaker3", "Beaker4", null, 5, 0);
-        workbenchBkend.interact("Swirl", "Beaker2", null, null, 0, 0);
-
         return modelAndView;
     }
 
@@ -106,11 +97,11 @@ public class WorkbenchController {
     //Routing for pour ajax call.
     @ResponseBody
     @RequestMapping(value = "/pour", method = RequestMethod.POST)
-    public List<BkendContainer> pour(@RequestParam String beaker1, @RequestParam String beaker2, @RequestParam String amount){
-        workbenchBkend.interact("Pour",beaker1,beaker2,null,Integer.parseInt(amount),0);
+    public List<BkendContainer> pour(@RequestParam String container1, @RequestParam String container2, @RequestParam String amount){
+        workbenchBkend.interact("Pour",container1,container2,null,Integer.parseInt(amount),0);
         List<BkendContainer> containers = new ArrayList<BkendContainer>();
-        containers.add(workbenchBkend.getContainer(beaker1));
-        containers.add(workbenchBkend.getContainer(beaker2));
+        containers.add(workbenchBkend.getContainer(container1));
+        containers.add(workbenchBkend.getContainer(container2));
         return containers;
     }
 
