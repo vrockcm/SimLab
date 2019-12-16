@@ -9,8 +9,7 @@ REPLACE INTO solution (solution_name, flamability, heat_of_combustion, ph, radio
 REPLACE INTO solution (solution_name, flamability, heat_of_combustion, ph, radioactivity, temperature, volume, solution_id) values ('CHI', 0 , 70, 1, 0, 0, 20,7);
 REPLACE INTO solution (solution_name, flamability, heat_of_combustion, ph, radioactivity, temperature, volume, solution_id) values ('CaO', 0 , 60,1, 0, 0, 20,8);
 REPLACE INTO solution (solution_name, flamability, heat_of_combustion, ph, radioactivity, temperature, volume, solution_id) values ('COCL', 0 , 30, 3, 0, 0, 20,9);
-REPLACE INTO container (container_name, capacity, container_id) values ('Beaker', 50, 5);
-REPLACE INTO container (container_name, capacity, container_id) values ('Flask', 100, 6);
-REPLACE INTO container (container_name, capacity, container_id) values ('Pipette', 100, 7);
-REPLACE INTO container (container_name, capacity, container_id) values ('Tube', 100, 8);
+REPLACE INTO container (container_name, capacity, weight, container_id) values ('Beaker', 100, 40, 5);
+REPLACE INTO container (container_name, capacity, weight, container_id) values ('Flask', 150, 82, 6);
+REPLACE INTO container (container_name, capacity, weight, container_id) values ('Pipette', 100, 0.14, 7);
 REPLACE INTO tool (tool_name, attribute1, attribute2, attribute3, description, tool_id) values ('Scale', "Weigh", null, null, "Weigh your thingies", 9);

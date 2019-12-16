@@ -67,9 +67,7 @@ public class WorkbenchController {
         workbenchBkend.addMaterial("Beaker");
         workbenchBkend.interact("Pour", "Beaker1", "Beaker2", null, 10, 0);
         workbenchBkend.interact("Pour", "Beaker3", "Beaker4", null, 5, 0);
-        workbenchBkend.interact("Pour", "Beaker2", "Beaker4", null, 5, 0);
-        workbenchBkend.interact("Pour", "Beaker4", "Beaker5", null, 7, 0);
-
+        workbenchBkend.interact("Swirl", "Beaker2", null, null, 0, 0);
 
         return modelAndView;
     }
@@ -116,12 +114,23 @@ public class WorkbenchController {
         return containers;
     }
 
-    //Routing for mix ajax call.
+    //Routing for swirl ajax call.
     @ResponseBody
     @RequestMapping(value = "/mix", method = RequestMethod.POST)
     public BkendContainer mix(@RequestParam String beaker1){
         workbenchBkend.interact("Swirl", beaker1, null, null, 0,0);
         return workbenchBkend.getContainer(beaker1);
+    }
+
+    //Routing for draw out ajax call.
+    @ResponseBody
+    @RequestMapping(value = "/drawUp", method = RequestMethod.POST)
+    public List<BkendContainer> drawUp(@RequestParam String container1, @RequestParam String container2, @RequestParam int amount){
+        workbenchBkend.interact("Draw up", container1, container2, null, amount,0);
+        List<BkendContainer> containers = new ArrayList<BkendContainer>();
+        containers.add(workbenchBkend.getContainer(container1));
+        containers.add(workbenchBkend.getContainer(container2));
+        return containers;
     }
 
     //Routing for heat ajax call.
