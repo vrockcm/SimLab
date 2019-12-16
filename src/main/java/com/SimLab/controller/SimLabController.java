@@ -291,7 +291,7 @@ public class SimLabController {
         Lab lab = labRepository.findByLabId(Integer.parseInt(labId));
         lab.setPublished(1);
         labService.saveLab(lab, Integer.parseInt(courseId));
-        return "";
+        return "redirect:/instructor/index";
     }
 
 
