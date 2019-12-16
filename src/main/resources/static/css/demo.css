@@ -1,11 +1,17 @@
 @font-face {
+	font-family: 'digital';
+	font-weight: normal;
+	font-style: normal;
+	src: url('../fonts/digital-7.ttf');
+}/* Made with http://icomoon.io/ */
+
+@font-face {
 	font-family: 'bpicons';
 	font-weight: normal;
 	font-style: normal;
 	src: url('../fonts/bpicons/bpicons.eot');
 	src: url('../fonts/bpicons/bpicons.eot?#iefix') format('embedded-opentype'), url('../fonts/bpicons/bpicons.woff') format('woff'), url('../fonts/bpicons/bpicons.ttf') format('truetype'), url('../fonts/bpicons/bpicons.svg#bpicons') format('svg');
 }/* Made with http://icomoon.io/ */
-
 
 /* Resets */
 
@@ -286,6 +292,7 @@ a:hover {
 
 .drag-material{
     pointer-events: none;
+    touch-action:none;
 }
 
 .trash{
@@ -311,7 +318,7 @@ a:hover {
 }
 
 .workbench{
-    min-height: calc(100% - 80px);
+    height: inherit;
     background: floralwhite;
     margin: 10px -15px 0 285px;
 }
@@ -339,7 +346,7 @@ a:hover {
 	display: inline-block;
 	margin: 10px;
 	width: 100%;
-    max-width: 380px;
+    max-width: 395px;
 	border-radius: 5px;
 }
 
@@ -517,6 +524,10 @@ table{
 }
 
 @media screen and (max-width: 40em) {
+
+    .workbench{
+        margin: 0px -15px 0 -15px;
+    }
 	.bp-header {
 		padding-top: 3em;
 	}
@@ -524,7 +535,6 @@ table{
 	.bp-nav {
 		width: 100%;
 		margin: 0;
-		padding: 20px
 	}
 	.dummy-logo {
 		display: none;
@@ -537,7 +547,6 @@ table{
 	}
 	body,
 	.container-fluid {
-		height: auto;
 		overflow: auto;
 	}
 	.settings{
@@ -545,11 +554,11 @@ table{
     	right: 1em;
 	}
 	.add-lab-form{
-	margin: 0 auto;
-	max-width: 100%;
-	width: 100%;
-	padding: 0 20px 0 20px;
-}
+        margin: 0 auto;
+        max-width: 100%;
+        width: 100%;
+        padding: 0 20px 0 20px;
+    }
 }
 
 label{
@@ -815,8 +824,13 @@ label{
 
 #SolutionsList{
     display: grid;
-    height: 160px;
+    height: 120px;
     overflow: auto;
+}
+
+
+#SolutionsList tr{
+    height: 50px;
 }
 
 #timer{
@@ -845,4 +859,9 @@ label{
 }
 .popover{
     max-width:300px;
+}
+
+.clock-font{
+    font-family:'digital';
+
 }
