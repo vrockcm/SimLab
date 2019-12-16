@@ -845,6 +845,11 @@ label{
     float: right;
 }
 
+.buttons{
+    display: flex;
+    justify-content: space-between;
+}
+
 .scroll-zone1,.scroll-zone2{
     height: 200px;
     border-left: black;
