@@ -14,3 +14,4 @@ REPLACE INTO container (container_name, capacity, container_id) values ('Flask',
 REPLACE INTO container (container_name, capacity, container_id) values ('Pipette', 100, 7);
 REPLACE INTO container (container_name, capacity, container_id) values ('Tube', 100, 8);
 REPLACE INTO tool (tool_name, attribute1, attribute2, attribute3, description, tool_id) values ('Scale', "Weigh", null, null, "Weigh your thingies", 9);
+REPLACE INTO tool (tool_name, attribute1, attribute2, attribute3, description, tool_id) values ('Bunsen Burner', null, null, null, "Make Things Hot", 10);

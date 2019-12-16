@@ -484,8 +484,8 @@ interact('.workbench').dropzone({
           closeNav();
           $(".drag-material").popover('dispose');
           $(".drag-material").removeClass('dashed-outline');
-          $(".drag-material").find(".view").removeClass('pour');
-          $($(".drag-material").find(".mat-name")).removeClass("top-right");
+          $(".drag-material").find(".view").removeClass('pour dip');
+          $($(".drag-material").find(".mat-name")).removeClass("top top-right");
     }
 });
 
@@ -513,8 +513,8 @@ interact('.drag-material').draggable({
         $(".drag-material").popover('dispose');
         $(".drag-material").removeClass('dashed-outline');
         $(event.target).addClass('dashed-outline');
-        $(".drag-material").find(".view").removeClass('pour');
-        $($(".drag-material").find(".mat-name")).removeClass("top-right");
+        $(".drag-material").find(".view").removeClass('pour dip');
+        $($(".drag-material").find(".mat-name")).removeClass("top top-right");
     },
     onmove: dragMoveListener,
     onend: function(event) {
@@ -522,7 +522,17 @@ interact('.drag-material').draggable({
     },
 })
 
-
+$.fn.hasAnyClass = function() {
+    for (var i = 0; i < arguments.length; i++) {
+        var classes = arguments[i].split(" ");
+        for (var j = 0; j < classes.length; j++) {
+            if (this.hasClass(classes[j])) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 interact('.drag-material').dropzone({
   // only accept elements matching this CSS selector
@@ -533,68 +543,156 @@ interact('.drag-material').dropzone({
      var dropzoneElement = event.target
      closeNav();
      $(".drag-material").removeClass('dashed-outline');
+
+     if($(draggableElement).find(".view").hasAnyClass("Pipette")){
+         $(draggableElement).find(".view").addClass('dip');
+         $($(draggableElement).find(".mat-name")).addClass("top");
+         $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2- 100)});
+
+         $(draggableElement).popover({
+         container: 'body',
+         html: true,
+         placement: 'right',
+         sanitize: false,
+         content:
+         `<div id="PopoverContent">
+           <div class="input-group">
+                <div class="row">
+                    <div class="col">
+                        <div class="scroll-zone1"></div>
+                    </div>
+                    <div class="col">
+                        <div class="scroll-zone2"></div>
+                    </div>
+                </div>
+                <div class="row">
+                     <div class="col">
+                        <h6>Precision Level (0.50)</h6>
+                        <h6 class="quant">0mL</h6>
+                     </div>
+                     <div class="col">
+                        <h6>Precision Level (0.01)</h6>
+                        <h6 class="quant">0mL</h6>
+                     <div>
+                </div>
+                <div class="row">
+                     <div class="col">
+                        <a id="submit-draw" class="waves-effect waves-light btn-small">Done</a>
+                     </div>
+                </div>
+           </div>
+         </div>`
+         });
+         $(draggableElement).popover('show');
+         var quan1 = $(draggableElement).data("key").cumVolume;
+         var currentpos = 140 - quan1*7.2;
+         $(".quant").text(quan1+"mL");
+         $(".scroll-zone1, .scroll-zone2").css("background-position","center, 0px "+currentpos+"px");
+
+       var number = 0;
+       currentpos = 140;
+       $('.scroll-zone1').bind('mousewheel', function(e){
+           if(e.originalEvent.wheelDelta /120 > 0) {
+               if(number<30){
+                    number+=0.5;
+                    currentpos -= 3.6;
+               }
+           }
+           else{
+               if(number>0){
+                   number-= 0.5;
+                    currentpos += 3.6;
+               }
+           }
+           number = number.toFixed(2);
+           $(".quant").text(n+"mL");
+           $(".scroll-zone1, .scroll-zone2").css("background-position","center, 0px "+currentpos+"px");
+       });
+       $('.scroll-zone2').bind('mousewheel', function(e){
+          if(e.originalEvent.wheelDelta /120 > 0) {
+              if(number<30){
+                   number+=0.01;
+                   currentpos -= 0.072;
+              }
+          }
+          else{
+              if(number>0){
+                  number-= 0.01;
+                  currentpos += 0.072;
+              }
+          }
+          number = number.toFixed(2);
+          $(".quant").text(n+"mL");
+          $(".scroll-zone1, .scroll-zone2").css("background-position","center, 0px "+currentpos+"px");
+      });
+
+       $('#submit-draw').click(function(){
+          drawUp(draggableElement,dropzoneElement,number);
+       });
+     }
+     else{
      $(draggableElement).find(".view").addClass('pour');
      $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 - 30)});
      $($(draggableElement).find(".mat-name")).addClass("top-right");
 
-     $(dropzoneElement).popover({
-     container: 'body',
-     html: true,
-     placement: 'bottom',
-     sanitize: false,
-     content:
-     `<div id="PopoverContent">
-       <div class="input-group">
-            <div class="w-100" style="clear: both">
-                <h6 style="float: left">Quantity</h6>
-                <h6 id="quant" style="float: right">0mL</h6>
-            </div>
-          <div class="progress">
-            <div class="determinate"></div>
-          </div>
-         <a class="waves-effect waves-light btn hold-pour">Hold to Pour</a>
-         </div>
-       </div>
-     </div>`
-     });
-     $(dropzoneElement).popover('show');
-     $(".determinate").width('0%');
+         $(dropzoneElement).popover({
+         container: 'body',
+         html: true,
+         placement: 'bottom',
+         sanitize: false,
+         content:
+         `<div id="PopoverContent">
+           <div class="input-group">
+                <div class="w-100" style="clear: both">
+                    <h6 style="float: left">Quantity</h6>
+                    <h6 class="quant" style="float: right">0mL</h6>
+                </div>
+              <div class="progress">
+                <div class="determinate"></div>
+              </div>
+             <a class="waves-effect waves-light btn hold-pour">Hold to Pour</a>
+             </div>
+           </div>
+         </div>`
+         });
+         $(dropzoneElement).popover('show');
+         $(".determinate").width('0%');
+         var number = 0;
+         var timeout,interval = 0;
 
-     var number = 0;
-     var timeout,interval = 0;
-
-     $(".hold-pour").mousedown(function() {
-         menu_toggle(draggableElement,dropzoneElement);
-         timeout = setTimeout(function() {
-           interval = setInterval(function() {
+         $(".hold-pour").mousedown(function() {
              menu_toggle(draggableElement,dropzoneElement);
-           }, 100);
-         }, 300);
-      })
+             timeout = setTimeout(function() {
+               interval = setInterval(function() {
+                 menu_toggle(draggableElement,dropzoneElement);
+               }, 100);
+             }, 300);
+          })
 
-     $(".hold-pour").on('mouseup', clearTimers);
-     $(".hold-pour").on('mouseleave', clearTimers);
+         $(".hold-pour").on('mouseup', clearTimers);
+         $(".hold-pour").on('mouseleave', clearTimers);
 
-     function clearTimers() {
-         clearTimeout(timeout);
-         clearInterval(interval);
-         pour(draggableElement, dropzoneElement,number)
-     }
+         function clearTimers() {
+             clearTimeout(timeout);
+             clearInterval(interval);
+             pour(draggableElement, dropzoneElement,number);
+         }
 
 
-     function menu_toggle(a,b) {
-         var quan1 = $(a).data("key").cumVolume;
-         var quan2 = $(b).data("key").cumVolume;
-         var quan2cap = $(b).data("key").capacity;
-        var x = Math.floor((Math.random() * 4) + 1);
-        if((number+x)<=quan1 && (quan2+x)<=quan2cap){
-            number += x;
-            var f = $(".determinate").width() / $('.determinate').parent().width() * 100;
-            $(".determinate").width((f+x)+"%");
-            $("#quant").text(number+"mL");
-            quan1 = quan1-x;
-            quan2 = quan2+x;
-        }
+         function menu_toggle(a,b) {
+             var quan1 = $(a).data("key").cumVolume;
+             var quan2 = $(b).data("key").cumVolume;
+             var quan2cap = $(b).data("key").capacity;
+            var x = Math.floor((Math.random() * 4) + 1);
+            if((number+x)<=quan1 && (quan2+x)<=quan2cap){
+                number += x;
+                var f = $(".determinate").width() / $('.determinate').parent().width() * 100;
+                $(".determinate").width((f+x)+"%");
+                $(".quant").text(number+"mL");
+                quan1 = quan1-x;
+                quan2 = quan2+x;
+            }
+         }
      }
   }
 }).on('tap', function (event) {
@@ -745,20 +843,20 @@ function removeFromWorkbench(materialName){
 
 //Pouring from beaker to beaker
 // This can also be time instead of amount
-function pour (beaker1, beaker2, amount){
+function pour (mat1, mat2, amount){
    $.ajax({
         url : '/pour',
         type : 'POST',
         async: false,
         data : {
-            'beaker1' : $(beaker1).data("key").name,
-            'beaker2' : $(beaker2).data("key").name,
+            'container1' : $(mat1).data("key").name,
+            'container2' : $(mat2).data("key").name,
             'amount': amount
         },
         dataType:'json',
         success : function(data) {
-            $(beaker1).data("key",data[0]);
-            $(beaker2).data("key",data[1]);
+            $(mat1).data("key",data[0]);
+            $(mat2).data("key",data[1]);
         },
         error : function(request,error)
         {
@@ -766,6 +864,29 @@ function pour (beaker1, beaker2, amount){
         }
     });
 }
+
+function drawUp (mat1, mat2, amount){
+   $.ajax({
+        url : '/drawUp',
+        type : 'POST',
+        async: false,
+        data : {
+            'container1' : $(mat1).data("key").name,
+            'container2' : $(mat2).data("key").name,
+            'amount': amount
+        },
+        dataType:'json',
+        success : function(data) {
+            $(mat1).data("key",data[0]);
+            $(mat2).data("key",data[1]);
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
+
 
 //Mix beaker
 function mix (beaker1, time){
