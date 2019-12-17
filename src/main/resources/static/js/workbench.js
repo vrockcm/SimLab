@@ -483,7 +483,7 @@ interact('.workbench').dropzone({
           $(".drag-material").popover('dispose');
           $(".drag-material").removeClass('dashed-outline');
           $(".drag-material").find(".view").removeClass('pour dip');
-          $($(".drag-material").find(".mat-name")).removeClass("top top-right");
+          $($(".drag-material").find(".mat-name")).removeClass("top-right");
     }
 });
 
@@ -509,10 +509,16 @@ interact('.drag-material').draggable({
     inertia: true,
     onstart: function (event) {
         if(event.target === CurrentlyOnBunsen || event.target === bunsenOn){
-            $(bunsenOn).find(".view").removeClass("BurnerOn");
             stopHeating();
-            $($(CurrentlyOnBunsen).find(".view")).popover('dispose');
             heat(CurrentlyOnBunsen,defTemp);
+            $($(CurrentlyOnBunsen).find(".view")).popover('dispose');
+            CurrentlyOnBunsen = bunsenOn = undefined;
+        }
+        if(event.target === CurrentlyOnBucket || event.target === Bucket){
+            stopCooling();
+            cool(CurrentlyOnBucket,coolTemp);
+            $($(CurrentlyOnBucket).find(".view")).popover('dispose');
+            CurrentlyOnBucket = Bucket = undefined;
         }
         $(".drag-material").popover('dispose');
         $(".drag-material").removeClass('dashed-outline');
@@ -553,7 +559,7 @@ function startHeating(ele,bunsen){
     else{
         $(bunsen).find(".view").addClass("BurnerOn");
         $(ele).offset({ top: ($(bunsen).offset().top - $(bunsen).height()/2) , left: ($(bunsen).offset().left + $(bunsen).width()/2 - 104)});
-        $($(ele).find(".mat-name")).addClass("top-right");
+        $($(ele).find(".mat-name")).addClass("top");
         defTemp = $(ele).data("key").cumTemp;
         $($(ele).find(".view")).popover({
          container: 'body',
@@ -574,10 +580,10 @@ function startHeating(ele,bunsen){
         heatTimeout = setTimeout(function() {
            heatInterval = setInterval(function() {
                var x = Math.random() * 0.5;
-               if(defTemp>100){
+               if((defTemp+x)>200){
                  $.confirm({
                      title: 'OverHeating!',
-                     content: 'Your '+ $(ele).data("key").name +' went over 100°C so we turned it off for your safety',
+                     content: 'Your '+ $(ele).data("key").name +' went over 200°C so we turned it off for safety',
                      icon: 'fa fa-warning',
                      type: 'red',
                  });
@@ -594,6 +600,7 @@ function stopHeating(){
     clearTimeout(heatTimeout);
     clearInterval(heatInterval);
     heatTimeout = heatInterval = 0;
+    $(bunsenOn).find(".view").removeClass("BurnerOn");
 }
 
 
@@ -610,9 +617,8 @@ function startCooling(ele,bucket){
         });
     }
     else{
-        $(bucket).find(".view").addClass("BurnerOn");
-        $(ele).offset({ top: ($(bucket).offset().top - $(bucket).height()/2) , left: ($(bucket).offset().left + $(bucket).width()/2 - 104)});
-        $($(ele).find(".mat-name")).addClass("top-right");
+        $(ele).offset({ top: ($(bucket).offset().top - $(bucket).height()/2) + 25 , left: ($(bucket).offset().left + $(bucket).width()/2 - 105)});
+        $($(ele).find(".mat-name")).addClass("top");
         coolTemp = $(ele).data("key").cumTemp;
         $($(ele).find(".view")).popover({
          container: 'body',
@@ -633,17 +639,20 @@ function startCooling(ele,bucket){
         coolTimeout = setTimeout(function() {
            coolInterval = setInterval(function() {
                var x = Math.random() * 0.5;
+               if(coolTemp < -15){
+                   stopCooling();
+               }
                coolTemp -= x;
-               $('#temp').text(defTemp.toFixed(2)+' °C');
+               $('#coolTemp').text(coolTemp.toFixed(2)+' °C');
            }, 100);
          }, 300);
     }
 }
 
 function stopCooling(){
-    clearTimeout(heatTimeout);
-    clearInterval(heatInterval);
-    heatTimeout = heatInterval = 0;
+    clearTimeout(coolTimeout);
+    clearInterval(coolInterval);
+    coolTimeout = coolInterval = 0;
 }
 
 
@@ -865,7 +874,7 @@ interact('.drag-material').dropzone({
               $($(draggableElement).find(".mat-name")).addClass("top-right");
               $(dropzoneElement).find(".view").append("<p class='scale'>000</p>");
               $($(dropzoneElement).find(".scale")).text($(dropzoneElement).data("key").cumWeight);
-              weigh();
+              weigh(draggableElement);
       }
   }
 }).on('tap', function (event) {
@@ -1147,12 +1156,37 @@ function heat (mat1, temp){
     });
 }
 
-function weigh(){
+function cool(mat1, temp){
+   $.ajax({
+        url : '/heat',
+        type : 'POST',
+        async: false,
+        data : {
+            'container1' : $(mat1).data("key").name,
+            'temp' : temp
+        },
+        dataType:'json',
+        success : function(data) {
+            $(mat1).data("key",data);
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
+
+function weigh(mat1){
    $.ajax({
         url : '/weigh',
         type : 'POST',
         async: false,
+        data : {
+            'container1' : $(mat1).data("key").name,
+        },
+        dataType:'json',
         success : function(data) {
+            $(mat1).data("key",data);
         },
         error : function(request,error)
         {
