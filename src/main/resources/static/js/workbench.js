@@ -926,7 +926,7 @@ interact('.drag-material').dropzone({
               $(draggableElement).insertAfter($(dropzoneElement));
               $($(draggableElement).find(".mat-name")).addClass("top-right");
               $(dropzoneElement).find(".view").append("<p class='scale'>000</p>");
-              $($(dropzoneElement).find(".scale")).text($(dropzoneElement).data("key").cumWeight);
+              $($(dropzoneElement).find(".scale")).text($(draggableElement).data("key").cumWeight);
               weigh(draggableElement);
       }
   }
