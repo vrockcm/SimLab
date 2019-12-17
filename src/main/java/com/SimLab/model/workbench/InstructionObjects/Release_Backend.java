@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Data
 public class Release_Backend implements InstructionBkend {
 
-    private final String MSG1 = "You did not release out the correct solutions";
+    private final String MSG1 = "You did not release the correct solutions";
     private final String MSG2 = "You released the correct solutions but your measurement was off by ";
 
     private boolean verified;
