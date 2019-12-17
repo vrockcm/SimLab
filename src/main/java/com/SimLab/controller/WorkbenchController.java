@@ -155,6 +155,14 @@ public class WorkbenchController {
         cont.update();
         return cont;
     }
+    @ResponseBody
+    @RequestMapping(value = "/weigh", method = RequestMethod.POST)
+    public BkendContainer weigh(@RequestParam String container1){
+        workbenchBkend.interact(InstructionTemplates.WEIGH, container1, null, null, 0, 0);
+        BkendContainer cont = workbenchBkend.getContainer(container1);
+        cont.update();
+        return cont;
+    }
 
     //Routing for finishLab ajax call.
     @ResponseBody
