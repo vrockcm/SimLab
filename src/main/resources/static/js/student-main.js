@@ -460,6 +460,70 @@ function toggleC() {
         }
     }
 
+function cardDetails(button){
+    var product = $(button).closest(".product");
+    $.ajax({
+          url : "/getLabResults",
+          type : 'POST',
+          async: false,
+          data : {
+              labId : $(product).val(),
+              userId : userid,
+          },
+            success : function(data) {
+            var card = $(button).closest(".card");
+            var back = $( card ).children( ".back" );
+
+            $(back).empty();
+            $(back).append("<div class='card-body labDetails'></div>")
+            var labDetails = $(card).find(".labDetails");
+            $(labDetails).append("<a id='back-button'><i class='fas fa-chevron-left'></i></a><h3>"+$(card).find(".card-title").text()+"</h3>");
+            $("#back-button").click(function(){
+                 $( ".face" ).show();
+                 $( card ).children( ".back" ).hide();
+                 $( card ).parent().removeClass( 'big' );
+                 $( card ).removeClass('flipped');
+            });
+
+           html = `<table class="table table-borderless">
+             <thead>
+               <tr>
+                 <th scope="col">Step #</th>
+                 <th scope="col">Step Name</th>
+                 <th scope="col">Completion</th>
+                 <th scope="col">Feedback</th>
+               </tr>
+             </thead>
+             <tbody>`;
+           for (x of data){
+               html += "<tr><th scope='row'>"+x.stepNo+"</th>";
+               html += "<td>"+x.stepName+"</td>";
+               if(x.verified == 0){
+                  html += "<td>No</td>"
+               }
+               else{
+                   html += "<td>Yes</td>"
+               }
+                html += "<td>"+x.message+"</td>";
+               html += "</tr>";
+           }
+           html+="</tbody></table>";
+           $(labDetails).append(html);
+
+            var labId = $(product).val();
+            $( ".face" ).hide();
+            $( card ).children( ".back" ).show();
+            $( card ).parent().addClass( 'big' );
+            $( card ).addClass('flipped');
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+
+}
+
 
 $(document).ready(function() {
 
@@ -508,6 +572,7 @@ $(document).ready(function() {
                     e.preventDefault();
             });
 		});
+
         function initialize() {
         		var menuEl = document.getElementById('ml-menu'),
         			mlmenu = new MLMenu(menuEl, {
@@ -537,57 +602,66 @@ $(document).ready(function() {
         		}
 
         		// simulate grid content loading
-                        		var gridWrapper1 = document.querySelector('#saved');
-                        		var gridWrapper2 = document.querySelector('#published');
+                        var gridWrapper1 = document.querySelector('#incomplete');
+                        var gridWrapper2 = document.querySelector('#complete');
 
-                                function loadLabs(ev,itemName){
-                                    if($(".add-course-form").is(":visible")){
-                                        toggleC();
-                                    }
-                                    else if($(".add-lab-form").is(":visible")){
-                                        toggleL();
-                                    }
-                                    $.ajax({
-                                        url : '/loadLabs',
-                                        type : 'GET',
-                                        async: false,
-                                        data : {
-                                            'courseName' : itemName
-                                        },
-                                        dataType:'json',
-                                        success : function(data) {
-                                                $( ".addl_btn" ).prop( "disabled", false );
-                                                ev.preventDefault();
-                                                closeMenu();
-                                                gridWrapper1.innerHTML = '';
-                                                gridWrapper2.innerHTML = '';
-                                                classie.add(gridWrapper1, 'content--loading');
-                                                classie.add(gridWrapper2, 'content--loading');
-                                                setTimeout(function() {
-                                                    classie.remove(gridWrapper1, 'content--loading');
-                                                    var incomplete = completed = '<ul class="products">';
-                                                    for(var i = 0;i<data.length;i++){
-                                                        var lab = data[i];
-                                                        if(lab.published){
-                                                            if(!lab.completed)
-                                                                incomplete+= dummyDatastudent["cardbody1"]+lab.labId+dummyDatastudent["cardbody2"]+lab.labName + dummyDatastudent["cardbody3"] + lab.labDesc + dummyDatastudent["cardbody4"]+lab.labId+dummyDatastudent["cardbody5"];
-                                                            else
-                                                                completed+= dummyDatastudent["cardbody1"]+lab.labId+dummyDatastudent["cardbody2"]+lab.labName + dummyDatastudent["cardbody3"] + lab.labDesc + dummyDatastudent["cardbody4"]+lab.labId+dummyDatastudent["cardbody5"];
-                                                        }
-                                                      }
-                                                    incomplete +="</ul>";
-                                                    completed +="</ul>";
-                                                    gridWrapper1.innerHTML = incomplete;
-                                                    classie.remove(gridWrapper2, 'content--loading');
-                                                    gridWrapper2.innerHTML = completed;
-                                                }, 700);
-                                        },
-                                        error : function(request,error)
-                                        {
-                                            alert("Request: "+JSON.stringify(request));
+                        function loadLabs(ev,itemName){
+                            if($(".add-course-form").is(":visible")){
+                                toggleC();
+                            }
+                            else if($(".add-lab-form").is(":visible")){
+                                toggleL();
+                            }
+                            $.ajax({
+                                url : '/loadLabs',
+                                type : 'GET',
+                                async: false,
+                                data : {
+                                    'courseName' : itemName
+                                },
+                                dataType:'json',
+                                success : function(data) {
+                                    ev.preventDefault();
+                                    closeMenu();
+                                    gridWrapper1.innerHTML = '';
+                                    gridWrapper2.innerHTML = '';
+                                    classie.add(gridWrapper1, 'content--loading');
+                                    classie.add(gridWrapper2, 'content--loading');
+                                    setTimeout(function() {
+                                        classie.remove(gridWrapper1, 'content--loading');
+                                        var incomplete = complete = '<ul class="products">';
+                                        for(var i = 0;i<data.length;i++){
+                                            var lab = data[i];
+                                            if(lab.published){
+                                                 if(!lab.completed)
+                                                    incomplete+= dummyDatastudent["cardbody1"]+lab.labId+dummyDatastudent["cardbody2"]+lab.labName + dummyDatastudent["cardbody3"] + lab.labDesc + dummyDatastudent["cardbody4"];
+                                                 else
+                                                    complete+= dummyDatastudent["cardbody1"]+lab.labId+dummyDatastudent["cardbody2"]+lab.labName + dummyDatastudent["cardbody3"] + lab.labDesc + dummyDatastudent["cardbody4"];
+                                            }
                                         }
-                                    });
+                                        incomplete +="</ul>";
+                                        complete +="</ul>";
+                                        gridWrapper1.innerHTML = incomplete;
+                                        classie.remove(gridWrapper2, 'content--loading');
+                                        gridWrapper2.innerHTML = complete;
+                                        var products = $($(".products")[0]).children();
+                                        for(product of products){
+                                            var buttons = $(product).find(".buttons");
+                                            $(buttons).append('<a onclick="LoadWorkbench('+ $(product).val() +')" class="btn btn-danger waves-effect">Start</a>');
+                                        }
+                                        products = $($(".products")[1]).children();
+                                        for(product of products){
+                                            var buttons = $(product).find(".buttons");
+                                            $(buttons).append('<a onclick="cardDetails(this)" class="btn btn-info waves-effect">Details</a>');
+                                        }
+                                    }, 700);
+                                },
+                                error : function(request,error)
+                                {
+                                    alert("Request: "+JSON.stringify(request));
                                 }
+                            });
                         }
-                });
+                  }
+        });
 

@@ -18,7 +18,7 @@ public class StudentResult {
         this.user = user;
         this.results = results;
         done = false;
-        score = 0.0;
+        score = -1;
         double correct = 0;
         for(LabResult r: results){
             if(r.getVerified()==1) correct++;
