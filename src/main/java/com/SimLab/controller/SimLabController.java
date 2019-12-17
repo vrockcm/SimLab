@@ -289,8 +289,7 @@ public class SimLabController {
     @RequestMapping(value = "/publishLab", method = RequestMethod.POST)
     public String publishLab(@RequestParam String labId, @RequestParam String courseId){
         Lab lab = labRepository.findByLabId(Integer.parseInt(labId));
-        lab.setPublished(1);
-        labService.saveLab(lab, Integer.parseInt(courseId));
+        labService.publishLab(lab);
         return "redirect:/instructor/index";
     }
 
