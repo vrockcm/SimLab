@@ -512,11 +512,13 @@ interact('.drag-material').draggable({
             stopHeating();
             heat(CurrentlyOnBunsen,defTemp);
             $($(CurrentlyOnBunsen).find(".view")).popover('dispose');
+            CurrentlyOnBunsen = bunsenOn = undefined;
         }
         if(event.target === CurrentlyOnBucket || event.target === Bucket){
             stopCooling();
             cool(CurrentlyOnBucket,coolTemp);
             $($(CurrentlyOnBucket).find(".view")).popover('dispose');
+            CurrentlyOnBucket = Bucket = undefined;
         }
         $(".drag-material").popover('dispose');
         $(".drag-material").removeClass('dashed-outline');
@@ -872,7 +874,7 @@ interact('.drag-material').dropzone({
               $($(draggableElement).find(".mat-name")).addClass("top-right");
               $(dropzoneElement).find(".view").append("<p class='scale'>000</p>");
               $($(dropzoneElement).find(".scale")).text($(dropzoneElement).data("key").cumWeight);
-              weigh();
+              weigh(draggableElement);
       }
   }
 }).on('tap', function (event) {
@@ -1174,12 +1176,17 @@ function cool(mat1, temp){
     });
 }
 
-function weigh(){
+function weigh(mat1){
    $.ajax({
         url : '/weigh',
         type : 'POST',
         async: false,
+        data : {
+            'container1' : $(mat1).data("key").name,
+        },
+        dataType:'json',
         success : function(data) {
+            $(mat1).data("key",data);
         },
         error : function(request,error)
         {
