@@ -171,6 +171,7 @@ public class WorkbenchController {
                 LabResult labResult = new LabResult();
                 labResult.setLabId(workbenchBkend.getLab().getLabId());
                 labResult.setStepNo(index);
+                labResult.setStepName(workbenchBkend.getLab().getInstructionByStepNo(index).toString());
                 labResult.setVerified(1);
                 if (!r.getVerified()) {
                     labResult.setVerified(0);

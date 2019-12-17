@@ -1,6 +1,7 @@
 package com.SimLab.model.dao;
 
 import lombok.Data;
+import org.springframework.security.core.parameters.P;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -44,5 +45,12 @@ public class Lab {
     private Set<Course> courses;
 
     private boolean completed;
+
+    public Instruction getInstructionByStepNo(int stepNo){
+        for(Instruction i: instructions){
+            if(i.getStepNumber()== stepNo) return i;
+        }
+        return null;
+    }
 
 }

@@ -639,6 +639,7 @@ interact('.drag-material').dropzone({
           $(dropzoneElement).find(".view").addClass("BurnerOn");
           $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 - 104)});
           $($(draggableElement).find(".mat-name")).addClass("top-right");
+
      }else if(!$(dropzoneElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette") && !$(draggableElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette")){
          $(draggableElement).find(".view").addClass('pour');
          $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 - 30)});
@@ -1010,7 +1011,6 @@ function finishLab(){
         async: false,
         data : {
         },
-        dataType:'json',
         success : function(data) {
             window.location.href=data;
         },

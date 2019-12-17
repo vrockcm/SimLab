@@ -21,6 +21,9 @@ public class LabResult{
     @Column(name = "StepNo")
     private int stepNo;
 
+    @Column(name = "StepName")
+    private String stepName;
+
     @Column(name = "Verified")
     private int verified;
 

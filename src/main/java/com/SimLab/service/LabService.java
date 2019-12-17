@@ -102,6 +102,7 @@ public class LabService {
 
     public void publishLab(Lab lab){
         lab.setPublished(1);
+        labRepository.save(lab);
     }
 
     public void editLab(int labId,

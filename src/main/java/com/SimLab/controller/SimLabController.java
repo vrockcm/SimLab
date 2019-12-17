@@ -289,8 +289,7 @@ public class SimLabController {
     @RequestMapping(value = "/publishLab", method = RequestMethod.POST)
     public String publishLab(@RequestParam String labId, @RequestParam String courseId){
         Lab lab = labRepository.findByLabId(Integer.parseInt(labId));
-        lab.setPublished(1);
-        labService.saveLab(lab, Integer.parseInt(courseId));
+        labService.publishLab(lab);
         return "redirect:/instructor/index";
     }
 
@@ -326,12 +325,16 @@ public class SimLabController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/getStudentsInCourse", method = RequestMethod.POST)
-    public List<StudentResult> getStudentsInCourse(@RequestParam String courseId, @RequestParam String labId){
+    @RequestMapping(value = "/getStudentResults", method = RequestMethod.POST)
+    public List<StudentResult> getStudentResults(@RequestParam String courseId, @RequestParam String labId){
         List<User> users = courseService.getUsersInCourse(courseId);
         List<User> students = new ArrayList<User>();
         for(User u: users){
-            if(u.getRoles().contains("STUDENT")) students.add(u);
+            for(Role r: u.getRoles()){
+                if(r.getRole().equals("STUDENT")){
+                    students.add(u);
+                }
+            }
         }
         List<StudentResult> studentResults = new ArrayList<StudentResult>();
         for(User u: students){

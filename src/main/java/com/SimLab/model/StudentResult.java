@@ -18,14 +18,16 @@ public class StudentResult {
         this.user = user;
         this.results = results;
         done = false;
-        if(results.size()>0){
-            done = true;
-        }
+        score = -1;
         double correct = 0;
         for(LabResult r: results){
             if(r.getVerified()==1) correct++;
         }
-        score = correct/results.size();
+        if(results.size()>0){
+            done = true;
+            score = correct/results.size();
+        }
+
     }
 
 }
