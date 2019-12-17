@@ -326,8 +326,8 @@ public class SimLabController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/getStudentsInCourse", method = RequestMethod.POST)
-    public List<StudentResult> getStudentsInCourse(@RequestParam String courseId, @RequestParam String labId){
+    @RequestMapping(value = "/getStudentResults", method = RequestMethod.POST)
+    public List<StudentResult> getStudentResults(@RequestParam String courseId, @RequestParam String labId){
         List<User> users = courseService.getUsersInCourse(courseId);
         List<User> students = new ArrayList<User>();
         for(User u: users){

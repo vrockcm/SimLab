@@ -587,7 +587,7 @@ function duplicateLab(x){
     });
 }
 function deleteLab(x){
-    id = $(x).parents()[1].id;
+    id = $(x).parents()[1].value;
     $.confirm({
             title: 'Confirmation',
             content: 'Are you sure you want to delete this Lab?',
