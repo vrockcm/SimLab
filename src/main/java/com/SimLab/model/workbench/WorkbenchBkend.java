@@ -124,6 +124,13 @@ public class WorkbenchBkend {
             toReturn = pipette;
         }else if(currentInst.getName().equals(InstructionTemplates.WEIGH)){
             Weigh_Backend weigh = new Weigh_Backend(currentInst.getContainer1(), currentInst.getStepNumber());
+            toReturn = weigh;
+        }else if(currentInst.getName().equals(InstructionTemplates.HEAT)){
+            TempControl_Backend heat = new TempControl_Backend(currentInst.getContainer1(),contNames,currentInst.getStepNumber(),currentInst.getTargetTemp(),currentInst.getName());
+            toReturn = heat;
+        }else if(currentInst.getName().equals(InstructionTemplates.COOL)){
+            TempControl_Backend cool = new TempControl_Backend(currentInst.getContainer1(),contNames,currentInst.getStepNumber(),currentInst.getTargetTemp(),currentInst.getName());
+            toReturn = cool;
         }
         return toReturn;
     }
