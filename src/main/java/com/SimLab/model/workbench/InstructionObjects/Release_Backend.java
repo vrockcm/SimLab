@@ -48,8 +48,7 @@ public class Release_Backend implements InstructionBkend {
             Interaction interaction = interactions.get(i);
             if(interaction.getStepNo() != 0) continue;
             if(!interaction.getName().equals(InstructionTemplates.RELEASE)) continue;
-            verifyResultant(interaction, interaction.getResultant1());
-            if(!verified) verifyResultant(interaction, interaction.getResultant2());
+            verifyResultant(interaction, interaction.getResultant2());
             if(verified){
                 break;
             }

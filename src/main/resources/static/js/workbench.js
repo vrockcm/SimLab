@@ -1085,7 +1085,7 @@ function drawUp (mat1, mat2, amount){
 
 function release (mat1, mat2, amount){
    $.ajax({
-        url : '/drawUp',
+        url : '/release',
         type : 'POST',
         async: false,
         data : {

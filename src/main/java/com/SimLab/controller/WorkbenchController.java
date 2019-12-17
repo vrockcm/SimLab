@@ -128,7 +128,7 @@ public class WorkbenchController {
 
     @ResponseBody
     @RequestMapping(value = "/release", method = RequestMethod.POST)
-    public List<BkendContainer> release(@RequestParam String container1, @RequestParam String container2, @RequestParam int amount){
+    public List<BkendContainer> release(@RequestParam String container1, @RequestParam String container2, @RequestParam double amount){
         workbenchBkend.interact(InstructionTemplates.RELEASE, container1, container2, null, amount,0);
         List<BkendContainer> containers = new ArrayList<BkendContainer>();
         containers.add(workbenchBkend.getContainer(container1));
