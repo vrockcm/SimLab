@@ -543,7 +543,8 @@ interact('.drag-material').dropzone({
      closeNav();
      $(".drag-material").removeClass('dashed-outline');
 
-     if($(draggableElement).find(".view").hasAnyClass("Pipette")){
+     if($(draggableElement).find(".view").hasAnyClass("Pipette") && !$(dropzoneElement).find(".view").hasAnyClass("Bunsen","Scale", "Pipette")){
+
          $(draggableElement).find(".view").addClass('dip');
          $($(draggableElement).find(".mat-name")).addClass("top");
          $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2- 100)});
@@ -634,11 +635,11 @@ interact('.drag-material').dropzone({
         });
 
      }
-     else if($(dropzoneElement).find(".view").hasAnyClass("Bunsen")){
+     else if($(dropzoneElement).find(".view").hasAnyClass("Bunsen") && !$(draggableElement).find(".view").hasAnyClass("Bunsen", "Scale","Pipette")){
           $(dropzoneElement).find(".view").addClass("BurnerOn");
           $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 - 104)});
           $($(draggableElement).find(".mat-name")).addClass("top-right");
-     }else{
+     }else if(!$(dropzoneElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette") && !$(draggableElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette")){
          $(draggableElement).find(".view").addClass('pour');
          $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 - 30)});
          $($(draggableElement).find(".mat-name")).addClass("top-right");
@@ -717,7 +718,12 @@ interact('.drag-material').dropzone({
                 $(".quant").text(number.toFixed(2)+"mL");
             }
          }
-     }
+     }else if($(dropzoneElement).find(".view").hasAnyClass("Scale") && !$(draggableElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette")){
+              $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2)+25 , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 -105)});
+              $(draggableElement).insertAfter($(dropzoneElement));
+              $($(draggableElement).find(".mat-name")).addClass("top-right");
+
+      }
   }
 }).on('tap', function (event) {
       $(".drag-material").removeClass('dashed-outline');
@@ -966,7 +972,7 @@ function swirl (mat1){
         },
         dataType:'json',
         success : function(data) {
-
+            $(mat1).data("key",data);
         },
         error : function(request,error)
         {

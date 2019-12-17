@@ -568,7 +568,7 @@ function editCourse(course){
         });
 }
 function duplicateLab(x){
-    id = $(x).parents()[1].id;
+    id = $(x).parents()[1].value;
     $.ajax({
         url : '/DuplicateLab',
         type : 'POST',
