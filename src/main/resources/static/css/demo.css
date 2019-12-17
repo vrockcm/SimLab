@@ -507,6 +507,9 @@ table{
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.card{
+    touch-action: none;
+}
 
 .Username{
 	color: #29abe2;
