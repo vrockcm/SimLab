@@ -1027,6 +1027,8 @@ $(document).ready(function() {
                this.style.transition = '1s';
                event.preventDefault();
     });
+    if($(".menu__link").length>0)
+        $(".menu__link")[0].click();
 
     function initialize() {
             var menuEl = document.getElementById('ml-menu'),
