@@ -709,13 +709,21 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
             $(container2).children().remove();
             $(targetVolumeDiv).hide();
         }
-        else if(cardHeader == "Draw Up" || cardHeader == "Release"){
+        else if(cardHeader == "Draw Up"){
             if(fetchflag==1){
                 $(container1).selectpicker('val', selCon1);
                 $(targetVolume).val(targetV);
             }
             $(container2).selectpicker('hide');
             $(container2).children().remove();
+            $(targetTempDiv).hide();
+        }
+        else if(cardHeader == "Release"){
+            if(fetchflag==1){
+                $(container1).selectpicker('val', selCon1);
+                $(container2).selectpicker('val', selCon2);
+            }
+            $(targetVolumeDiv).hide();
             $(targetTempDiv).hide();
         }
     }
@@ -831,21 +839,128 @@ $('#delete-course').click(function(){
     });
 });
 
-function cardDetail(product){
-    $('.card').click(function(){
+function backbutton(){
 
-      if (!$(this).hasClass("flipped")) {
-      $( ".face" ).addClass( 'off' );
-      $( this ).children( ".face" ).removeClass( 'off' );
-      $( this ).parent( ".cards" ).addClass( 'big' );
-      $( this ).addClass('flipped');
+}
 
-      } else {
+function showLabDetails(button){
+    var card = $(button).closest(".card");
+    var product = $(button).closest(".product");
+    var labDetails = $(card).find(".labDetails");
+    var studentDetails = $(card).find(".studentDetails");
 
-      $( ".face" ).removeClass( 'off' );
-      $( ".cards" ).removeClass( 'big' );
-      $( this ).removeClass('flipped');
-    }
+    $.ajax({
+        url : "/getLabResults",
+        type : 'POST',
+        async: false,
+        data : {
+            labId : $(product).val(),
+            userId : $(button).attr("value"),
+        },
+        success : function(data) {
+            $(labDetails).append("<a id='back-button'><i class='fas fa-chevron-left'></i></a><h3>"+$(card).find(".card-title").text()+"/"+ $(button).data("name") +"</h3>");
+             $("#back-button").click(function(){
+                $(labDetails).fadeOut("fast", function() {
+                      $(studentDetails).fadeIn( "fast" );
+                      $(labDetails).empty();
+                });
+             });
+
+            html = `<table class="table table-borderless">
+              <thead>
+                <tr>
+                  <th scope="col">Step #</th>
+                  <th scope="col">Step Name</th>
+                  <th scope="col">Completion</th>
+                  <th scope="col">Feedback</th>
+                </tr>
+              </thead>
+              <tbody>`;
+            for (x of data){
+                html += "<tr><th scope='row'>"+x.stepNo+"</th>";
+                html += "<td>"+x.stepName+"</td>";
+                if(x.verified == 0){
+                   html += "<td>No</td>"
+                }
+                else{
+                    html += "<td>Yes</td>"
+                }
+                 html += "<td>"+x.message+"</td>";
+                html += "</tr>";
+            }
+            html+="</tbody></table>";
+            $(labDetails).append(html);
+            $(studentDetails).fadeOut("fast", function() {
+                  $(labDetails).fadeIn( "fast" );
+            });
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
+
+
+function cardDetails(button){
+    var product = $(button).closest(".product");
+    $.ajax({
+        url : "/getStudentResults",
+        type : 'POST',
+        async: false,
+        data : {
+            labId : $(product).val(),
+            courseId : $(".menu__link--current").attr("value"),
+        },
+        success : function(data) {
+            var card = $(button).closest(".card");
+            var back = $( card ).children( ".back" );
+            $(back).empty();
+            $(back).append("<div class='card-body studentDetails'></div><div class='card-body labDetails' style='display:none;'></div>")
+            var studentDetails = $(back).find(".studentDetails");
+            var labDetails = $(back).find(".labDetails");
+            $(studentDetails).append("<a id='back-button-student'><i class='fas fa-chevron-left'></i></a><h3>"+$(card).find(".card-title").text()+"</h3>");
+            $("#back-button-student").click(function(){
+                  $( ".face" ).show();
+                  $( card ).children( ".back" ).hide();
+                  $( card ).parent().removeClass( 'big' );
+                  $( card ).removeClass('flipped');
+             });
+            var html = `<table class="table table-borderless">
+                  <thead>
+                    <tr>
+                      <th scope="col">Student Name</th>
+                      <th scope="col">Score</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody>`;
+            for (x of data){
+                html += "<tr>";
+                html += "<td>"+x.user.name +" "+ x.user.lastName+"</td>";
+                if(x.score == -1){
+                   html += "<td>0%</td>"
+                   html += "<td></td>"
+                }
+                else{
+                    html += "<td>"+x.score*100+"%</td>"
+                    html += "<td><a onclick='showLabDetails(this)' data-name="+x.user.name +" "+ x.user.lastName+" value='"+x.user.id+"' class='rounded btn btn-info btn-sm waves-effect'>View</a></td>"
+                }
+                html += "</tr>";
+            }
+            html+="</tbody></table>";
+            $(studentDetails).append(html);
+
+            var labId = $(product).val();
+            $( ".face" ).hide();
+            $( card ).children( ".back" ).show();
+            $( card ).parent().addClass( 'big' );
+            $( card ).addClass('flipped');
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
     });
 
 }
@@ -993,7 +1108,7 @@ $(document).ready(function() {
                                 for(product of products){
                                     var buttons = $(product).find(".buttons");
                                     $(buttons).append('<a onclick="fetchLab('+ $(product).val() +')" class="btn btn-info waves-effect">Edit</a>');
-                                    $(buttons).append('<a onclick="cardDetails('+ $(product).val() +')" class="btn btn-info waves-effect">Details</a>');
+                                    $(buttons).append('<a onclick="cardDetails(this)" class="btn btn-info waves-effect">Details</a>');
                                 }
                             }, 700);
                     },

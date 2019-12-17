@@ -330,7 +330,11 @@ public class SimLabController {
         List<User> users = courseService.getUsersInCourse(courseId);
         List<User> students = new ArrayList<User>();
         for(User u: users){
-            if(u.getRoles().contains("STUDENT")) students.add(u);
+            for(Role r: u.getRoles()){
+                if(r.getRole().equals("STUDENT")){
+                    students.add(u);
+                }
+            }
         }
         List<StudentResult> studentResults = new ArrayList<StudentResult>();
         for(User u: students){

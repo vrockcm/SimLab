@@ -46,7 +46,7 @@
 				<i class="fas fa-search active" aria-hidden="true"></i>
 				<input style="color: white;" class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search" aria-label="Search">
 			</form>
-			<button class="settings btn btn-primary btn-circle"><i class="fas fa-cog"></i></button>
+			<a class="btn settings btn-primary btn-circle" href="/logout"><i class="fas fa-sign-out-alt"></i></a>
 		</div>
 	</header>
 	<button class="action action--open" aria-label="Open Menu"><span class="icon icon--menu"></span></button>
@@ -64,21 +64,21 @@
 		<div class="tabs-visb">
 			<ul class="nav nav-tabs" id="myTab" role="tablist">
 				<li class="nav-item">
-					<a class="nav-link active" id="saved-tab" data-toggle="tab" href="#saved" role="tab" aria-controls="saved"
+					<a class="nav-link active" id="incomplete-tab" data-toggle="tab" href="#incomplete" role="tab" aria-controls="incomplete"
 					   aria-selected="true">Incomplete</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" id="published-tab" data-toggle="tab" href="#published" role="tab" aria-controls="published"
+					<a class="nav-link" id="complete-tab" data-toggle="tab" href="#complete" role="tab" aria-controls="complete"
 					   aria-selected="false">Completed</a>
 				</li>
 			</ul>
 
 			<div class="tab-content" id="myTabContent">
-				<div class="tab-pane fade show active" id="saved" role="tabpanel" aria-labelledby="saved-tab">
-					<p class="info">Please choose a category</p>
+				<div class="tab-pane fade show active" id="incomplete" role="tabpanel" aria-labelledby="incomplete-tab">
+					<p class="info">Please choose a course</p>
 				</div>
-				<div class="tab-pane fade" id="published" role="tabpanel" aria-labelledby="published-tab">
-					<p class="info">Please choose a category</p>
+				<div class="tab-pane fade" id="complete" role="tabpanel" aria-labelledby="complete-tab">
+					<p class="info">Please choose a course</p>
 				</div>
 			</div>
 		</div>
