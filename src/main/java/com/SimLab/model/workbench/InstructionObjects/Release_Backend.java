@@ -77,25 +77,31 @@ public class Release_Backend implements InstructionBkend {
 
     private void verifyResultant(Interaction interaction, BkendContainer resultant){
         List<BkendSolution> resultSolutions = resultant.getSolutions();
+        List<BkendSolution> checkSols = new ArrayList<BkendSolution>();
         verified = false;
         if(resultSolutions.size() == namesToCheck.size()){
             verified = true;
-            for(String name: resultSolutions.stream().map(BkendSolution::getSolutionName).collect(Collectors.toList())) {
-                if (!namesToCheck.contains(name)){
+            for(BkendSolution sol: resultSolutions) {
+                if (!namesToCheck.contains(sol.getSolutionName())){
                     verified = false;
+                }else{
+                    checkSols.add(sol);
                 }
             }
         }
-        double expectedVolToCheck = expectedVol + interaction.getContainer2().getCumulativeVolume();
+
+        BkendContainer checkCont = (BkendContainer)resultant.clone();
+        checkCont.setSolutions(checkSols);
+
         if(verified) {
-            if (resultant.getCumulativeVolume() == expectedVolToCheck){
+            if (checkCont.getCumulativeVolume() == expectedVol){
                 verified = true;
                 BkendResultant.addSolvent(resultant);
                 interaction.setStepNo(stepNo);
             } else {
                 verified = false;
                 msg2 = true;
-                double diff = resultant.getCumulativeVolume() - expectedVolToCheck;
+                double diff = checkCont.getCumulativeVolume() - expectedVol;
                 message = MSG2 + Math.abs(diff) + "mL";
             }
         }

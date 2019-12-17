@@ -685,7 +685,7 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
                      '<input type="number" class="form-control targetTemp">'+
                      '<div class="input-group-append"><div class="input-group-text">°C</div></div></div>';
             html +=  '<div class="input-group my-2 targetVolumeDiv">'+
-                     '<input type="number" class="form-control targetVolume">'+
+                     '<input type="number" step="0.1" class="form-control targetVolume">'+
                      '<div class="input-group-append"><div class="input-group-text">mL</div></div></div>';
             html += '</div></div>';
 

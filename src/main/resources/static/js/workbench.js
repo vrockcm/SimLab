@@ -378,6 +378,58 @@
 
 })(window);
 
+
+interact('.card').draggable({
+    modifiers: [
+        interact.modifiers.restrict({
+            restrictRect: 'parent',
+            endOnly: true
+        })
+    ],
+    inertia: true,
+    onmove: dragMoveListener,
+    onend: function(event) {
+        var dropzoneElement = event.target;
+        if (!($(event.relatedTarget).hasClass("workbench"))){
+            $(dropzoneElement).hide('fast', function(){ $(dropzoneElement).remove(); });
+        }
+        else{
+            var mat = $(dropzoneElement).find(".parentDiv");
+            $(mat).addClass("drag-material");
+            var matName = $(mat).find(".mat-name").text();
+            $(mat).css("pointer-events","auto");
+            $(mat).css("position","absolute");
+            $($(dropzoneElement).find(".mat-name")).show();
+            $(event.relatedTarget).append(mat);
+            $(mat).offset({ top: $(dropzoneElement).offset().top, left:  $(dropzoneElement).offset().left});
+            $(mat).width(200);
+            $(mat).height(250);
+            interact(dropzoneElement).unset();
+            $(dropzoneElement).remove();
+            if($(mat).attr("value") == "tool"){
+                moveToolToWorkBench(mat,matName);
+            }
+            else{
+                moveToWorkBench(mat,matName);
+            }
+        }
+    }
+}).on('move', function (event) {
+var interaction = event.interaction;
+if (interaction.pointerIsDown && !interaction.interacting() && event.currentTarget.getAttribute('clonable') != 'false') {
+  var original = event.currentTarget;
+  var clone = original.cloneNode(true);
+  clone.setAttribute('clonable','false');
+  clone.style.position = "absolute";
+  $(clone).offset({ top: $(original).offset().top, left:  $(original).offset().left});
+  $(clone).width($(original).width());
+  $(clone).height($(original).height());
+  document.body.appendChild(clone);
+  interaction.start({ name: 'drag' },event.interactable,clone);
+}
+});
+
+
 $(document).ready(function() {
     // Set the date we're counting down to
     var countDownDate = new Date();
@@ -660,6 +712,7 @@ interact('.drag-material').dropzone({
   // only accept elements matching this CSS selector
   // Require a 75% element overlap for a drop to be possible
   overlap: 0.50,
+  accept: '.drag-material',
   ondrop:function (event) {
      var draggableElement = event.relatedTarget
      var dropzoneElement = event.target
@@ -871,9 +924,9 @@ interact('.drag-material').dropzone({
      else if($(dropzoneElement).find(".view").hasAnyClass("Scale") && !$(draggableElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette")){
               $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2)+25 , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 -105)});
               $(draggableElement).insertAfter($(dropzoneElement));
-              $($(draggableElement).find(".mat-name")).addClass("top-right");
+              $($(draggableElement).find(".mat-name")).addClass("top");
               $(dropzoneElement).find(".view").append("<p class='scale'>000</p>");
-              $($(dropzoneElement).find(".scale")).text($(dropzoneElement).data("key").cumWeight);
+              $($(dropzoneElement).find(".scale")).text($(draggableElement).data("key").cumWeight);
               weigh(draggableElement);
       }
   }
@@ -940,55 +993,6 @@ interact('.trash').dropzone({
 
 
 interact.dynamicDrop(true);
-interact('.card').draggable({
-    modifiers: [
-        interact.modifiers.restrict({
-            restrictRect: 'parent',
-            endOnly: true
-        })
-    ],
-    inertia: true,
-    onmove: dragMoveListener,
-    onend: function(event) {
-        var dropzoneElement = event.target;
-        if (!($(event.relatedTarget).hasClass("workbench"))){
-            $(dropzoneElement).hide('fast', function(){ $(dropzoneElement).remove(); });
-        }
-        else{
-            var mat = $(dropzoneElement).find(".parentDiv");
-            $(mat).addClass("drag-material");
-            var matName = $(mat).find(".mat-name").text();
-            $(mat).css("pointer-events","auto");
-            $(mat).css("position","absolute");
-            $($(dropzoneElement).find(".mat-name")).show();
-            $(event.relatedTarget).append(mat);
-            $(mat).offset({ top: $(dropzoneElement).offset().top, left:  $(dropzoneElement).offset().left});
-            $(mat).width(200);
-            $(mat).height(250);
-            interact(dropzoneElement).unset();
-            $(dropzoneElement).remove();
-            if($(mat).attr("value") == "tool"){
-                moveToolToWorkBench(mat,matName);
-            }
-            else{
-                moveToWorkBench(mat,matName);
-            }
-        }
-    }
-}).on('move', function (event) {
-var interaction = event.interaction;
-if (interaction.pointerIsDown && !interaction.interacting() && event.currentTarget.getAttribute('clonable') != 'false') {
-  var original = event.currentTarget;
-  var clone = original.cloneNode(true);
-  clone.setAttribute('clonable','false');
-  clone.style.position = "absolute";
-  $(clone).offset({ top: $(original).offset().top, left:  $(original).offset().left});
-  $(clone).width($(original).width());
-  $(clone).height($(original).height());
-  document.body.appendChild(clone);
-  interaction.start({ name: 'drag' },event.interactable,clone);
-}
-});
 
 //Ajax functions for different user interactions
 

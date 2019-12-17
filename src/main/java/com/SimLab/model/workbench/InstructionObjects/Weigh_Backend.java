@@ -70,6 +70,7 @@ public class Weigh_Backend implements InstructionBkend {
                 targetVolume = -1;
             }
         }
+        namesToCheck = new ArrayList<String>(newNames);
     }
 
 

@@ -25,7 +25,7 @@ public class WorkbenchBkend {
     private UserService userService;
 
     private final String DIFF_CONTAINER = "Beaker";
-    private final int DIFF_CAPACITY = 50;
+    private final int DIFF_CAPACITY = 150;
     private final int DIFF_WEIGHT = 40;
 
     List<BkendContainer> containers;
