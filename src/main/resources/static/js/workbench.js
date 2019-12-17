@@ -924,7 +924,7 @@ interact('.drag-material').dropzone({
      else if($(dropzoneElement).find(".view").hasAnyClass("Scale") && !$(draggableElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette")){
               $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2)+25 , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 -105)});
               $(draggableElement).insertAfter($(dropzoneElement));
-              $($(draggableElement).find(".mat-name")).addClass("top-right");
+              $($(draggableElement).find(".mat-name")).addClass("top");
               $(dropzoneElement).find(".view").append("<p class='scale'>000</p>");
               $($(dropzoneElement).find(".scale")).text($(draggableElement).data("key").cumWeight);
               weigh(draggableElement);
