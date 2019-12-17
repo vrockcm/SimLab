@@ -388,6 +388,24 @@ var editingFlag,editingLabFlag=0;
 
 })(window);
 
+$("#searchLabs").on("keyup", function() {
+    if($(".add-lab-form").is(":visible")){
+        $('.add-lab-form').fadeOut( "fast" , function() {
+            $(".tabs-visb").fadeIn( "fast");
+        });
+     }
+    if($(".add-course-form").is(":visible")){
+        $('.add-course-form ').fadeOut( "fast" , function() {
+            $(".tabs-visb").fadeIn( "fast");
+        });
+    }
+    var g = $(this).val().toLowerCase();
+    $(".card-title").each(function() {
+        var s = $(this).text().toLowerCase();
+        $(this).closest('.product')[ s.indexOf(g) !== -1 ? 'show' : 'hide' ]();
+    });
+});
+
 
 $('#Solutions').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
     var value = $("#Solutions>option").map(function() { return $(this).val(); })[clickedIndex];
