@@ -26,6 +26,7 @@ public class WorkbenchBkend {
 
     private final String DIFF_CONTAINER = "Beaker";
     private final int DIFF_CAPACITY = 50;
+    private final int DIFF_WEIGHT = 40;
 
     List<BkendContainer> containers;
     private int containerId = 1;
@@ -121,6 +122,15 @@ public class WorkbenchBkend {
         }else if(currentInst.getName().equals(InstructionTemplates.PIPETTE)){
             Pipette_Backend pipette = new Pipette_Backend(currentInst.getContainer1(), currentInst.getContainer2(), currentInst.getTargetVolume(), currentInst.getStepNumber(), contNames);
             toReturn = pipette;
+        }else if(currentInst.getName().equals(InstructionTemplates.WEIGH)){
+            Weigh_Backend weigh = new Weigh_Backend(currentInst.getContainer1(), currentInst.getStepNumber());
+            toReturn = weigh;
+        }else if(currentInst.getName().equals(InstructionTemplates.HEAT)){
+            TempControl_Backend heat = new TempControl_Backend(currentInst.getContainer1(),contNames,currentInst.getStepNumber(),currentInst.getTargetTemp(),currentInst.getName());
+            toReturn = heat;
+        }else if(currentInst.getName().equals(InstructionTemplates.COOL)){
+            TempControl_Backend cool = new TempControl_Backend(currentInst.getContainer1(),contNames,currentInst.getStepNumber(),currentInst.getTargetTemp(),currentInst.getName());
+            toReturn = cool;
         }
         return toReturn;
     }
@@ -210,6 +220,7 @@ public class WorkbenchBkend {
 
 
 
+
     //############### HELPERS ##############################
 
     //add duplicate solutions together and remove empty ones
@@ -234,7 +245,7 @@ public class WorkbenchBkend {
 
     private BkendContainer addContainer(Container c){
         String contName = generateName(c.getName(), true);
-        BkendContainer bkendContainer = new BkendContainer(contName, null, c.getCapacity());
+        BkendContainer bkendContainer = new BkendContainer(contName, null, c.getCapacity(), (int)c.getWeight());
         containers.add(bkendContainer);
         bkendContainer.update();
         return bkendContainer;
@@ -243,7 +254,7 @@ public class WorkbenchBkend {
     private BkendContainer addSolution(Solution s){
         BkendSolution bkendSolution = new BkendSolution(s);
         String contName = generateName(DIFF_CONTAINER, true);
-        BkendContainer bkendContainer = new BkendContainer(contName, bkendSolution, DIFF_CAPACITY);
+        BkendContainer bkendContainer = new BkendContainer(contName, bkendSolution, DIFF_CAPACITY, DIFF_WEIGHT);
         containers.add(bkendContainer);
         bkendContainer.update();
         return bkendContainer;

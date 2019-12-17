@@ -388,6 +388,23 @@ var editingFlag,editingLabFlag=0;
 
 })(window);
 
+$("#searchLabs").on("keyup", function() {
+    if($(".add-lab-form").is(":visible")){
+        $('.add-lab-form').fadeOut( "fast" , function() {
+            $(".tabs-visb").fadeIn( "fast");
+        });
+     }
+    if($(".add-course-form").is(":visible")){
+        $('.add-course-form ').fadeOut( "fast" , function() {
+            $(".tabs-visb").fadeIn( "fast");
+        });
+    }
+    var g = $(this).val().toLowerCase();
+    $(".card-title").each(function() {
+        var s = $(this).text().toLowerCase();
+        $(this).closest('.product')[ s.indexOf(g) !== -1 ? 'show' : 'hide' ]();
+    });
+});
 
 $('#Solutions').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
     var value = $("#Solutions>option").map(function() { return $(this).val(); })[clickedIndex];
@@ -567,8 +584,9 @@ function editCourse(course){
             }
         });
 }
+
 function duplicateLab(x){
-    id = $(x).parents()[1].value;
+    id = $(x).parents()[2].value;
     $.ajax({
         url : '/DuplicateLab',
         type : 'POST',
@@ -587,7 +605,7 @@ function duplicateLab(x){
     });
 }
 function deleteLab(x){
-    id = $(x).parents()[1].value;
+    id = $(x).parents()[2].value;
     $.confirm({
             title: 'Confirmation',
             content: 'Are you sure you want to delete this Lab?',
@@ -620,10 +638,12 @@ function deleteLab(x){
                 }
         });
 }
+
+
 function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", targetT = -1, targetV = -1) {
         var newCardNumber = $('.instruction_cards').children().length;
         var html = '<div class="card instruction">'+
-                   '<button type="button" class="close" onclick="deleteInstruction(this)" aria-label="Close"><span aria-hidden="true">×</span></button>'+
+                   '<button type="button" class="close close-btn" onclick="deleteInstruction(this)" aria-label="Close"><span aria-hidden="true">×</span></button>'+
                    '<div class="card-body">'+
                    '<p class="step-number">'+(newCardNumber+1)+'</p>'+
                    '<h4 class="instruction-title">'+cardHeader+'</h4>'+
@@ -643,7 +663,7 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
                    var str = "Resultant("+ title +" "+ (i+1)+")";
                    html += '<option value="Resultant'+ (i+1) +'">'+str+'</option>';
                }
-            html +='</outgroup></select>';
+            html +='</outgroup></select></br>';
             html += '<select class="selectpicker Container2" data-width="100%" data-container="body"><optgroup class="outgroup-Sol" label="Solutions">';
                 for(x of $('#Solutions').val()){
                     html += '<option value="'+x+'">'+x+'</option>';
@@ -687,7 +707,7 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
                 $(container2).selectpicker('val', selCon2);
                 $(targetVolume).val(targetV);
             }
-            $(targetVolumeDiv).insertAfter($(card).find(".Container1")[0]);
+            $(targetVolumeDiv).insertBefore($(card).find(".Container1")[0]);
             $(targetTempDiv).hide();
         }
         else if(cardHeader == "Weigh" || cardHeader == "Swirl"){
@@ -721,8 +741,8 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
             if(fetchflag==1){
                 $(container1).selectpicker('val', selCon1);
                 $(container2).selectpicker('val', selCon2);
+                $(targetVolume).val(targetV);
             }
-            $(targetVolumeDiv).hide();
             $(targetTempDiv).hide();
         }
     }
@@ -1025,6 +1045,8 @@ $(document).ready(function() {
                this.style.transition = '1s';
                event.preventDefault();
     });
+    if($(".menu__link").length>0)
+        $(".menu__link")[0].click();
 
     function initialize() {
             var menuEl = document.getElementById('ml-menu'),

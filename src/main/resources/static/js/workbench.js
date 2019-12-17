@@ -406,7 +406,6 @@ $(document).ready(function() {
     else
         $(".timer-text").text("Time Remaining: No Limit");
 
-    $(".steps option:first").removeAttr("disabled");
     $(".steps").val($(".steps option:first").val());
     $('.steps').formSelect();
     //This gets the email from the front end and passes calls the loadCourses function with this email.
@@ -483,8 +482,8 @@ interact('.workbench').dropzone({
           closeNav();
           $(".drag-material").popover('dispose');
           $(".drag-material").removeClass('dashed-outline');
-          $(".drag-material").find(".view").removeClass('pour dip BurnerOn');
-          $($(".drag-material").find(".mat-name")).removeClass("top top-right");
+          $(".drag-material").find(".view").removeClass('pour dip');
+          $($(".drag-material").find(".mat-name")).removeClass("top-right");
     }
 });
 
@@ -509,10 +508,22 @@ interact('.drag-material').draggable({
     ],
     inertia: true,
     onstart: function (event) {
+        if(event.target === CurrentlyOnBunsen || event.target === bunsenOn){
+            stopHeating();
+            heat(CurrentlyOnBunsen,defTemp);
+            $($(CurrentlyOnBunsen).find(".view")).popover('dispose');
+            CurrentlyOnBunsen = bunsenOn = undefined;
+        }
+        if(event.target === CurrentlyOnBucket || event.target === Bucket){
+            stopCooling();
+            cool(CurrentlyOnBucket,coolTemp);
+            $($(CurrentlyOnBucket).find(".view")).popover('dispose');
+            CurrentlyOnBucket = Bucket = undefined;
+        }
         $(".drag-material").popover('dispose');
         $(".drag-material").removeClass('dashed-outline');
         $(event.target).addClass('dashed-outline');
-        $(".drag-material").find(".view").removeClass('pour dip BurnerOn');
+        $(".drag-material").find(".view").removeClass('pour dip');
         $($(".drag-material").find(".mat-name")).removeClass("top top-right");
     },
     onmove: dragMoveListener,
@@ -533,6 +544,118 @@ $.fn.hasAnyClass = function() {
     return false;
 }
 
+var heatTimeout = heatInterval = defTemp = 0;
+var bunsenOn;
+var CurrentlyOnBunsen;
+function startHeating(ele,bunsen){
+    if(heatTimeout !=0 || heatInterval != 0){
+        $.alert({
+            title: 'Alert!',
+            icon: 'fa fa-warning',
+            type: 'orange',
+            content: 'You can only operate one bunsen burner at a time!'
+        });
+    }
+    else{
+        $(bunsen).find(".view").addClass("BurnerOn");
+        $(ele).offset({ top: ($(bunsen).offset().top - $(bunsen).height()/2) , left: ($(bunsen).offset().left + $(bunsen).width()/2 - 104)});
+        $($(ele).find(".mat-name")).addClass("top");
+        defTemp = $(ele).data("key").cumTemp;
+        $($(ele).find(".view")).popover({
+         container: 'body',
+         html: true,
+         placement: 'right',
+         sanitize: false,
+         content:
+         `<div id="PopoverContent">
+           <div class="input-group">
+                <h5 id="temp"></h5>
+             </div>
+           </div>
+         </div>`
+         });
+        $($(ele).find(".view")).popover('show');
+        bunsenOn = bunsen;
+        CurrentlyOnBunsen = ele;
+        heatTimeout = setTimeout(function() {
+           heatInterval = setInterval(function() {
+               var x = Math.random() * 0.5;
+               if((defTemp+x)>200){
+                 $.confirm({
+                     title: 'OverHeating!',
+                     content: 'Your '+ $(ele).data("key").name +' went over 200°C so we turned it off for safety',
+                     icon: 'fa fa-warning',
+                     type: 'red',
+                 });
+                 stopHeating();
+               }
+               defTemp += x;
+               $('#temp').text(defTemp.toFixed(2)+' °C');
+           }, 100);
+         }, 300);
+    }
+}
+
+function stopHeating(){
+    clearTimeout(heatTimeout);
+    clearInterval(heatInterval);
+    heatTimeout = heatInterval = 0;
+    $(bunsenOn).find(".view").removeClass("BurnerOn");
+}
+
+
+var coolTimeout = coolInterval = coolTemp = 0;
+var Bucket;
+var CurrentlyOnBucket;
+function startCooling(ele,bucket){
+    if(coolTimeout !=0 || coolInterval != 0){
+        $.alert({
+            title: 'Alert!',
+            icon: 'fa fa-warning',
+            type: 'orange',
+            content: 'You can only use one ice-bucket at a time!'
+        });
+    }
+    else{
+        $(ele).offset({ top: ($(bucket).offset().top - $(bucket).height()/2) + 25 , left: ($(bucket).offset().left + $(bucket).width()/2 - 105)});
+        $($(ele).find(".mat-name")).addClass("top");
+        coolTemp = $(ele).data("key").cumTemp;
+        $($(ele).find(".view")).popover({
+         container: 'body',
+         html: true,
+         placement: 'right',
+         sanitize: false,
+         content:
+         `<div id="PopoverContent">
+           <div class="input-group">
+                <h5 id="coolTemp"></h5>
+             </div>
+           </div>
+         </div>`
+         });
+        $($(ele).find(".view")).popover('show');
+        Bucket = bucket;
+        CurrentlyOnBucket = ele;
+        coolTimeout = setTimeout(function() {
+           coolInterval = setInterval(function() {
+               var x = Math.random() * 0.5;
+               if(coolTemp < -15){
+                   stopCooling();
+               }
+               coolTemp -= x;
+               $('#coolTemp').text(coolTemp.toFixed(2)+' °C');
+           }, 100);
+         }, 300);
+    }
+}
+
+function stopCooling(){
+    clearTimeout(coolTimeout);
+    clearInterval(coolInterval);
+    coolTimeout = coolInterval = 0;
+}
+
+
 interact('.drag-material').dropzone({
   // only accept elements matching this CSS selector
   // Require a 75% element overlap for a drop to be possible
@@ -542,7 +665,6 @@ interact('.drag-material').dropzone({
      var dropzoneElement = event.target
      closeNav();
      $(".drag-material").removeClass('dashed-outline');
-
      if($(draggableElement).find(".view").hasAnyClass("Pipette") && !$(dropzoneElement).find(".view").hasAnyClass("Bunsen","Scale", "Pipette")){
 
          $(draggableElement).find(".view").addClass('dip');
@@ -586,23 +708,26 @@ interact('.drag-material').dropzone({
          });
          $(draggableElement).popover('show');
 
-         var number = $(draggableElement).data("key").cumVolume;
-         var currentpos = 140 - quan1*7.2;
+         var pipeQuan = number = $(draggableElement).data("key").cumVolume;
+         var currentpos = 140 - number*7.2;
          $(".quant").text(number+"mL");
          $(".scroll-zone1, .scroll-zone2").css("background-position","center, 0px "+currentpos+"px");
-
-       currentpos = 140;
+         var pipeCap = $(draggableElement).data("key").capacity;
+         var quan1 = $(dropzoneElement).data("key").cumVolume;
+         var cap1 = $(dropzoneElement).data("key").capacity;
        $('.scroll-zone1').bind('mousewheel', function(e){
            if(e.originalEvent.wheelDelta /120 > 0) {
-               if(number<30){
+               if(number<pipeCap && quan1>0){
                     number+=0.5;
                     currentpos -= 3.6;
+                    quan1-=0.5;
                }
            }
            else{
-               if(number>0){
+               if(number>0 && quan1<cap1){
                    number-= 0.5;
                    currentpos += 3.6;
+                   quan1+=0.5;
                }
            }
            $(".quant").text(number.toFixed(2)+"mL");
@@ -610,15 +735,17 @@ interact('.drag-material').dropzone({
        });
        $('.scroll-zone2').bind('mousewheel', function(e){
           if(e.originalEvent.wheelDelta /120 > 0) {
-              if(number<30){
+              if(number<pipeCap && quan1>0){
                    number+=0.01;
                    currentpos -= 0.072;
+                   quan1-=0.01;
               }
           }
           else{
-              if(number>0){
+              if(number>0 && quan1<cap1){
                   number-= 0.01;
                   currentpos += 0.072;
+                  quan1+=0.01;
               }
           }
           $(".quant").text(number.toFixed(2)+"mL");
@@ -626,21 +753,42 @@ interact('.drag-material').dropzone({
       });
 
        $('#submit-draw').click(function(){
-            drawUp(dropzoneElement, draggableElement, number.toFixed(2));
-          $(draggableElement).popover('dispose');
+        if((number - pipeQuan) < 0){
+            $.alert({
+                title: 'Whoops!',
+                icon: 'fa fa-warning',
+                type: 'orange',
+                content: 'I think you mean\'t to click "Release"!'
+            });
+        }
+        else{
+             drawUp(dropzoneElement, draggableElement, (number - pipeQuan).toFixed(2));
+             $(draggableElement).popover('dispose');
+        }
        });
         $('#submit-release').click(function(){
-           release(draggableElement, dropzoneElement, number.toFixed(2));
-           $(draggableElement).popover('dispose');
+            if((pipeQuan - number) < 0){
+                $.alert({
+                    title: 'Whoops!',
+                    icon: 'fa fa-warning',
+                    type: 'orange',
+                    content: 'I think you mean\'t to click "Draw Up"!'
+                });
+            }
+            else{
+                 release(draggableElement, dropzoneElement, (pipeQuan - number).toFixed(2));
+                 $(draggableElement).popover('dispose');
+            }
         });
 
      }
      else if($(dropzoneElement).find(".view").hasAnyClass("Bunsen") && !$(draggableElement).find(".view").hasAnyClass("Bunsen", "Scale","Pipette")){
-          $(dropzoneElement).find(".view").addClass("BurnerOn");
-          $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 - 104)});
-          $($(draggableElement).find(".mat-name")).addClass("top-right");
-
-     }else if(!$(dropzoneElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette") && !$(draggableElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette")){
+          startHeating(draggableElement,dropzoneElement);
+     }
+     else if($(dropzoneElement).find(".view").hasAnyClass("Ice") && !$(draggableElement).find(".view").hasAnyClass("Bunsen", "Ice", "Scale","Pipette")){
+               startCooling(draggableElement, dropzoneElement);
+     }
+     else if(!$(dropzoneElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette") && !$(draggableElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette")){
          $(draggableElement).find(".view").addClass('pour');
          $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 - 30)});
          $($(draggableElement).find(".mat-name")).addClass("top-right");
@@ -719,11 +867,14 @@ interact('.drag-material').dropzone({
                 $(".quant").text(number.toFixed(2)+"mL");
             }
          }
-     }else if($(dropzoneElement).find(".view").hasAnyClass("Scale") && !$(draggableElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette")){
+     }
+     else if($(dropzoneElement).find(".view").hasAnyClass("Scale") && !$(draggableElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette")){
               $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2)+25 , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 -105)});
               $(draggableElement).insertAfter($(dropzoneElement));
               $($(draggableElement).find(".mat-name")).addClass("top-right");
-
+              $(dropzoneElement).find(".view").append("<p class='scale'>000</p>");
+              $($(dropzoneElement).find(".scale")).text($(dropzoneElement).data("key").cumWeight);
+              weigh(draggableElement);
       }
   }
 }).on('tap', function (event) {
@@ -731,27 +882,29 @@ interact('.drag-material').dropzone({
       $(event.currentTarget).addClass('dashed-outline');
       event.stopImmediatePropagation();
 }).on('doubletap', function (event) {
-      openNav(event.currentTarget);
-      var dropzoneElement = event.currentTarget;
-      $(dropzoneElement).popover({
-       container: 'body',
-       html: true,
-       placement: 'bottom',
-       sanitize: false,
-       content:
-       `<div id="PopoverContent">
-         <div class="input-group">
-           <a class="waves-effect waves-light btn Swirl-Button">Swirl</a>
-         </div>
-       </div>`
-       });
-       $(dropzoneElement).popover('show');
-       $(".Swirl-Button").click(function(){
-           $($(dropzoneElement).find(".view")).addClass("shake animated").one('animationend webkitAnimationEnd oAnimationEnd', function() {
-               $($(dropzoneElement).find(".view")).removeClass("shake animated");
+       var dropzoneElement = event.currentTarget;
+       if($(dropzoneElement).attr("value") != "tool"){
+        openNav(event.currentTarget);
+          $(dropzoneElement).popover({
+           container: 'body',
+           html: true,
+           placement: 'bottom',
+           sanitize: false,
+           content:
+           `<div id="PopoverContent">
+             <div class="input-group">
+               <a class="waves-effect waves-light btn Swirl-Button">Swirl</a>
+             </div>
+           </div>`
            });
-          swirl(dropzoneElement);
-       });
+           $(dropzoneElement).popover('show');
+           $(".Swirl-Button").click(function(){
+               $($(dropzoneElement).find(".view")).addClass("shake animated").one('animationend webkitAnimationEnd oAnimationEnd', function() {
+                   $($(dropzoneElement).find(".view")).removeClass("shake animated");
+               });
+              swirl(dropzoneElement);
+           });
+       }
 });
 
 interact('.trash').dropzone({
@@ -941,7 +1094,7 @@ function drawUp (mat1, mat2, amount){
 
 function release (mat1, mat2, amount){
    $.ajax({
-        url : '/drawUp',
+        url : '/release',
         type : 'POST',
         async: false,
         data : {
@@ -983,18 +1136,57 @@ function swirl (mat1){
 }
 
 //Heat beaker
-function heat (beaker1, time){
+function heat (mat1, temp){
    $.ajax({
         url : '/heat',
         type : 'POST',
         async: false,
         data : {
-            'beaker1' : beaker1,
+            'container1' : $(mat1).data("key").name,
             'temp' : temp
         },
         dataType:'json',
         success : function(data) {
+            $(mat1).data("key",data);
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
 
+function cool(mat1, temp){
+   $.ajax({
+        url : '/heat',
+        type : 'POST',
+        async: false,
+        data : {
+            'container1' : $(mat1).data("key").name,
+            'temp' : temp
+        },
+        dataType:'json',
+        success : function(data) {
+            $(mat1).data("key",data);
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
+
+function weigh(mat1){
+   $.ajax({
+        url : '/weigh',
+        type : 'POST',
+        async: false,
+        data : {
+            'container1' : $(mat1).data("key").name,
+        },
+        dataType:'json',
+        success : function(data) {
+            $(mat1).data("key",data);
         },
         error : function(request,error)
         {
@@ -1023,18 +1215,32 @@ function finishLab(){
 
 //When lab is finished
 function cancelLab(){
-   $.ajax({
-        url : '/cancelLab',
-        type : 'GET',
-        async: false,
-        data : {
-        },
-        success : function(data) {
-           window.location.href=data;
-        },
-        error : function(request,error)
-        {
-            alert("Request: "+JSON.stringify(request));
-        }
+    $.confirm({
+        title: 'Confirmation',
+        content: 'Are you sure you want to cancel this lab?',
+        autoClose: 'cancel|8000',
+            buttons: {
+                deleteUser: {
+                    text: 'Cancel Lab',
+                    action: function () {
+                       $.ajax({
+                           url : '/cancelLab',
+                           type : 'GET',
+                           async: false,
+                           data : {
+                           },
+                           success : function(data) {
+                              window.location.href=data;
+                           },
+                           error : function(request,error)
+                           {
+                               alert("Request: "+JSON.stringify(request));
+                           }
+                       });
+                    }
+                },
+                cancel: function () {
+                }
+            }
     });
 }

@@ -105,6 +105,11 @@ public class LabService {
         labRepository.save(lab);
     }
 
+    public void testedLab(Lab lab){
+        lab.setTested(1);
+        labRepository.save(lab);
+    }
+
     public void editLab(int labId,
                         String labName,
                         String labDescription,

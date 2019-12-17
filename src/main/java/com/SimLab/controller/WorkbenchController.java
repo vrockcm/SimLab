@@ -128,7 +128,7 @@ public class WorkbenchController {
 
     @ResponseBody
     @RequestMapping(value = "/release", method = RequestMethod.POST)
-    public List<BkendContainer> release(@RequestParam String container1, @RequestParam String container2, @RequestParam int amount){
+    public List<BkendContainer> release(@RequestParam String container1, @RequestParam String container2, @RequestParam double amount){
         workbenchBkend.interact(InstructionTemplates.RELEASE, container1, container2, null, amount,0);
         List<BkendContainer> containers = new ArrayList<BkendContainer>();
         containers.add(workbenchBkend.getContainer(container1));
@@ -155,6 +155,14 @@ public class WorkbenchController {
         cont.update();
         return cont;
     }
+    @ResponseBody
+    @RequestMapping(value = "/weigh", method = RequestMethod.POST)
+    public BkendContainer weigh(@RequestParam String container1){
+        workbenchBkend.interact(InstructionTemplates.WEIGH, container1, null, null, 0, 0);
+        BkendContainer cont = workbenchBkend.getContainer(container1);
+        cont.update();
+        return cont;
+    }
 
     //Routing for finishLab ajax call.
     @ResponseBody
@@ -165,6 +173,7 @@ public class WorkbenchController {
         List<String> contNames = labService.getAllContainer().stream().map(Container::getName).collect(Collectors.toList());
 
         List<InstructionBkend> results = workbenchBkend.verifyLab(contNames);
+        boolean tested = true;
         int index = 1;
         for(InstructionBkend r: results){
             if(r!=null) {
@@ -176,10 +185,18 @@ public class WorkbenchController {
                 if (!r.getVerified()) {
                     labResult.setVerified(0);
                     labResult.setMessage(r.getMessage());
+                    tested = false;
                 }
                 user.getLabResults().add(labResult);
                 index++;
             }
+        }
+        String userRole = "";
+        for(Role r: user.getRoles()){
+            userRole = r.getRole();
+        }
+        if(userRole.equals("INSTRUCTOR") && tested){
+            labService.testedLab(workbenchBkend.getLab());
         }
         userService.softSave(user);
 

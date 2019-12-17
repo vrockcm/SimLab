@@ -88,11 +88,11 @@ public class TempControl_Backend implements InstructionBkend {
             }
 
             if(verified && (targetVolume == resultant.getCumulativeVolume() || targetVolume<0)){
-                if(name.equals(InstructionTemplates.HEAT) && resultant.getCumulativeTemperature() >= targetTemp){
+                if(name.equals(InstructionTemplates.HEAT) && resultant.getCumulativeTemperature() >= interaction.getContainer1().getCumulativeTemperature()+targetTemp){
                     verified = true;
                     BkendResultant.addSolvent(resultant);
                     interaction.setStepNo(stepNo);
-                }else if(name.equals(InstructionTemplates.COOL) && resultant.getCumulativeTemperature() <= targetTemp){
+                }else if(name.equals(InstructionTemplates.COOL) && resultant.getCumulativeTemperature() <= interaction.getContainer1().getCumulativeTemperature()-targetTemp){
                     verified = true;
                     BkendResultant.addSolvent(resultant);
                     interaction.setStepNo(stepNo);

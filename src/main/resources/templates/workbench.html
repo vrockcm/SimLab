@@ -24,7 +24,8 @@
 	<!-- menu styles -->
 	<link rel="stylesheet" type="text/css" th:href="@{/css/component.css}"/>
 	<script th:src="@{/js/modernizr-custom.js}"></script>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
 
 </head>
 
@@ -43,7 +44,7 @@
 				<div class="row">
 					<div class="col-md-6 col-12">
 						<select class="steps">
-							<option disabled="true" th:each="instruction : ${instructions}" th:text="${instruction}"></option>
+							<option th:each="instruction : ${instructions}" th:text="${instruction}"></option>
 						</select>
 					</div>
 					<div class="col-md-3 col-6">
@@ -161,6 +162,16 @@
 			</div>
 		</div>
 	</div>
+	<div class="preloader">
+		<div class="gooey">
+			<span class="dot"></span>
+			<div class="dots">
+				<span></span>
+				<span></span>
+				<span></span>
+			</div>
+		</div>
+	</div>
 	<script type="text/javascript" th:inline="javascript" >
     	/*<![CDATA[*/
 			var timeLimit = [[${lab.timeLimit}]];
@@ -175,13 +186,20 @@
 	<!-- MDB core JavaScript -->
 	<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
 	<!--Import materialize.css-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 
 	<script th:src="@{/js/materialize.js}"></script>
 
 
 	<script th:src="@{/js/classie.js}"></script>
 	<script th:src="@{/js/dummydata.js}"></script>
+	<script>
+	$(document).ready(function() {
+		$('.preloader').fadeOut('slow');
+	});
+	</script>
 	<script th:src="@{/js/workbench.js}"></script>
+
 	<!--JavaScript at end of body for optimized loading-->
 </body>
 

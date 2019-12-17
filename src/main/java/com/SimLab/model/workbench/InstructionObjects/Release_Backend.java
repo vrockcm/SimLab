@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Data
 public class Release_Backend implements InstructionBkend {
 
-    private final String MSG1 = "You did not release out the correct solutions";
+    private final String MSG1 = "You did not release the correct solutions";
     private final String MSG2 = "You released the correct solutions but your measurement was off by ";
 
     private boolean verified;
@@ -48,8 +48,7 @@ public class Release_Backend implements InstructionBkend {
             Interaction interaction = interactions.get(i);
             if(interaction.getStepNo() != 0) continue;
             if(!interaction.getName().equals(InstructionTemplates.RELEASE)) continue;
-            verifyResultant(interaction, interaction.getResultant1());
-            if(!verified) verifyResultant(interaction, interaction.getResultant2());
+            verifyResultant(interaction, interaction.getResultant2());
             if(verified){
                 break;
             }

@@ -46,7 +46,7 @@
 				<span class="Username" style="text-align:center;" th:utext="${Name}"></span>
 				<form class="search form-inline md-form form-sm mt-0">
 		          <i class="fas fa-search active" aria-hidden="true"></i>
-		          <input style="color: white;" class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search" aria-label="Search">
+		          <input style="color: white;" class="form-control form-control-sm ml-3 w-75" type="text" id="searchLabs" placeholder="Search" aria-label="Search">
 		        </form>
 				<a class="btn settings btn-primary btn-circle" href="/logout"><i class="fas fa-sign-out-alt"></i></a>
 			</div>
@@ -132,6 +132,9 @@
 				  </div>
 				  <div class="form-group">
 					<label style="margin-top: 10px;">Add Steps</label>
+					  <span data-toggle="modal" data-target="#exampleModalCenter">
+						  <a data-toggle="tooltip" title="To learn more click me"><i class="fas fa-question"></i></a>
+					  </span>
 					<div class="dropdown">
 					  <button style="float: right;" class="btn-sm btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Select Steps
@@ -190,6 +193,41 @@
 					<button type="button" id="delete-course" class="btn btn-danger float-right">Delete</button>
 				</form>
 			</div>
+			<!-- Modal -->
+			<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+				 aria-hidden="true">
+
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLongTitle">Instruction cards explained</h5>
+							<button type="button" class="close" style="outline: 0 !important;" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<b>Pour:</b> Use beakers or flasks to pour an approximate(within 3ml) amount of solution to another beaker or flask
+							<br>&Tab;@Param1: amount to pour - @Param2: Beaker/flask to pour from - @Param3: Beaker/flask to pour to
+							<br><b>Weight:</b> Use a scale to weigh a beaker/flask and its contents
+							<br>&Tab;	@Param1: the beaker/flask to weigh
+							<br><b>Swirl:</b> Mix the contents of a beaker or flask together
+							<br>&Tab;	@Param1: the beaker/flask to swirl
+							<br><b>Draw up:</b> Use a pipette to draw an exact amount of solution from a beaker/flask
+							<br>&Tab;	@Param1: the beaker/flask to draw from - @Param2: amount to draw
+							<br><b>Release:</b> Release the contents of a pipette into a beaker/flask
+							<br>&Tab;	@Param1: The pipette to release from - @Param2: The beaker/flask to release into - @Param3: amount to release
+							<br><b>Heat:</b> Increase the temperature of the contents of a beaker/flask
+							<br>&Tab;	@Param1: The beaker/flask to heat - @Param2: The amount in Celsius to increase
+							<br><b>Cool:</b> Decrease the temperature of the contents of a beaker/flask
+							<br>&Tab;	@Param1: The beaker/flask to cool - @Param2: The amount in Celsius to decrease
+							<br>*Note that you must test a lab before you can publish it for students
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
 
 		</div>
 	</div>
@@ -222,6 +260,9 @@
 	</script>
 	<script>
 		$(document).ready(function() {
+			$(function () {
+			$('[data-toggle="tooltip"]').tooltip()
+			})
 			$('#StudentList').multiSelect({ selectableOptgroup: true });
 			$('#InstructorList').multiSelect({ selectableOptgroup: true });
 		});
