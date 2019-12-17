@@ -314,7 +314,13 @@ public class SimLabController {
     @ResponseBody
     @RequestMapping(value = "/getLabResults", method = RequestMethod.POST)
     public List<LabResult> getLabResults(@RequestParam String userId, @RequestParam String labId){
-        User user = userService.findUserById(Integer.parseInt(userId));
+        User user;
+        if(Integer.parseInt(userId) < 0){
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            user = userService.findUserByEmail(auth.getName());
+        }else {
+            user = userService.findUserById(Integer.parseInt(userId));
+        }
         List<LabResult> list = new ArrayList<LabResult>(user.getLabResults());
         int labIdint = Integer.parseInt(labId);
         for(LabResult l: list){
