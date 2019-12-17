@@ -574,6 +574,15 @@ function startHeating(ele,bunsen){
         heatTimeout = setTimeout(function() {
            heatInterval = setInterval(function() {
                var x = Math.random() * 0.5;
+               if(defTemp>100){
+                 $.confirm({
+                     title: 'OverHeating!',
+                     content: 'Your '+ $(ele).data("key").name +' went over 100°C so we turned it off for your safety',
+                     icon: 'fa fa-warning',
+                     type: 'red',
+                 });
+                 stopHeating();
+               }
                defTemp += x;
                $('#temp').text(defTemp.toFixed(2)+' °C');
            }, 100);
@@ -586,6 +595,57 @@ function stopHeating(){
     clearInterval(heatInterval);
     heatTimeout = heatInterval = 0;
 }
+
+
+var coolTimeout = coolInterval = coolTemp = 0;
+var Bucket;
+var CurrentlyOnBucket;
+function startCooling(ele,bucket){
+    if(coolTimeout !=0 || coolInterval != 0){
+        $.alert({
+            title: 'Alert!',
+            icon: 'fa fa-warning',
+            type: 'orange',
+            content: 'You can only use one ice-bucket at a time!'
+        });
+    }
+    else{
+        $(bucket).find(".view").addClass("BurnerOn");
+        $(ele).offset({ top: ($(bucket).offset().top - $(bucket).height()/2) , left: ($(bucket).offset().left + $(bucket).width()/2 - 104)});
+        $($(ele).find(".mat-name")).addClass("top-right");
+        coolTemp = $(ele).data("key").cumTemp;
+        $($(ele).find(".view")).popover({
+         container: 'body',
+         html: true,
+         placement: 'right',
+         sanitize: false,
+         content:
+         `<div id="PopoverContent">
+           <div class="input-group">
+                <h5 id="coolTemp"></h5>
+             </div>
+           </div>
+         </div>`
+         });
+        $($(ele).find(".view")).popover('show');
+        Bucket = bucket;
+        CurrentlyOnBucket = ele;
+        coolTimeout = setTimeout(function() {
+           coolInterval = setInterval(function() {
+               var x = Math.random() * 0.5;
+               coolTemp -= x;
+               $('#temp').text(defTemp.toFixed(2)+' °C');
+           }, 100);
+         }, 300);
+    }
+}
+
+function stopCooling(){
+    clearTimeout(heatTimeout);
+    clearInterval(heatInterval);
+    heatTimeout = heatInterval = 0;
+}
+
 
 interact('.drag-material').dropzone({
   // only accept elements matching this CSS selector
@@ -715,6 +775,9 @@ interact('.drag-material').dropzone({
      }
      else if($(dropzoneElement).find(".view").hasAnyClass("Bunsen") && !$(draggableElement).find(".view").hasAnyClass("Bunsen", "Scale","Pipette")){
           startHeating(draggableElement,dropzoneElement);
+     }
+     else if($(dropzoneElement).find(".view").hasAnyClass("Ice") && !$(draggableElement).find(".view").hasAnyClass("Bunsen", "Ice", "Scale","Pipette")){
+               startCooling(draggableElement, dropzoneElement);
      }
      else if(!$(dropzoneElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette") && !$(draggableElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette")){
          $(draggableElement).find(".view").addClass('pour');

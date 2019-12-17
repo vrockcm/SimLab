@@ -590,6 +590,13 @@ user-select: none;
 	background-position: center;
 }
 
+.Ice{
+	background-image: url('../images/ice-bucket.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
 .Burner{
 	background-image: url('../images/bunsen_off.png');
 	background-size: contain;
