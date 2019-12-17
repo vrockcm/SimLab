@@ -1,5 +1,6 @@
 package com.SimLab.controller;
 
+import com.SimLab.model.StudentResult;
 import com.SimLab.service.CourseService;
 import com.SimLab.service.LabResultService;
 import com.SimLab.service.LabService;
@@ -285,6 +286,16 @@ public class SimLabController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/publishLab", method = RequestMethod.POST)
+    public String publishLab(@RequestParam String labId, @RequestParam String courseId){
+        Lab lab = labRepository.findByLabId(Integer.parseInt(labId));
+        lab.setPublished(1);
+        labService.saveLab(lab, Integer.parseInt(courseId));
+        return "redirect:/instructor/index";
+    }
+
+
+    @ResponseBody
     @RequestMapping(value = "/EditLab", method = RequestMethod.POST)
     public String editLab(@RequestParam String courseId,
                           @RequestParam String labId,
@@ -300,4 +311,34 @@ public class SimLabController {
         createNewLab(courseId, labName, labDescription, timeLimit, published, Solutions, Containers, Tools, Instructions);
         return "";//
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/getLabResults", method = RequestMethod.POST)
+    public List<LabResult> getLabResults(@RequestParam String userId, @RequestParam String labId){
+        User user = userService.findUserById(Integer.parseInt(userId));
+        List<LabResult> list = new ArrayList<LabResult>(user.getLabResults());
+        int labIdint = Integer.parseInt(labId);
+        for(LabResult l: list){
+            if(l.getLabId() != labIdint) list.remove(l);
+        }
+        list.sort(Comparator.comparing(e -> e.getStepNo()));
+        return list;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getStudentsInCourse", method = RequestMethod.POST)
+    public List<StudentResult> getStudentsInCourse(@RequestParam String courseId, @RequestParam String labId){
+        List<User> users = courseService.getUsersInCourse(courseId);
+        List<User> students = new ArrayList<User>();
+        for(User u: users){
+            if(u.getRoles().contains("STUDENT")) students.add(u);
+        }
+        List<StudentResult> studentResults = new ArrayList<StudentResult>();
+        for(User u: students){
+            StudentResult sR = new StudentResult(u, getLabResults(Integer.toString(u.getId()), labId));
+            studentResults.add(sR);
+        }
+        return studentResults;
+    }
+
 }

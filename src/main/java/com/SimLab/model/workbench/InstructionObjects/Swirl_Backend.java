@@ -1,6 +1,7 @@
 package com.SimLab.model.workbench.InstructionObjects;
 
 import com.SimLab.model.dao.Container;
+import com.SimLab.model.workbench.InstructionTemplates;
 import com.SimLab.model.workbench.Interaction;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendResultant;
@@ -24,10 +25,12 @@ public class Swirl_Backend implements InstructionBkend {
     private List<String> namesToCheck;
     boolean msg2;
     private String message;
+    private int stepNo;
 
-    public Swirl_Backend(String solution, List<String> contNames){
+    public Swirl_Backend(String solution, List<String> contNames, int stepNo){
         verified = false;
         msg2 = false;
+        this.stepNo = stepNo;
 
         namesToCheck = new ArrayList<String>();
         if(!contNames.contains(solution)) namesToCheck.add(solution);
@@ -39,8 +42,9 @@ public class Swirl_Backend implements InstructionBkend {
         handleResultants();
         for(int i=startIndex; i<interactions.size(); i++){
             Interaction interaction = interactions.get(i);
+            if(interaction.getStepNo() != 0 ) continue;
+            if(!interaction.getName().equals(InstructionTemplates.SWIRL)) continue;
             verifyResultant(interaction, interaction.getResultant1());
-            if(!verified) verifyResultant(interaction, interaction.getResultant2());
             if(verified) break;
         }
         if(!verified && !msg2){
@@ -82,6 +86,7 @@ public class Swirl_Backend implements InstructionBkend {
                 if(resultant.isSwirled()){
                     verified = true;
                     BkendResultant.addSolvent(resultant);
+                    interaction.setStepNo(stepNo);
                 }else{
                     verified = false;
                     msg2 = true;

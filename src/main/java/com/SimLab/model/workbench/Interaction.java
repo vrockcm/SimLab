@@ -31,6 +31,7 @@ public class Interaction {
         }
         resultant1 = null;
         resultant2 = null;
+        stepNo = 0;
     }
 
     public void addResultant1(BkendContainer c){

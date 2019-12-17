@@ -25,12 +25,6 @@ public class WorkbenchBkend {
     private UserService userService;
 
     private final String DIFF_CONTAINER = "Beaker";
-    //Interaction template names
-    private final String POUR = "Pour";
-    private final String SWIRL = "Swirl";
-    private final String HEAT = "Heat";
-    private final String DRAWUP = "Draw Up";
-    private final String RELEASE = "Release";
     private final int DIFF_CAPACITY = 50;
 
     List<BkendContainer> containers;
@@ -112,18 +106,21 @@ public class WorkbenchBkend {
 
     private InstructionBkend getInstructionObject(Instruction currentInst, List<String> contNames){
         InstructionBkend toReturn = null;
-        if(currentInst.getName().equals(POUR)){
+        if(currentInst.getName().equals(InstructionTemplates.POUR)){
             Pour__Backend pour = new Pour__Backend(currentInst.getContainer1(), currentInst.getContainer2(),  currentInst.getTargetVolume(), currentInst.getStepNumber(), contNames);
             toReturn = pour;
-        }else if(currentInst.getName().equals(SWIRL)){
-            Swirl_Backend swirl = new Swirl_Backend(currentInst.getContainer1(), contNames);
+        }else if(currentInst.getName().equals(InstructionTemplates.SWIRL)){
+            Swirl_Backend swirl = new Swirl_Backend(currentInst.getContainer1(), contNames, currentInst.getStepNumber());
             toReturn = swirl;
-        }else if(currentInst.getName().equals(DRAWUP)){
+        }else if(currentInst.getName().equals(InstructionTemplates.DRAWUP)){
             DrawUp_Backend drawOut = new DrawUp_Backend(currentInst.getContainer1(), currentInst.getContainer2(), currentInst.getTargetVolume(), currentInst.getStepNumber(), contNames);
             toReturn = drawOut;
-        }else if(currentInst.getName().equals(RELEASE)){
+        }else if(currentInst.getName().equals(InstructionTemplates.RELEASE)){
             Release_Backend release = new Release_Backend(currentInst.getContainer1(), currentInst.getContainer2(), currentInst.getTargetVolume(), currentInst.getStepNumber(), contNames);
             toReturn = release;
+        }else if(currentInst.getName().equals(InstructionTemplates.PIPETTE)){
+            Pipette_Backend pipette = new Pipette_Backend(currentInst.getContainer1(), currentInst.getContainer2(), currentInst.getTargetVolume(), currentInst.getStepNumber(), contNames);
+            toReturn = pipette;
         }
         return toReturn;
     }
@@ -134,28 +131,33 @@ public class WorkbenchBkend {
     }
 
 
-    public void interact(String interactName, String container1, String container2, String tool, double pourAmount, double activationDuration){
+    public void interact(String interactName, String container1, String container2, String tool, double pourAmount, double finalTemp){
         BkendContainer cont1 = getContainer(container1);
         BkendContainer cont2 = getContainer(container2);
         BkendTool tool1 = getTool(tool);
         Interaction interaction = new Interaction(interactName, cont1, cont2, tool1);
 
-        if(interactName.equals(POUR)){
+        if(interactName.equals(InstructionTemplates.POUR)){
             List<BkendContainer> resultants = pourInteract(cont1, cont2, pourAmount);
             interaction.addResultant1(resultants.get(0));
             interaction.addResultant2(resultants.get(1));
-        }else if(interactName.equals(SWIRL)){
+        }else if(interactName.equals(InstructionTemplates.SWIRL)){
             BkendContainer resultant = swirlInteract(cont1);
             interaction.addResultant1(resultant);
             interaction.addResultant2(null);
-        }else if(interactName.equals(DRAWUP)){
+        }else if(interactName.equals(InstructionTemplates.DRAWUP)){
             List<BkendContainer> resultants = drawUpInteract(cont1, cont2, pourAmount);
             interaction.addResultant1(resultants.get(0));
             interaction.addResultant2(resultants.get(1));
-        }else if(interactName.equals(RELEASE)){
+        }else if(interactName.equals(InstructionTemplates.RELEASE)){
             List<BkendContainer> resultants = releaseInteract(cont1, cont2, pourAmount);
             interaction.addResultant1(resultants.get(0));
             interaction.addResultant2(resultants.get(1));
+        }else if(interactName.equals(InstructionTemplates.HEAT) ||
+                    interactName.equals(InstructionTemplates.COOL)){
+            BkendContainer resultant = temperatureControlInteract(cont1, finalTemp);
+            interaction.addResultant1(resultant);
+            interaction.addResultant2(null);
         }
 
         interactions.add(interaction);
@@ -195,8 +197,15 @@ public class WorkbenchBkend {
         return pourInteract(cont1, cont2, pourAmount);
     }
 
-    public void temperatureControlInteract(String container, String tool){
-
+    public BkendContainer temperatureControlInteract(BkendContainer cont1, double finalTemp){
+        double oriTemp = cont1.getCumTemp();
+        double diff = finalTemp-oriTemp;
+        List<BkendSolution> sols = cont1.getSolutions();
+        double inc = diff/sols.size();
+        for(BkendSolution s: sols){
+            s.setTemperature(s.getTemperature()+inc);
+        }
+        return cont1;
     }
 
 

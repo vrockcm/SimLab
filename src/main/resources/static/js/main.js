@@ -481,20 +481,12 @@ function LabWork(url, LabId = -1, publish = 0){
     });
 }
 
-function fetchLab(labEditButton){
+function fetchLab(labId){
         $("#Change-Lab-Header").text("Edit Lab");
-        var labId  = $(labEditButton).attr("value");
-        $("#Test-Lab").show();
-        $("#Publish").show();
         $(".add-lab-form").unbind('submit');
         $(".add-lab-form").submit( function(){
           LabWork('/EditLab',labId);
         });
-        $("#Publish").unbind('click');
-        $("#Publish").on("click", function(){
-              LabWork('/EditLab',labId,1);
-        });
-        $("#Test-Lab").attr("onclick","LoadWorkbench("+labId+")");
         if($(".add-lab-form").is(":hidden")){
             toggleL();
         }
@@ -576,7 +568,7 @@ function editCourse(course){
         });
 }
 function duplicateLab(x){
-    id = $(x).parents()[1].id;
+    id = $(x).parents()[1].value;
     $.ajax({
         url : '/DuplicateLab',
         type : 'POST',
@@ -689,7 +681,7 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
         var targetVolume = $(card).find(".targetVolume");
 
 
-        if(cardHeader == "Pour" || cardHeader == "Transfer"){
+        if(cardHeader == "Pour"){
             if(fetchflag==1){
                 $(container1).selectpicker('val', selCon1);
                 $(container2).selectpicker('val', selCon2);
@@ -698,7 +690,7 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
             $(targetVolumeDiv).insertAfter($(card).find(".Container1")[0]);
             $(targetTempDiv).hide();
         }
-        else if(cardHeader == "Weigh" || cardHeader == "Swirl" || cardHeader == "Rinse"){
+        else if(cardHeader == "Weigh" || cardHeader == "Swirl"){
             if(fetchflag==1){
                 $(container1).selectpicker('val', selCon1);
             }
@@ -716,7 +708,7 @@ function cardMaker(cardHeader, fetchflag = 0, selCon1 = "", selCon2 = "", target
             $(container2).children().remove();
             $(targetVolumeDiv).hide();
         }
-        else if(cardHeader == "Draw Up"){
+        else if(cardHeader == "Draw Up" || cardHeader == "Release"){
             if(fetchflag==1){
                 $(container1).selectpicker('val', selCon1);
                 $(targetVolume).val(targetV);
@@ -767,8 +759,6 @@ function toggleC() {
 
 $('.addl_btn').click(function(){
     $("#Change-Lab-Header").text("Add Lab");
-    $("#Test-Lab").hide();
-    $("#Publish").hide();
     $(".add-lab-form").unbind('submit');
     $(".add-lab-form").submit( function(){
       LabWork('/MakeLab');
@@ -840,6 +830,43 @@ $('#delete-course').click(function(){
     });
 });
 
+function cardDetail(product){
+    $('.card').click(function(){
+
+      if (!$(this).hasClass("flipped")) {
+      $( ".face" ).addClass( 'off' );
+      $( this ).children( ".face" ).removeClass( 'off' );
+      $( this ).parent( ".cards" ).addClass( 'big' );
+      $( this ).addClass('flipped');
+
+      } else {
+
+      $( ".face" ).removeClass( 'off' );
+      $( ".cards" ).removeClass( 'big' );
+      $( this ).removeClass('flipped');
+    }
+    });
+
+}
+
+function publishLab(labId){
+    $.ajax({
+        url : "/publishLab",
+        type : 'POST',
+        async: false,
+        data : {
+            labId : labId,
+            courseId : $(".menu__link--current").attr("value"),
+        },
+        success : function() {
+            $(".menu__link--current")[0].click();
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
 
 
 $(document).ready(function() {
@@ -884,85 +911,98 @@ $(document).ready(function() {
                event.preventDefault();
     });
 
-        function initialize() {
-        		var menuEl = document.getElementById('ml-menu'),
-        			mlmenu = new MLMenu(menuEl, {
-        				// breadcrumbsCtrl : true, // show breadcrumbs
-        				// initialBreadcrumb : 'all', // initial breadcrumb text
-        				breadcrumbsCtrl : false,
-        				backCtrl : false, // show back button
-        				// itemsDelayInterval : 60, // delay between each menu item sliding animation
-        				onItemClick: loadLabs // callback: item that doesn´t have a submenu gets clicked - onItemClick([event], [inner HTML of the clicked item])
-        			});
+    function initialize() {
+            var menuEl = document.getElementById('ml-menu'),
+                mlmenu = new MLMenu(menuEl, {
+                    // breadcrumbsCtrl : true, // show breadcrumbs
+                    // initialBreadcrumb : 'all', // initial breadcrumb text
+                    breadcrumbsCtrl : false,
+                    backCtrl : false, // show back button
+                    // itemsDelayInterval : 60, // delay between each menu item sliding animation
+                    onItemClick: loadLabs // callback: item that doesn´t have a submenu gets clicked - onItemClick([event], [inner HTML of the clicked item])
+                });
 
-        		// mobile menu toggle
-        		var openMenuCtrl = document.querySelector('.action--open'),
-        			closeMenuCtrl = document.querySelector('.action--close');
+            // mobile menu toggle
+            var openMenuCtrl = document.querySelector('.action--open'),
+                closeMenuCtrl = document.querySelector('.action--close');
 
-        		openMenuCtrl.addEventListener('click', openMenu);
-        		closeMenuCtrl.addEventListener('click', closeMenu);
+            openMenuCtrl.addEventListener('click', openMenu);
+            closeMenuCtrl.addEventListener('click', closeMenu);
 
-        		function openMenu() {
-        			classie.add(menuEl, 'menu--open');
-        			closeMenuCtrl.focus();
-        		}
+            function openMenu() {
+                classie.add(menuEl, 'menu--open');
+                closeMenuCtrl.focus();
+            }
 
-        		function closeMenu() {
-        			classie.remove(menuEl, 'menu--open');
-        			openMenuCtrl.focus();
-        		}
+            function closeMenu() {
+                classie.remove(menuEl, 'menu--open');
+                openMenuCtrl.focus();
+            }
 
-        		// simulate grid content loading
-        		var gridWrapper1 = document.querySelector('#saved');
-        		var gridWrapper2 = document.querySelector('#published');
+            // simulate grid content loading
+            var gridWrapper1 = document.querySelector('#saved');
+            var gridWrapper2 = document.querySelector('#published');
 
-                function loadLabs(ev,itemName){
-                    if($(".add-course-form").is(":visible")){
-                        toggleC();
-                    }
-                    else if($(".add-lab-form").is(":visible")){
-                        toggleL();
-                    }
-                    $.ajax({
-                        url : '/loadLabs',
-                        type : 'GET',
-                        async: false,
-                        data : {
-                            'courseName' : itemName
-                        },
-                        dataType:'json',
-                        success : function(data) {
-                                $( ".addl_btn" ).prop( "disabled", false );
-                                ev.preventDefault();
-                                closeMenu();
-                                gridWrapper1.innerHTML = '';
-                                gridWrapper2.innerHTML = '';
-                                classie.add(gridWrapper1, 'content--loading');
-                                classie.add(gridWrapper2, 'content--loading');
-                                setTimeout(function() {
-                                    classie.remove(gridWrapper1, 'content--loading');
-                                    var saved = published = '<ul class="products">';
-                                    for(var i = 0;i<data.length;i++){
-                                        var lab = data[i];
-                                        if(lab.published)
-                                            published+= dummyData["cardbody1"]+lab.labId+dummyData["cardbody2"]+lab.labName + dummyData["cardbody3"] + lab.labDesc + dummyData["cardbody4"]+lab.labId+dummyData["cardbody5"];
-                                        else
-                                            saved+= dummyData["cardbody1"]+lab.labId+dummyData["cardbody2"]+lab.labName + dummyData["cardbody3"] + lab.labDesc + dummyData["cardbody4"]+lab.labId+dummyData["cardbody5"];
-                                      }
-                                    saved +="</ul>";
-                                    published +="</ul>";
-                                    gridWrapper1.innerHTML = saved;
-                                    classie.remove(gridWrapper2, 'content--loading');
-                                    gridWrapper2.innerHTML = published;
-                                }, 700);
-                        },
-                        error : function(request,error)
-                        {
-                            alert("Request: "+JSON.stringify(request));
-                        }
-                    });
+            function loadLabs(ev,itemName){
+                if($(".add-course-form").is(":visible")){
+                    toggleC();
                 }
-        }
+                else if($(".add-lab-form").is(":visible")){
+                    toggleL();
+                }
+                $.ajax({
+                    url : '/loadLabs',
+                    type : 'GET',
+                    async: false,
+                    data : {
+                        'courseName' : itemName
+                    },
+                    dataType:'json',
+                    success : function(data) {
+                            $( ".addl_btn" ).prop( "disabled", false );
+                            ev.preventDefault();
+                            closeMenu();
+                            gridWrapper1.innerHTML = '';
+                            gridWrapper2.innerHTML = '';
+                            classie.add(gridWrapper1, 'content--loading');
+                            classie.add(gridWrapper2, 'content--loading');
+                            setTimeout(function() {
+                                classie.remove(gridWrapper1, 'content--loading');
+                                var saved = published = '<ul class="products">';
+                                for(var i = 0;i<data.length;i++){
+                                    var lab = data[i];
+                                    if(lab.published)
+                                        published+= dummyData["cardbody1"]+lab.labId+dummyData["cardbody2"]+lab.labName + dummyData["cardbody3"] + lab.labDesc + dummyData["cardbody4"];
+                                    else
+                                        saved+= dummyData["cardbody1"]+lab.labId+dummyData["cardbody2"]+lab.labName + dummyData["cardbody3"] + lab.labDesc + dummyData["cardbody4"];
+                                }
+                                saved +="</ul>";
+                                published +="</ul>";
+                                gridWrapper1.innerHTML = saved;
+                                classie.remove(gridWrapper2, 'content--loading');
+                                gridWrapper2.innerHTML = published;
+                                var products = $($(".products")[0]).children();
+                                for(product of products){
+                                    var buttons = $(product).find(".buttons");
+                                    $(buttons).append('<a onclick="fetchLab('+ $(product).val() +')" class="btn btn-info waves-effect">Edit</a>');
+                                    $(buttons).append('<a onclick="LoadWorkbench('+ $(product).val() +')" class="btn btn-danger waves-effect">Test</a>');
+                                    $(buttons).append('<a onclick="publishLab('+ $(product).val()+')" class="btn btn-info waves-effect">Publish</a>');
+                                }
+                                products = $($(".products")[1]).children();
+                                for(product of products){
+                                    var buttons = $(product).find(".buttons");
+                                    $(buttons).append('<a onclick="fetchLab('+ $(product).val() +')" class="btn btn-info waves-effect">Edit</a>');
+                                    $(buttons).append('<a onclick="cardDetails('+ $(product).val() +')" class="btn btn-info waves-effect">Details</a>');
+                                }
+                            }, 700);
+                    },
+                    error : function(request,error)
+                    {
+                        alert("Request: "+JSON.stringify(request));
+                    }
+                });
+            }
+    }
 });
 
 

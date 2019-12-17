@@ -382,7 +382,6 @@ $(document).ready(function() {
     // Set the date we're counting down to
     var countDownDate = new Date();
     countDownDate.setMinutes(countDownDate.getMinutes()+timeLimit);
-
     // Update the count down every 1 second
     if(timeLimit != 0){
         var x = setInterval(function() {
@@ -402,11 +401,10 @@ $(document).ready(function() {
                     clearInterval(x);
                     finishLab();
                 }
-            }, 1000);
+        }, 1000);
     }
     else
         $(".timer-text").text("Time Remaining: No Limit");
-
 
     $(".steps option:first").removeAttr("disabled");
     $(".steps").val($(".steps option:first").val());
@@ -451,6 +449,7 @@ function openNav(x) {
   $("#SolutionCap").text($(x).data("key").capacity+"mL");
   $("#SolutionVol").text($(x).data("key").cumVolume+"mL");
   $("#SolutionpH").text($(x).data("key").cumPH);
+  $("#SolutionSwirl").text($(x).data("key").swirled);
   $("#SolutionsList").empty();
   for (b of $(x).data("key").solutions)
     $("#SolutionsList").append("<tr><td>"+b.solutionName+"</td></tr>")
@@ -484,7 +483,7 @@ interact('.workbench').dropzone({
           closeNav();
           $(".drag-material").popover('dispose');
           $(".drag-material").removeClass('dashed-outline');
-          $(".drag-material").find(".view").removeClass('pour dip');
+          $(".drag-material").find(".view").removeClass('pour dip BurnerOn');
           $($(".drag-material").find(".mat-name")).removeClass("top top-right");
     }
 });
@@ -513,7 +512,7 @@ interact('.drag-material').draggable({
         $(".drag-material").popover('dispose');
         $(".drag-material").removeClass('dashed-outline');
         $(event.target).addClass('dashed-outline');
-        $(".drag-material").find(".view").removeClass('pour dip');
+        $(".drag-material").find(".view").removeClass('pour dip BurnerOn');
         $($(".drag-material").find(".mat-name")).removeClass("top top-right");
     },
     onmove: dragMoveListener,
@@ -544,7 +543,8 @@ interact('.drag-material').dropzone({
      closeNav();
      $(".drag-material").removeClass('dashed-outline');
 
-     if($(draggableElement).find(".view").hasAnyClass("Pipette")){
+     if($(draggableElement).find(".view").hasAnyClass("Pipette") && !$(dropzoneElement).find(".view").hasAnyClass("Bunsen","Scale", "Pipette")){
+
          $(draggableElement).find(".view").addClass('dip');
          $($(draggableElement).find(".mat-name")).addClass("top");
          $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2- 100)});
@@ -577,19 +577,20 @@ interact('.drag-material').dropzone({
                 </div>
                 <div class="row">
                      <div class="col">
-                        <a id="submit-draw" class="waves-effect waves-light btn-small">Done</a>
+                        <a id="submit-draw" class="waves-effect waves-light btn-small">Draw Up</a>
+                        <a id="submit-release" class="waves-effect waves-light btn-small">Release</a>
                      </div>
                 </div>
            </div>
          </div>`
          });
          $(draggableElement).popover('show');
-         var quan1 = $(draggableElement).data("key").cumVolume;
+
+         var number = $(draggableElement).data("key").cumVolume;
          var currentpos = 140 - quan1*7.2;
-         $(".quant").text(quan1+"mL");
+         $(".quant").text(number+"mL");
          $(".scroll-zone1, .scroll-zone2").css("background-position","center, 0px "+currentpos+"px");
 
-       var number = 0;
        currentpos = 140;
        $('.scroll-zone1').bind('mousewheel', function(e){
            if(e.originalEvent.wheelDelta /120 > 0) {
@@ -601,7 +602,7 @@ interact('.drag-material').dropzone({
            else{
                if(number>0){
                    number-= 0.5;
-                    currentpos += 3.6;
+                   currentpos += 3.6;
                }
            }
            $(".quant").text(number.toFixed(2)+"mL");
@@ -625,14 +626,23 @@ interact('.drag-material').dropzone({
       });
 
        $('#submit-draw').click(function(){
-          drawUp(dropzoneElement,draggableElement,number);
+            drawUp(dropzoneElement, draggableElement, number.toFixed(2));
+          $(draggableElement).popover('dispose');
        });
-     }
-     else{
-     $(draggableElement).find(".view").addClass('pour');
-     $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 - 30)});
-     $($(draggableElement).find(".mat-name")).addClass("top-right");
+        $('#submit-release').click(function(){
+           release(draggableElement, dropzoneElement, number.toFixed(2));
+           $(draggableElement).popover('dispose');
+        });
 
+     }
+     else if($(dropzoneElement).find(".view").hasAnyClass("Bunsen") && !$(draggableElement).find(".view").hasAnyClass("Bunsen", "Scale","Pipette")){
+          $(dropzoneElement).find(".view").addClass("BurnerOn");
+          $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 - 104)});
+          $($(draggableElement).find(".mat-name")).addClass("top-right");
+     }else if(!$(dropzoneElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette") && !$(draggableElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette")){
+         $(draggableElement).find(".view").addClass('pour');
+         $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2) , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 - 30)});
+         $($(draggableElement).find(".mat-name")).addClass("top-right");
          $(dropzoneElement).popover({
          container: 'body',
          html: true,
@@ -675,6 +685,7 @@ interact('.drag-material').dropzone({
             number = 0;
             timeout,interval = 0;
             $(".determinate").width('0%');
+            $(".quant").text("0mL");
         })
 
          function clearTimers() {
@@ -707,14 +718,39 @@ interact('.drag-material').dropzone({
                 $(".quant").text(number.toFixed(2)+"mL");
             }
          }
-     }
+     }else if($(dropzoneElement).find(".view").hasAnyClass("Scale") && !$(draggableElement).find(".view").hasAnyClass("Bunsen","Scale","Pipette")){
+              $(draggableElement).offset({ top: ($(dropzoneElement).offset().top - $(dropzoneElement).height()/2)+25 , left: ($(dropzoneElement).offset().left + $(dropzoneElement).width()/2 -105)});
+              $(draggableElement).insertAfter($(dropzoneElement));
+              $($(draggableElement).find(".mat-name")).addClass("top-right");
+
+      }
   }
 }).on('tap', function (event) {
       $(".drag-material").removeClass('dashed-outline');
       $(event.currentTarget).addClass('dashed-outline');
       event.stopImmediatePropagation();
 }).on('doubletap', function (event) {
-        openNav(event.currentTarget);
+      openNav(event.currentTarget);
+      var dropzoneElement = event.currentTarget;
+      $(dropzoneElement).popover({
+       container: 'body',
+       html: true,
+       placement: 'bottom',
+       sanitize: false,
+       content:
+       `<div id="PopoverContent">
+         <div class="input-group">
+           <a class="waves-effect waves-light btn Swirl-Button">Swirl</a>
+         </div>
+       </div>`
+       });
+       $(dropzoneElement).popover('show');
+       $(".Swirl-Button").click(function(){
+           $($(dropzoneElement).find(".view")).addClass("shake animated").one('animationend webkitAnimationEnd oAnimationEnd', function() {
+               $($(dropzoneElement).find(".view")).removeClass("shake animated");
+           });
+          swirl(dropzoneElement);
+       });
 });
 
 interact('.trash').dropzone({
@@ -765,7 +801,8 @@ interact('.card').draggable({
             $(dropzoneElement).hide('fast', function(){ $(dropzoneElement).remove(); });
         }
         else{
-            var mat = $(dropzoneElement).find(".drag-material");
+            var mat = $(dropzoneElement).find(".parentDiv");
+            $(mat).addClass("drag-material");
             var matName = $(mat).find(".mat-name").text();
             $(mat).css("pointer-events","auto");
             $(mat).css("position","absolute");
@@ -901,20 +938,41 @@ function drawUp (mat1, mat2, amount){
     });
 }
 
+function release (mat1, mat2, amount){
+   $.ajax({
+        url : '/drawUp',
+        type : 'POST',
+        async: false,
+        data : {
+            'container1' : $(mat1).data("key").name,
+            'container2' : $(mat2).data("key").name,
+            'amount': amount
+        },
+        dataType:'json',
+        success : function(data) {
+            $(mat1).data("key",data[0]);
+            $(mat2).data("key",data[1]);
+        },
+        error : function(request,error)
+        {
+            alert("Request: "+JSON.stringify(request));
+        }
+    });
+}
+
 
 //Mix beaker
-function mix (beaker1, time){
+function swirl (mat1){
    $.ajax({
         url : '/mix',
         type : 'POST',
         async: false,
         data : {
-            'beaker1' : beaker1,
-            'time' : time
+            'container1' :  $(mat1).data("key").name,
         },
         dataType:'json',
         success : function(data) {
-
+            $(mat1).data("key",data);
         },
         error : function(request,error)
         {
@@ -954,7 +1012,7 @@ function finishLab(){
         },
         dataType:'json',
         success : function(data) {
-
+            window.location.href=data;
         },
         error : function(request,error)
         {
@@ -971,9 +1029,8 @@ function cancelLab(){
         async: false,
         data : {
         },
-        dataType:'json',
         success : function(data) {
-//             = "your_location"
+           window.location.href=data;
         },
         error : function(request,error)
         {

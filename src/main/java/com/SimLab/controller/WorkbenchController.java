@@ -4,6 +4,7 @@ package com.SimLab.controller;
 import com.SimLab.model.Configs.CustomSuccessHandler;
 import com.SimLab.model.dao.*;
 import com.SimLab.model.workbench.InstructionObjects.InstructionBkend;
+import com.SimLab.model.workbench.InstructionTemplates;
 import com.SimLab.model.workbench.MaterialObjects.BkendContainer;
 import com.SimLab.model.workbench.MaterialObjects.BkendTool;
 import com.SimLab.model.workbench.WorkbenchBkend;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -98,7 +100,7 @@ public class WorkbenchController {
     @ResponseBody
     @RequestMapping(value = "/pour", method = RequestMethod.POST)
     public List<BkendContainer> pour(@RequestParam String container1, @RequestParam String container2, @RequestParam String amount){
-        workbenchBkend.interact("Pour",container1,container2,null,Double.parseDouble(amount),0);
+        workbenchBkend.interact(InstructionTemplates.POUR,container1,container2,null,Double.parseDouble(amount),0);
         List<BkendContainer> containers = new ArrayList<BkendContainer>();
         containers.add(workbenchBkend.getContainer(container1));
         containers.add(workbenchBkend.getContainer(container2));
@@ -108,16 +110,16 @@ public class WorkbenchController {
     //Routing for swirl ajax call.
     @ResponseBody
     @RequestMapping(value = "/mix", method = RequestMethod.POST)
-    public BkendContainer mix(@RequestParam String beaker1){
-        workbenchBkend.interact("Swirl", beaker1, null, null, 0,0);
-        return workbenchBkend.getContainer(beaker1);
+    public BkendContainer mix(@RequestParam String container1){
+        workbenchBkend.interact(InstructionTemplates.SWIRL, container1, null, null, 0,0);
+        return workbenchBkend.getContainer(container1);
     }
 
     //Routing for draw out ajax call.
     @ResponseBody
     @RequestMapping(value = "/drawUp", method = RequestMethod.POST)
     public List<BkendContainer> drawUp(@RequestParam String container1, @RequestParam String container2, @RequestParam double amount){
-        workbenchBkend.interact("Draw Up", container1, container2, null, amount,0);
+        workbenchBkend.interact(InstructionTemplates.DRAWUP, container1, container2, null, amount,0);
         List<BkendContainer> containers = new ArrayList<BkendContainer>();
         containers.add(workbenchBkend.getContainer(container1));
         containers.add(workbenchBkend.getContainer(container2));
@@ -127,19 +129,31 @@ public class WorkbenchController {
     @ResponseBody
     @RequestMapping(value = "/release", method = RequestMethod.POST)
     public List<BkendContainer> release(@RequestParam String container1, @RequestParam String container2, @RequestParam int amount){
-        workbenchBkend.interact("Release", container1, container2, null, amount,0);
+        workbenchBkend.interact(InstructionTemplates.RELEASE, container1, container2, null, amount,0);
         List<BkendContainer> containers = new ArrayList<BkendContainer>();
         containers.add(workbenchBkend.getContainer(container1));
         containers.add(workbenchBkend.getContainer(container2));
         return containers;
     }
 
+
     //Routing for heat ajax call.
     @ResponseBody
     @RequestMapping(value = "/heat", method = RequestMethod.POST)
-    public String heat(@RequestParam String beaker1, @RequestParam String temp){
+    public BkendContainer heat(@RequestParam String container1, @RequestParam double temp){
+        workbenchBkend.interact(InstructionTemplates.HEAT, container1, null, null, 0, temp);
+        BkendContainer cont = workbenchBkend.getContainer(container1);
+        cont.update();
+        return cont;
+    }
 
-        return "";
+    @ResponseBody
+    @RequestMapping(value = "/cool", method = RequestMethod.POST)
+    public BkendContainer cool(@RequestParam String container1, @RequestParam double temp){
+        workbenchBkend.interact(InstructionTemplates.COOL, container1, null, null, 0, temp);
+        BkendContainer cont = workbenchBkend.getContainer(container1);
+        cont.update();
+        return cont;
     }
 
     //Routing for finishLab ajax call.
@@ -168,18 +182,26 @@ public class WorkbenchController {
         }
         userService.softSave(user);
 
-//        if(request.isUserInRole("INSTRUCTOR"))
-//            return "redirect:/instructor/index/";
-//        else
-//            return "redirect:/student/index/";
-        return "";
+        return cancelLab();
+
     }
 
-    @RequestMapping(value = "/cancelLab", method = RequestMethod.GET)
-    public ModelAndView cancelLab(HttpServletRequest request,
-                            HttpServletResponse response) throws Exception {
+    @ResponseBody
+    @GetMapping(value = "/cancelLab")
+    public String cancelLab(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        Set<Role> role = user.getRoles();
+        String name = "";
+        for(Role r: role){
+            name += r.getRole();
+        }
 
-        return new ModelAndView("/student/index");
+        if(name.equals("INSTRUCTOR"))
+            return "/instructor/index/";
+        else
+            return "/student/index/";
+
 
     }
 

@@ -56,6 +56,7 @@ public class LabService {
         Lab newLab = new Lab();
         newLab.setLabName(lab.getLabName()+"(copy)");
         newLab.setLabDesc(lab.getLabDesc());
+        newLab.setTimeLimit(lab.getTimeLimit());
         Set<Solution> solutions = new HashSet<>();
         Set<Container> containers = new HashSet<>();
         Set<Tool> tools = new HashSet<>();
