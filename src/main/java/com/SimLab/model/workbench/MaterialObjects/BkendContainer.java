@@ -16,6 +16,7 @@ public class BkendContainer implements Cloneable{
     private List<BkendSolution> solutions;
 
     private int capacity;
+    private int weight;
 
     private int associatedStep;
 
@@ -24,6 +25,7 @@ public class BkendContainer implements Cloneable{
     private double cumPH;
     private double cumFlam;
     private boolean swirled;
+    private double cumWeight;
 
 
     //for cloning
@@ -32,12 +34,13 @@ public class BkendContainer implements Cloneable{
 
     }
 
-    public BkendContainer(String name, BkendSolution solution, int capacity){
+    public BkendContainer(String name, BkendSolution solution, int capacity, int weight){
         solutions = new ArrayList<BkendSolution>();
         this.name = name;
         if(solution != null) solutions.add(solution);
         this.capacity = capacity;
         swirled = false;
+        this.weight = weight;
     }
 
     public void addSolution(BkendSolution sol){
@@ -50,6 +53,7 @@ public class BkendContainer implements Cloneable{
         getCumulativeTemperature();
         getCumulativePh();
         getCumulativeFlamability();
+        getCumulativeWeight();
     }
 
     public double getCumulativeVolume(){
@@ -96,6 +100,13 @@ public class BkendContainer implements Cloneable{
         cumPH = rounded;
         return rounded;
     }
+    public double getCumulativeWeight(){
+        double cumVol = getCumulativeVolume();
+        cumWeight = weight;
+        double toAdd= cumVol*.22;
+        cumWeight += weight;
+        return cumWeight;
+    }
 
     @Override
     public Object clone() {
@@ -103,7 +114,7 @@ public class BkendContainer implements Cloneable{
         try {
             container = (BkendContainer) super.clone();
         } catch (CloneNotSupportedException e) {
-            container = new BkendContainer(this.getName(),null,this.getCapacity());
+            container = new BkendContainer(this.getName(),null,this.getCapacity(), this.getWeight());
         }
         List<BkendSolution> original = this.getSolutions();
         List<BkendSolution> clone = new ArrayList<BkendSolution>();

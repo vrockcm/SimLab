@@ -26,6 +26,7 @@ public class WorkbenchBkend {
 
     private final String DIFF_CONTAINER = "Beaker";
     private final int DIFF_CAPACITY = 50;
+    private final int DIFF_WEIGHT = 40;
 
     List<BkendContainer> containers;
     private int containerId = 1;
@@ -237,7 +238,7 @@ public class WorkbenchBkend {
 
     private BkendContainer addContainer(Container c){
         String contName = generateName(c.getName(), true);
-        BkendContainer bkendContainer = new BkendContainer(contName, null, c.getCapacity());
+        BkendContainer bkendContainer = new BkendContainer(contName, null, c.getCapacity(), (int)c.getWeight());
         containers.add(bkendContainer);
         bkendContainer.update();
         return bkendContainer;
@@ -246,7 +247,7 @@ public class WorkbenchBkend {
     private BkendContainer addSolution(Solution s){
         BkendSolution bkendSolution = new BkendSolution(s);
         String contName = generateName(DIFF_CONTAINER, true);
-        BkendContainer bkendContainer = new BkendContainer(contName, bkendSolution, DIFF_CAPACITY);
+        BkendContainer bkendContainer = new BkendContainer(contName, bkendSolution, DIFF_CAPACITY, DIFF_WEIGHT);
         containers.add(bkendContainer);
         bkendContainer.update();
         return bkendContainer;
