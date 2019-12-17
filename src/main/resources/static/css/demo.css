@@ -449,7 +449,7 @@ table{
   cursor: pointer;
 }
 
-.close{
+.close-btn{
 	width: 40px;
 	font-size: 30px;
 	outline: 0 !important;
@@ -895,7 +895,7 @@ label{
 }
 
 .big {
-    max-height: calc(100% - 90px);
+    height: calc(100% - 90px);
     max-width: 100%;
     top: 62px;
     margin-left: 0%;
@@ -926,4 +926,9 @@ label{
 }
 .rounded{
     border-radius:30px;
+}
+
+.labDetails, .studentDetails{
+    overflow: auto;
+    height: 100%;
 }
