@@ -46,9 +46,9 @@ public class Instruction {
         else if(getName().matches("Weigh|Swirl|Rinse"))
             str = "Step "+getStepNumber()+": "+getName()+" "+getContainer1();
         else if(getName().matches("Heat|Cool"))
-            str = "Step "+getStepNumber()+": "+getName()+" "+getContainer1()+" to "+ getTargetTemp()+ " °C";
+            str = "Step "+getStepNumber()+": "+getName()+" "+getContainer1()+" by at least "+ getTargetTemp()+ " °C";
         else if(getName().matches("Release"))
-            str = "Step "+getStepNumber()+": "+getName()+" "+getContainer1()+" into "+getContainer2();
+            str = "Step "+getStepNumber()+": "+getName()+" "+getTargetVolume()+"mL of"+getContainer1()+" into "+getContainer2();
         else
             str = "Step "+getStepNumber()+": "+getName()+" "+ getTargetVolume()+ " mL of "+ getContainer1();
         return str;

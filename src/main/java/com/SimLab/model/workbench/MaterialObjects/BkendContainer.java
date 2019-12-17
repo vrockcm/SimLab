@@ -104,7 +104,7 @@ public class BkendContainer implements Cloneable{
         double cumVol = getCumulativeVolume();
         cumWeight = weight;
         double toAdd= cumVol*.22;
-        cumWeight += weight;
+        cumWeight += toAdd;
         return cumWeight;
     }
 

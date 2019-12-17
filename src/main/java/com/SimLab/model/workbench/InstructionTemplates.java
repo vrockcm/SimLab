@@ -9,6 +9,6 @@ public class InstructionTemplates {
     public static final String PIPETTE = "Pipette";
     public static final String HEAT = "Heat";
     public static final String COOL = "Cool";
-    public static final String WEIGH = "Weight";
+    public static final String WEIGH = "Weigh";
 
 }

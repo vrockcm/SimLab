@@ -388,13 +388,6 @@ var editingFlag,editingLabFlag=0;
 
 })(window);
 
-$("#searchLabs").on("keyup", function() {
-    var g = $(this).val().toLowerCase();
-    $(".card-title").each(function() {
-        var s = $(this).text().toLowerCase();
-        $(this).closest('.card-title')[ s.indexOf(g) !== -1 ? 'show' : 'hide' ]();
-    });
-});​
 $('#Solutions').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
     var value = $("#Solutions>option").map(function() { return $(this).val(); })[clickedIndex];
     if(isSelected == false){
