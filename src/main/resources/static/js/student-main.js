@@ -415,9 +415,8 @@ $('#Containers').on('changed.bs.select', function (e, clickedIndex, isSelected, 
 
 
 
-function LoadWorkbench(button){
-     var lab = $(button).attr("value");
-     window.location.href = "/workbench?labId="+ lab;
+function LoadWorkbench(labId){
+     window.location.href = "/workbench?labId="+labId;
 }
 
 
