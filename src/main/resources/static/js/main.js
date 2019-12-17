@@ -567,6 +567,7 @@ function editCourse(course){
             }
         });
 }
+
 function duplicateLab(x){
     id = $(x).parents()[1].value;
     $.ajax({

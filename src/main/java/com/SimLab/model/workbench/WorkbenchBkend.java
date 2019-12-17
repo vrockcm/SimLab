@@ -121,6 +121,8 @@ public class WorkbenchBkend {
         }else if(currentInst.getName().equals(InstructionTemplates.PIPETTE)){
             Pipette_Backend pipette = new Pipette_Backend(currentInst.getContainer1(), currentInst.getContainer2(), currentInst.getTargetVolume(), currentInst.getStepNumber(), contNames);
             toReturn = pipette;
+        }else if(currentInst.getName().equals(InstructionTemplates.WEIGH)){
+            Weigh_Backend weigh = new Weigh_Backend(currentInst.getContainer1(), currentInst.getStepNumber());
         }
         return toReturn;
     }
@@ -207,6 +209,7 @@ public class WorkbenchBkend {
         }
         return cont1;
     }
+
 
 
 

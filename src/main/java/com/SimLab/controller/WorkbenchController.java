@@ -165,6 +165,7 @@ public class WorkbenchController {
         List<String> contNames = labService.getAllContainer().stream().map(Container::getName).collect(Collectors.toList());
 
         List<InstructionBkend> results = workbenchBkend.verifyLab(contNames);
+        boolean tested = true;
         int index = 1;
         for(InstructionBkend r: results){
             if(r!=null) {
@@ -176,10 +177,18 @@ public class WorkbenchController {
                 if (!r.getVerified()) {
                     labResult.setVerified(0);
                     labResult.setMessage(r.getMessage());
+                    tested = false;
                 }
                 user.getLabResults().add(labResult);
                 index++;
             }
+        }
+        String userRole = "";
+        for(Role r: user.getRoles()){
+            userRole = r.getRole();
+        }
+        if(userRole.equals("INSTRUCTOR") && tested){
+            labService.testedLab(workbenchBkend.getLab());
         }
         userService.softSave(user);
 
