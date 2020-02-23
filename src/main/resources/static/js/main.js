@@ -923,6 +923,7 @@ function showLabDetails(button){
 
 function cardDetails(button){
     var product = $(button).closest(".product");
+    $(product).removeClass("box");
     $.ajax({
         url : "/getStudentResults",
         type : 'POST',
@@ -944,6 +945,7 @@ function cardDetails(button){
                   $( card ).children( ".back" ).hide();
                   $( card ).parent().removeClass( 'big' );
                   $( card ).removeClass('flipped');
+                  $(product).addClass("box");
              });
             var html = `<table class="table table-borderless">
                   <thead>
