@@ -323,11 +323,12 @@ public class SimLabController {
         }
         List<LabResult> list = new ArrayList<LabResult>(user.getLabResults());
         int labIdint = Integer.parseInt(labId);
+        List<LabResult> newList = new ArrayList<LabResult>();
         for(LabResult l: list){
-            if(l.getLabId() != labIdint) list.remove(l);
+            if(l.getLabId() == labIdint) newList.add(l);
         }
-        list.sort(Comparator.comparing(e -> e.getStepNo()));
-        return list;
+        newList.sort(Comparator.comparing(e -> e.getStepNo()));
+        return newList;
     }
 
     @ResponseBody
