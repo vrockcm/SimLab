@@ -11,8 +11,8 @@ The goal of this web app is to help chemistry professors create courses with det
 
 For more details about the purpose and build process: Click [here.](https://drive.google.com/open?id=1EzG9ZedMtote2s5ey0R2DyL420DJsRse) 
 
-* :lab_coat: Choice of different chemicals, containers and tools
-* 🥼: Step-by-step virtual lab simulation
+* :wrench: Choice of different chemicals, containers and tools
+* :microscope: Step-by-step virtual lab simulation
 * ⚙️: Automated scores and feedback
 * ➕➖: Easy course and lab creation
 * 💾: Save, test and publish implementation for labs
