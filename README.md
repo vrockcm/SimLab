@@ -7,8 +7,7 @@
 ### Usage & Description
 This is my semester long project for CSE 308. Completely built from scratch using Spring Framework.
 
-The goal of this web app is to help chemistry professors create courses with detailed chemistry labs for their students. This app also allows the professors to test every step and component of the lab in our virtual labroom before actually publishing the lab.
-Student can perform these labs in the virtually in our labroom before the due-date and be graded automatically.
+The goal of this web app is to help chemistry professors create courses with detailed labs for their students. This app also allows the professors to test every step and component of the lab in our virtual labroom, before actually publishing the lab. Students can perform these labs in the virtual environment before the due-date and be graded automatically.
 
 For more details about the purpose and build process: Click [here.](https://drive.google.com/open?id=1EzG9ZedMtote2s5ey0R2DyL420DJsRse) 
 
